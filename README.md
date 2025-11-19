@@ -4,7 +4,7 @@ npm i -g @angular/cli@14.2.12 --force
 ````
 Clonar el repositorio
 ````
-git clone https://github.com/UC-Programacion-3-2023-2/template-angular.git frontend
+git clone https://github.com/Jajaider24/Angular-Proyect.git
 ````
 Acceder a la carpeta "frontend"
 ````

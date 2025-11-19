@@ -10,9 +10,11 @@ import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { AppRoutingModule } from './app.routing';
+import { AppRoutingModule } from './app-routing.module';
 import { ComponentsModule } from './components/components.module';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { CoreModule } from './core/core.module';
+import { SharedModule } from './shared/shared.module';
 
 
 @NgModule({
@@ -24,6 +26,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     NgbModule,
     RouterModule,
     AppRoutingModule,
+    CoreModule,
+    SharedModule,
   ],
   declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent],
   providers: [
