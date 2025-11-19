@@ -2,7 +2,6 @@ import { Routes } from "@angular/router";
 
 import { NoAuthenticationGuard } from "src/app/guards/no-authentication.guard";
 import { LoginComponent } from "../../pages/login/login.component";
-import { RegisterComponent } from "../../pages/register/register.component";
 
 export const AuthLayoutRoutes: Routes = [
   {
@@ -10,9 +9,5 @@ export const AuthLayoutRoutes: Routes = [
     component: LoginComponent,
     canActivate: [NoAuthenticationGuard],
   },
-  {
-    path: "register",
-    component: RegisterComponent,
-    canActivate: [NoAuthenticationGuard],
-  },
+  { path: "", redirectTo: "login", pathMatch: "full" },
 ];
