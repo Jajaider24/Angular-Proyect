@@ -1,16 +1,24 @@
 import { Injectable } from "@angular/core";
 import { Socket } from "ngx-socket-io";
-import { environment } from "src/environments/environment";
 
 @Injectable({ providedIn: "root" })
-export class SocketService extends Socket {
-  constructor() {
-    super({
-      url: environment.url_web_socket,
-      options: {},
-    });
+export class SocketService {
+  constructor(private socket: Socket) {}
+
+  // Wrapper helpers
+  fromEvent<T>(eventName: string) {
+    return this.socket.fromEvent<T>(eventName);
   }
 
-  // You can add typed helpers here, e.g.:
-  // onNewOrder() { return this.fromEvent<any>('new-order'); }
+  emit(eventName: string, data?: any) {
+    this.socket.emit(eventName, data);
+  }
+
+  connect() {
+    this.socket.connect();
+  }
+
+  disconnect() {
+    this.socket.disconnect();
+  }
 }

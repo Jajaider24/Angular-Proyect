@@ -20,8 +20,15 @@
         <td>{{ r.name }}</td>
         <td>{{ r.address?.street }}</td>
         <td class="text-end">
-          <button class="btn btn-sm btn-outline-secondary me-2" (click)="view(r.id)">View</button>
-          <button class="btn btn-sm btn-outline-primary" (click)="edit(r.id)">Edit</button>
+          <button
+            class="btn btn-sm btn-outline-secondary me-2"
+            (click)="view(r.id)"
+          >
+            View
+          </button>
+          <button class="btn btn-sm btn-outline-primary" (click)="edit(r.id)">
+            Edit
+          </button>
         </td>
       </tr>
     </tbody>

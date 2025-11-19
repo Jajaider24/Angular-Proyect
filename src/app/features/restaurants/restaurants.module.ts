@@ -1,13 +1,13 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
-import { RestaurantsRoutingModule } from './restaurants-routing.module';
-import { RestaurantsComponent } from './restaurants.component';
-import { RestaurantsListComponent } from './restaurants-list.component';
-import { RestaurantsDetailComponent } from './restaurants-detail.component';
-import { RestaurantsFormComponent } from './restaurants-form.component';
-
+import { SharedModule } from "src/app/shared/shared.module";
+import { RestaurantsDetailComponent } from "./restaurants-detail.component";
+import { RestaurantsFormComponent } from "./restaurants-form.component";
+import { RestaurantsListComponent } from "./restaurants-list.component";
+import { RestaurantsRoutingModule } from "./restaurants-routing.module";
+import { RestaurantsComponent } from "./restaurants.component";
 
 @NgModule({
   declarations: [
@@ -21,6 +21,7 @@ import { RestaurantsFormComponent } from './restaurants-form.component';
     FormsModule,
     ReactiveFormsModule,
     RestaurantsRoutingModule,
+    SharedModule,
   ],
 })
 export class RestaurantsModule {}

@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { RestaurantsService } from 'src/app/core/services/restaurants.service';
-import { Restaurant } from 'src/app/core/models';
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
+import { Restaurant } from "src/app/core/models";
+import { RestaurantsService } from "src/app/core/services/restaurants.service";
 
 @Component({
-  selector: 'app-restaurants-list',
-  templateUrl: './restaurants-list.component.html',
-  styleUrls: ['./restaurants-list.component.scss']
+  selector: "app-restaurants-list",
+  templateUrl: "./restaurants-list.component.html",
+  styleUrls: ["./restaurants-list.component.scss"],
 })
 export class RestaurantsListComponent implements OnInit {
   restaurants: Restaurant[] = [];
@@ -36,6 +36,6 @@ export class RestaurantsListComponent implements OnInit {
   }
 
   create() {
-    this.router.navigate(['/restaurants/create']);
+    this.router.navigate(["/restaurants/create"]);
   }
 }

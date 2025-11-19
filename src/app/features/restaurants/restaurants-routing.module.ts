@@ -1,19 +1,19 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { RestaurantsComponent } from './restaurants.component';
-import { RestaurantsListComponent } from './restaurants-list.component';
-import { RestaurantsDetailComponent } from './restaurants-detail.component';
-import { RestaurantsFormComponent } from './restaurants-form.component';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { RestaurantsDetailComponent } from "./restaurants-detail.component";
+import { RestaurantsFormComponent } from "./restaurants-form.component";
+import { RestaurantsListComponent } from "./restaurants-list.component";
+import { RestaurantsComponent } from "./restaurants.component";
 
 const routes: Routes = [
   {
-    path: '',
+    path: "",
     component: RestaurantsComponent,
     children: [
-      { path: '', component: RestaurantsListComponent },
-      { path: 'create', component: RestaurantsFormComponent },
-      { path: ':id', component: RestaurantsDetailComponent },
-      { path: ':id/edit', component: RestaurantsFormComponent },
+      { path: "", component: RestaurantsListComponent },
+      { path: "create", component: RestaurantsFormComponent },
+      { path: ":id", component: RestaurantsDetailComponent },
+      { path: ":id/edit", component: RestaurantsFormComponent },
     ],
   },
 ];
