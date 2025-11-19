@@ -29,7 +29,8 @@ const routes: Routes =[
         loadChildren: () => import('src/app/layouts/auth-layout/auth-layout.module').then(m => m.AuthLayoutModule)
       }
     ]
-  }, {
+  },
+  { path: 'restaurants', loadChildren: () => import('./features/restaurants/restaurants.module').then(m => m.RestaurantsModule) }, {
     path: '**',
     redirectTo: 'dashboard'
   }
