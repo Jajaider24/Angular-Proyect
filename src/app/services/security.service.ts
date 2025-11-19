@@ -86,9 +86,9 @@ export class SecurityService {  // Servicio para manejar la seguridad y autentic
    * Verifica si hay una sesion activa
    * @returns
    */
-  existSession(): boolean {
-    let sesionActual = this.getSessionData();
-    return sesionActual ? true : false;
+  existSession(): boolean {  // Método para verificar si existe una sesión activa
+    let sesionActual = this.getSessionData();  // Obtiene la información de la sesión del local storage
+    return sesionActual ? true : false;  // Retorna true si existe una sesión activa, de lo contrario retorna false
   }
   /**
    * Permite obtener los dato de la sesión activa en el

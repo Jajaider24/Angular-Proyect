@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   url_backend: "https://56fe6241-ff0a-4908-8e5b-c54fa7cbceac.mock.pstmn.io",
   url_security: "https://7dee5dea-4ea2-4c2b-a4e7-752a72c836e0.mock.pstmn.io",
-  
+  url_web_socket: "http://localhost:5000",
 };
 
 /*
