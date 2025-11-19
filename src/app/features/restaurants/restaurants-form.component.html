@@ -1,0 +1,27 @@
+<div class="restaurants-form">
+  <h4>{{ isEdit ? 'Edit Restaurant' : 'New Restaurant' }}</h4>
+
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="mb-3">
+      <label class="form-label">Name</label>
+      <input class="form-control" formControlName="name" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Phone</label>
+      <input class="form-control" formControlName="phone" />
+    </div>
+
+    <div formGroupName="address" class="mb-3">
+      <label class="form-label">Street</label>
+      <input class="form-control" formControlName="street" />
+      <label class="form-label mt-2">City</label>
+      <input class="form-control" formControlName="city" />
+    </div>
+
+    <div class="mt-3">
+      <button class="btn btn-primary" type="submit">Save</button>
+      <button class="btn btn-secondary ms-2" type="button" (click)="cancel()">Cancel</button>
+    </div>
+  </form>
+</div>
