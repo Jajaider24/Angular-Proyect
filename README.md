@@ -18,3 +18,5 @@ Correr el servidor
 ```
 ng serve
 ```
+
+npm install --legacy-peer-deps
