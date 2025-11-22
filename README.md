@@ -18,3 +18,14 @@ Correr el servidor
 ```
 ng serve
 ```
+
+Al ser este proyecto una clonacion directa del proyecto hecho en clase solo es necesario ejecutar las siguientes lineas:
+
+Instalar las dependencias
+````
+npm install --force
+````
+Correr el servidor
+```
+ng serve
+```
