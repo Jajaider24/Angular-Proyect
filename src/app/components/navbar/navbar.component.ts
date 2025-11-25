@@ -56,4 +56,11 @@ export class NavbarComponent implements OnInit {
     }
     return "Dashboard";
   }
+
+  // Cerrar sesión desde el menú del navbar
+  onLogout() {
+    this.webSocketService.disconnect();
+    this.securityService.logout();
+    this.router.navigate(["/login"]);
+  }
 }

@@ -4,6 +4,7 @@ import { User } from "src/app/models/User";
 
 import { FirebaseAuthService } from "src/app/core/services/firebase-auth.service";
 import { SecurityService } from "src/app/services/security.service";
+import { WebSocketService } from 'src/app/services/web-socket-service.service';
 import Swal from "sweetalert2";
 
 @Component({
@@ -16,7 +17,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private securityService: SecurityService,
     private router: Router,
-    private firebaseAuth: FirebaseAuthService
+    private firebaseAuth: FirebaseAuthService,
+    private webSocketService: WebSocketService
   ) {
     this.user = { email: "", password: "" };
   }
@@ -41,21 +43,34 @@ export class LoginComponent implements OnInit, OnDestroy {
   login() {
     // Método para autenticar al usuario
     console.log("componente " + JSON.stringify(this.user)); // Log del usuario que intenta iniciar sesión
+    // Intentamos el login tradicional al backend si existe el endpoint
     this.securityService.login(this.user).subscribe({
-      // Llamada al servicio de seguridad para iniciar sesión
       next: (data) => {
-        // Manejo de la respuesta exitosa y error de la autenticación
-        console.log("data " + JSON.stringify(data)); // Log de los datos recibidos y guardar la sesión
-        this.securityService.saveSession(data); // Guardar la sesión del usuario
-        this.router.navigate(["dashboard"]); // Redirigir al usuario al dashboard
+        console.log("data " + JSON.stringify(data));
+        this.securityService.saveSession(data);
+        // Conectar socket sólo después de guardar sesión para evitar conexión con user_id vacío
+        try { this.webSocketService.connect(); } catch (e) {}
+        this.router.navigate(["dashboard"]);
       },
       error: (error) => {
-        console.error("error " + JSON.stringify(error));
-        Swal.fire(
-          "Autenticación Inválida",
-          "Usuario o contraseña inválido",
-          "error"
-        );
+        // Si el backend no tiene /login (o devuelve error), usamos el fallback por email
+        console.warn('login backend failed, trying local email-based login', error);
+        this.securityService.loginByEmail(this.user.email).subscribe({
+          next: (sess) => {
+            console.log('loginByEmail success', sess);
+            // Conectar socket después del login por email
+            try { this.webSocketService.connect(); } catch (e) {}
+            this.router.navigate(['dashboard']);
+          },
+          error: (err) => {
+            console.error('loginByEmail error', err);
+            Swal.fire(
+              'Autenticación Inválida',
+              'Usuario no encontrado',
+              'error'
+            );
+          }
+        });
       },
     });
   }

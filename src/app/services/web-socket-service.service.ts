@@ -55,6 +55,25 @@ export class WebSocketService {
   }
 
   connect() {
+    // Antes de conectar, intentamos adjuntar el user_id (si existe)
+    try {
+      const userId = this.securityService.activeUserSession?.email || '';
+      const ioWrapper = (this.socket as any).ioSocket;
+      if (ioWrapper) {
+        // socket.io-client v3+ usa `auth`, v2 usaba `query` — intentamos ambos
+        if (ioWrapper.auth !== undefined) {
+          ioWrapper.auth = { user_id: userId };
+        } else if (ioWrapper.io && ioWrapper.io.opts) {
+          ioWrapper.io.opts.query = { ...ioWrapper.io.opts.query, user_id: userId };
+        } else if ((ioWrapper as any).opts) {
+          (ioWrapper as any).opts.query = { ...((ioWrapper as any).opts.query || {}), user_id: userId };
+        }
+      }
+    } catch (e) {
+      // best-effort, no bloquear la conexión si falla
+      // console.warn('WebSocketService: unable to attach user_id before connect', e);
+    }
+
     this.socket.connect();
   }
 

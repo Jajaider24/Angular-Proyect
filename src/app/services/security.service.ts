@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
+import { map } from 'rxjs/operators';
 
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
@@ -23,6 +24,42 @@ export class SecurityService {  // Servicio para manejar la seguridad y autentic
    */
   login(user: User): Observable<any> { // Método para iniciar sesión del usuario y enviar sus credenciales al backend
     return this.http.post<any>(`${environment.url_security}/login`, user); // Realiza una petición POST al endpoint de login del backend con la información del usuario
+  }
+  /**
+   * Fallback local login: busca un customer por email en el backend
+   * y guarda la sesión en localStorage sin requerir cambios backend.
+   * Útil para prototipado cuando no existe endpoint /login.
+   */
+  loginByEmail(email: string) {
+    // Llamamos al endpoint de customers y buscamos el email
+    return this.http.get<any[]>(`${environment.url_backend}/customers`).pipe(
+      map((resp: any) => {
+        const found = Array.isArray(resp) ? resp.find(u => u.email && u.email.toLowerCase() === email.toLowerCase()) : null;
+        if (!found) {
+          // Si está habilitado el modo de desarrollo, crear una sesión local "comodín"
+          if (environment.allowLocalLogin) {
+            const fakeId = Math.floor(Date.now() / 1000); // id temporal
+            const dataSesion: any = {
+              id: fakeId,
+              name: email,
+              email: email,
+              token: '' // Sin token real en este modo
+            };
+            this.saveSession(dataSesion);
+            return dataSesion;
+          }
+          throw new Error('Usuario no encontrado');
+        }
+        const dataSesion: any = {
+          id: found.id,
+          name: found.name || found.email,
+          email: found.email,
+          token: '' // Sin token real en este modo
+        };
+        this.saveSession(dataSesion);
+        return dataSesion;
+      })
+    );
   }
   /*
   Guardar la información de usuario en el local storage
@@ -77,9 +114,20 @@ export class SecurityService {  // Servicio para manejar la seguridad y autentic
    * existe información de un usuario previamente logueado
    */
   verifyActualSession() {
-    let actualSesion = this.getSessionData();
+    // En modo dev (allowLocalLogin), no restauramos sesiones antiguas para
+    // obligar siempre a un nuevo inicio de sesión al recargar la app.
+    if (environment.allowLocalLogin) {
+      this.logout();
+      return;
+    }
+
+    const actualSesion = this.getSessionData();
     if (actualSesion) {
-      this.setUser(JSON.parse(actualSesion));
+      try {
+        this.setUser(JSON.parse(actualSesion));
+      } catch {
+        this.logout();
+      }
     }
   }
   /**

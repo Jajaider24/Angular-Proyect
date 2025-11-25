@@ -5,7 +5,10 @@ import { environment } from "src/environments/environment";
 
 const socketConfig: SocketIoConfig = {
   url: environment.url_web_socket,
-  options: {},
+  options: {
+    // No conectar automáticamente al cargar la app: esperamos hasta tener user_id
+    autoConnect: false,
+  },
 };
 
 @NgModule({
