@@ -1,0 +1,134 @@
+<div class="row">
+  <div class="col">
+    <div class="card shadow">
+      <div class="card-header border-0">
+        <div class="row align-items-center">
+          <div class="col">
+            <h3 class="mb-0">Motocicletas</h3>
+          </div>
+          <div class="col text-right">
+            <button class="btn btn-sm btn-primary" (click)="createNew()">
+              <i class="ni ni-fat-add"></i> Nueva Motocicleta
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-header border-0 py-3">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group mb-0">
+              <div class="input-group input-group-alternative">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"
+                    ><i class="ni ni-zoom-split-in"></i
+                  ></span>
+                </div>
+                <input
+                  class="form-control"
+                  placeholder="Buscar por placa, marca..."
+                  type="text"
+                  [(ngModel)]="searchTerm"
+                  (input)="onSearch()"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body" *ngIf="loading">
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary"></div>
+          <p class="mt-3 text-muted">Cargando...</p>
+        </div>
+      </div>
+
+      <div
+        class="table-responsive"
+        *ngIf="!loading && filteredMotorcycles.length > 0"
+      >
+        <table class="table align-items-center table-flush">
+          <thead class="thead-light">
+            <tr>
+              <th>ID</th>
+              <th>Placa</th>
+              <th>Marca</th>
+              <th>Año</th>
+              <th>Estado</th>
+              <th class="text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let moto of filteredMotorcycles">
+              <td>
+                <span class="badge badge-dot"
+                  ><span class="font-weight-bold">#{{ moto.id }}</span></span
+                >
+              </td>
+              <td>
+                <span class="font-weight-bold text-uppercase">{{
+                  moto.license_plate
+                }}</span>
+              </td>
+              <td>{{ moto.brand }}</td>
+              <td>{{ moto.year }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="getStatusBadgeClass(moto.status)"
+                  >{{ getStatusLabel(moto.status) }}</span
+                >
+              </td>
+              <td class="text-right">
+                <div class="dropdown">
+                  <a
+                    class="btn btn-sm btn-icon-only text-light"
+                    href="javascript:void(0)"
+                    data-toggle="dropdown"
+                  >
+                    <i class="fas fa-ellipsis-v"></i>
+                  </a>
+                  <div
+                    class="dropdown-menu dropdown-menu-right dropdown-menu-arrow"
+                  >
+                    <a class="dropdown-item" (click)="viewDetail(moto.id)">
+                      <i class="ni ni-single-02"></i> Ver Detalle
+                    </a>
+                    <a class="dropdown-item" (click)="editMotorcycle(moto.id)">
+                      <i class="ni ni-settings"></i> Editar
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a
+                      class="dropdown-item text-danger"
+                      (click)="deleteMotorcycle(moto.id)"
+                    >
+                      <i class="ni ni-fat-remove"></i> Eliminar
+                    </a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        class="card-body"
+        *ngIf="!loading && filteredMotorcycles.length === 0"
+      >
+        <div class="text-center py-5">
+          <i class="ni ni-delivery-fast text-muted" style="font-size: 3rem"></i>
+          <h4 class="mt-3">No se encontraron motocicletas</h4>
+          <button
+            class="btn btn-primary mt-3"
+            (click)="createNew()"
+            *ngIf="!searchTerm"
+          >
+            <i class="ni ni-fat-add"></i> Crear Primera Motocicleta
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

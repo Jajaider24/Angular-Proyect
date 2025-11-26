@@ -1,0 +1,156 @@
+<!-- 
+  Vista de detalle de una dirección
+  Muestra toda la información de forma organizada y profesional
+-->
+<div class="row">
+  <div class="col-lg-8 offset-lg-2">
+    
+    <!-- Loading spinner -->
+    <div class="card shadow" *ngIf="loading">
+      <div class="card-body">
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Cargando...</span>
+          </div>
+          <p class="mt-3 text-muted">Cargando dirección...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detalle de la dirección -->
+    <div class="card shadow" *ngIf="!loading && address">
+      <!-- Header -->
+      <div class="card-header bg-white border-0">
+        <div class="row align-items-center">
+          <div class="col">
+            <h3 class="mb-0">Detalle de Dirección #{{ address.id }}</h3>
+          </div>
+          <div class="col text-right">
+            <button 
+              class="btn btn-sm btn-secondary mr-2" 
+              (click)="goBack()">
+              <i class="ni ni-bold-left"></i> Volver
+            </button>
+            <button 
+              class="btn btn-sm btn-primary mr-2" 
+              (click)="editAddress()">
+              <i class="ni ni-settings"></i> Editar
+            </button>
+            <button 
+              class="btn btn-sm btn-danger" 
+              (click)="deleteAddress()">
+              <i class="ni ni-fat-remove"></i> Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cuerpo del detalle -->
+      <div class="card-body">
+        
+        <!-- Información de la orden -->
+        <div class="mb-4 p-3 bg-gradient-primary text-white rounded">
+          <div class="row align-items-center">
+            <div class="col">
+              <span class="h5 mb-0">
+                <i class="ni ni-box-2"></i> Orden Asociada
+              </span>
+            </div>
+            <div class="col text-right">
+              <span class="h3 font-weight-bold mb-0">
+                #{{ address.order_id }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Datos de la dirección -->
+        <h4 class="mb-3">Datos de la Dirección</h4>
+        
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <div class="detail-item">
+              <label class="detail-label">Calle</label>
+              <div class="detail-value">
+                <i class="ni ni-pin-3 text-primary mr-2"></i>
+                {{ address.street }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="detail-item">
+              <label class="detail-label">Ciudad</label>
+              <div class="detail-value">{{ address.city }}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="detail-item">
+              <label class="detail-label">Estado/Provincia</label>
+              <div class="detail-value">{{ address.state }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="detail-item">
+              <label class="detail-label">Código Postal</label>
+              <div class="detail-value">
+                <span class="badge badge-secondary badge-lg">
+                  {{ address.postal_code }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="row mb-3" *ngIf="address.additional_info">
+          <div class="col-md-12">
+            <div class="detail-item">
+              <label class="detail-label">Información Adicional</label>
+              <div class="detail-value">
+                <div class="p-3 bg-light rounded">
+                  {{ address.additional_info }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-4" />
+
+        <!-- Metadatos -->
+        <h5 class="mb-3">Información del Sistema</h5>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="detail-item">
+              <label class="detail-label">ID</label>
+              <div class="detail-value">#{{ address.id }}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="detail-item">
+              <label class="detail-label">Fecha de Registro</label>
+              <div class="detail-value">
+                <i class="ni ni-calendar-grid-58 text-muted mr-2"></i>
+                {{ formatDate(address.created_at) }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mapa de ubicación (TODO: Integrar con Google Maps) -->
+        <div class="mt-4 p-4 bg-light rounded text-center">
+          <i class="ni ni-world text-muted" style="font-size: 3rem;"></i>
+          <p class="mb-0 mt-2 text-muted">
+            <small>Integración con mapa próximamente</small>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

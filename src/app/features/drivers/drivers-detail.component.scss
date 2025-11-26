@@ -1,0 +1,26 @@
+.detail-item {
+  margin-bottom: 1rem;
+
+  .detail-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #8898aa;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .detail-value {
+    font-size: 1rem;
+    color: #32325d;
+    font-weight: 500;
+  }
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%) !important;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}

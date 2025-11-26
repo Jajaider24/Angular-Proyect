@@ -1,0 +1,47 @@
+// Estilos para el detalle de dirección
+
+.detail-item {
+  margin-bottom: 1rem;
+
+  .detail-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #8898aa;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .detail-value {
+    font-size: 1rem;
+    color: #32325d;
+    font-weight: 500;
+  }
+}
+
+// Badge más grande para código postal
+.badge-lg {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  font-family: 'Courier New', monospace;
+}
+
+// Card con gradiente para orden
+.bg-gradient-primary {
+  background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%) !important;
+}
+
+// Estilos para información adicional
+.bg-light {
+  background-color: #f6f9fc !important;
+  border-left: 3px solid #5e72e4;
+  font-style: italic;
+  color: #525f7f;
+}
+
+// Iconos con espaciado
+i.ni {
+  font-size: 1.1rem;
+  vertical-align: middle;
+}

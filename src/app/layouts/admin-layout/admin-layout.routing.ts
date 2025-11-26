@@ -43,4 +43,53 @@ export const AdminLayoutRoutes: Routes = [
         (m) => m.ReportsModule
       ),
   },
+  // ===== NUEVOS MÓDULOS CRUD =====
+  // Direcciones de entrega asociadas a órdenes
+  {
+    path: "addresses",
+    loadChildren: () =>
+      import("../../features/addresses/addresses.module").then(
+        (m) => m.AddressesModule
+      ),
+  },
+  // Gestión de flota de motocicletas
+  {
+    path: "motorcycles",
+    loadChildren: () =>
+      import("../../features/motorcycles/motorcycles.module").then(
+        (m) => m.MotorcyclesModule
+      ),
+  },
+  // Gestión de conductores/repartidores
+  {
+    path: "drivers",
+    loadChildren: () =>
+      import("../../features/drivers/drivers.module").then(
+        (m) => m.DriversModule
+      ),
+  },
+  // Turnos de trabajo (conductor + moto)
+  {
+    path: "shifts",
+    loadChildren: () =>
+      import("../../features/shifts/shifts.module").then(
+        (m) => m.ShiftsModule
+      ),
+  },
+  // Incidencias/problemas de las motos
+  {
+    path: "issues",
+    loadChildren: () =>
+      import("../../features/issues/issues.module").then(
+        (m) => m.IssuesModule
+      ),
+  },
+  // Fotos de evidencia de incidencias
+  {
+    path: "photos",
+    loadChildren: () =>
+      import("../../features/photos/photos.module").then(
+        (m) => m.PhotosModule
+      ),
+  },
 ];

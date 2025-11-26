@@ -1,0 +1,82 @@
+<div class="row">
+  <div class="col-lg-8 offset-lg-2">
+    <div class="card shadow" *ngIf="loading">
+      <div class="card-body text-center py-5">
+        <div class="spinner-border text-primary"></div>
+        <p class="mt-3 text-muted">Cargando...</p>
+      </div>
+    </div>
+
+    <div class="card shadow" *ngIf="!loading && motorcycle">
+      <div class="card-header bg-white border-0">
+        <div class="row align-items-center">
+          <div class="col">
+            <h3 class="mb-0">Motocicleta #{{ motorcycle.id }}</h3>
+          </div>
+          <div class="col text-right">
+            <button class="btn btn-sm btn-secondary mr-2" (click)="goBack()">
+              <i class="ni ni-bold-left"></i> Volver
+            </button>
+            <button
+              class="btn btn-sm btn-primary mr-2"
+              (click)="editMotorcycle()"
+            >
+              <i class="ni ni-settings"></i> Editar
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="deleteMotorcycle()">
+              <i class="ni ni-fat-remove"></i> Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="mb-4 p-3 bg-gradient-primary text-white rounded">
+          <div class="row align-items-center">
+            <div class="col">
+              <span class="h5 mb-0"
+                ><i class="ni ni-delivery-fast"></i> Placa</span
+              >
+            </div>
+            <div class="col text-right">
+              <span class="h3 font-weight-bold mb-0 text-uppercase">{{
+                motorcycle.license_plate
+              }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="detail-item">
+              <label class="detail-label">Marca</label>
+              <div class="detail-value">{{ motorcycle.brand }}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="detail-item">
+              <label class="detail-label">Año</label>
+              <div class="detail-value">{{ motorcycle.year }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="detail-item">
+              <label class="detail-label">Estado</label>
+              <div class="detail-value">
+                <span
+                  class="badge"
+                  [ngClass]="getStatusBadgeClass(motorcycle.status)"
+                >
+                  {{ getStatusLabel(motorcycle.status) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

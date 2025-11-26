@@ -1,0 +1,24 @@
+// Estilos específicos para el listado de direcciones
+
+.table {
+  // Mejorar espaciado de filas
+  tbody tr {
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+  }
+}
+
+// Badge personalizado para códigos postales
+.badge-secondary {
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+}
+
+// Iconos de acciones
+.dropdown-item i {
+  margin-right: 8px;
+  width: 16px;
+}
