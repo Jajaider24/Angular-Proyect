@@ -8,6 +8,7 @@ import { ClipboardModule } from "ngx-clipboard";
 
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { DashboardComponent } from "../../pages/dashboard/dashboard.component";
+import { SharedModule } from "../../shared/shared.module";
 import { AdminLayoutRoutes } from "./admin-layout.routing";
 // import { ToastrModule } from 'ngx-toastr';
 
@@ -19,6 +20,7 @@ import { AdminLayoutRoutes } from "./admin-layout.routing";
     HttpClientModule,
     NgbModule,
     ClipboardModule,
+    SharedModule,
   ],
   declarations: [DashboardComponent],
 })

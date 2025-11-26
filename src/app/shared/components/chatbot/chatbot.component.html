@@ -1,0 +1,110 @@
+<!-- 
+  Chatbot Flotante
+  Componente flotante en la esquina inferior derecha con:
+  - Botón circular para abrir/cerrar
+  - Chat box con avatar, historial y campo de entrada
+  - Controles: cerrar, refresh, enviar
+-->
+<div class="chat-container">
+  <!-- Botón flotante para abrir el chat -->
+  <button
+    *ngIf="!isOpen"
+    class="open-button"
+    (click)="toggleChat()"
+    title="Abrir asistente virtual"
+  >
+    💬
+  </button>
+
+  <!-- Chat Box -->
+  <div *ngIf="isOpen" class="chat-box">
+    <!-- Header con título y botones de control -->
+    <div id="chat-title">
+      <strong>Asistente Virtual</strong>
+
+      <!-- Botón cerrar -->
+      <button class="close-button" (click)="toggleChat()" title="Cerrar chat">
+        ✕
+      </button>
+
+      <!-- Botón refresh -->
+      <button
+        class="refresh-button"
+        (click)="refreshChat()"
+        title="Reiniciar conversación"
+      >
+        🔄
+      </button>
+    </div>
+
+    <!-- Avatar animado -->
+    <div class="avatar">
+      <div class="avatar-face">
+        <div class="avatar-eyes">
+          <div class="eye left-eye"></div>
+          <div class="eye right-eye"></div>
+        </div>
+        <div class="avatar-mouth" [class.speaking]="loading"></div>
+      </div>
+    </div>
+
+    <!-- Mensaje descriptivo -->
+    <div id="chat-message">
+      <small>Pregúntame sobre el sistema de delivery 🍔🏍️</small>
+    </div>
+
+    <!-- Historial de conversación -->
+    <div class="chat-history-box">
+      <div
+        *ngFor="let msg of chatHistory"
+        class="message"
+        [class.user-message]="msg.role === 'user'"
+        [class.bot-message]="msg.role === 'bot'"
+      >
+        <div class="message-bubble">
+          <strong *ngIf="msg.role === 'user'">Tú:</strong>
+          <strong *ngIf="msg.role === 'bot'">🤖 Bot:</strong>
+          <p>{{ msg.content }}</p>
+          <span class="message-time">
+            {{ msg.timestamp | date : "short" }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Indicador de carga mientras espera respuesta -->
+      <div *ngIf="loading" class="message bot-message">
+        <div class="message-bubble loading-bubble">
+          <strong>🤖 Bot:</strong>
+          <p>
+            <span class="typing-indicator">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            Escribiendo...
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Campo de entrada y botón enviar -->
+    <div class="input-area">
+      <input
+        id="chat-input"
+        type="text"
+        [(ngModel)]="userInput"
+        (keypress)="onKeyPress($event)"
+        placeholder="Escribe tu pregunta..."
+        [disabled]="loading"
+      />
+      <button
+        id="send-message"
+        (click)="sendMessage()"
+        [disabled]="loading || !userInput.trim()"
+        title="Enviar mensaje"
+      >
+        📤
+      </button>
+    </div>
+  </div>
+</div>

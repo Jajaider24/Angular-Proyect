@@ -17,4 +17,7 @@ export const environment = {
     messagingSenderId: "487504246800",
     appId: "1:487504246800:web:4220f5387f9aa0622e7295",
   },
+  // API Key de Google Gemini para el chatbot inteligente
+  // Obtén tu propia key en: https://makersuite.google.com/app/apikey
+  geminiApiKey: "AIzaSyCG_pJ9_XMzlIgRBKYsm5TILicxYz-rlaE",
 };

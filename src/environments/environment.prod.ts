@@ -14,4 +14,6 @@ export const environment = {
   },
   // En producción siempre debe estar en false
   allowLocalLogin: false,
+  // API Key de Google Gemini para el chatbot inteligente
+  geminiApiKey: "AIzaSyCG_pJ9_XMzlIgRBKYsm5TILicxYz-rlaE",
 };
