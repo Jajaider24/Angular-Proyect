@@ -7,7 +7,7 @@ import { DriversService } from "src/app/core/services/drivers.service";
 
 /**
  * Formulario para crear/editar conductores con validaciones.
- * 
+ *
  * Validaciones:
  * - name: Requerido, 3-100 caracteres
  * - license_number: Requerido, único, 10-50 caracteres alfanuméricos
@@ -26,13 +26,13 @@ export class DriversFormComponent implements OnInit, OnDestroy {
   isEdit = false;
   submitted = false;
   driverId?: number;
-  
+
   statusOptions = [
     { value: "available", label: "Disponible" },
     { value: "on_shift", label: "En Turno" },
     { value: "unavailable", label: "No Disponible" },
   ];
-  
+
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -44,7 +44,7 @@ export class DriversFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.buildForm();
-    
+
     const idParam = this.route.snapshot.paramMap.get("id");
     if (idParam) {
       this.isEdit = true;
@@ -60,7 +60,14 @@ export class DriversFormComponent implements OnInit, OnDestroy {
 
   private buildForm(): void {
     this.form = this.fb.group({
-      name: ["", [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+      name: [
+        "",
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(100),
+        ],
+      ],
       license_number: [
         "",
         [
@@ -115,9 +122,10 @@ export class DriversFormComponent implements OnInit, OnDestroy {
     const payload = this.form.value;
     this.loading = true;
 
-    const operation = this.isEdit && this.driverId
-      ? this.driversService.update(this.driverId, payload)
-      : this.driversService.create(payload);
+    const operation =
+      this.isEdit && this.driverId
+        ? this.driversService.update(this.driverId, payload)
+        : this.driversService.create(payload);
 
     operation.pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
@@ -140,7 +148,11 @@ export class DriversFormComponent implements OnInit, OnDestroy {
 
   hasError(field: string): boolean {
     const control = this.form.get(field);
-    return !!(control && control.invalid && (control.dirty || control.touched || this.submitted));
+    return !!(
+      control &&
+      control.invalid &&
+      (control.dirty || control.touched || this.submitted)
+    );
   }
 
   getErrorMessage(field: string): string {
@@ -150,8 +162,10 @@ export class DriversFormComponent implements OnInit, OnDestroy {
     const errors = control.errors;
 
     if (errors["required"]) return "Este campo es obligatorio";
-    if (errors["minlength"]) return `Mínimo ${errors["minlength"].requiredLength} caracteres`;
-    if (errors["maxlength"]) return `Máximo ${errors["maxlength"].requiredLength} caracteres`;
+    if (errors["minlength"])
+      return `Mínimo ${errors["minlength"].requiredLength} caracteres`;
+    if (errors["maxlength"])
+      return `Máximo ${errors["maxlength"].requiredLength} caracteres`;
     if (errors["email"]) return "Formato de email inválido";
     if (errors["pattern"]) {
       if (field === "license_number") return "Solo letras, números y guiones";
