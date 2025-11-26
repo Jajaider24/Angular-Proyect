@@ -7,39 +7,98 @@
           <p class="text-muted mb-3">
             Este dashboard está preparado para administrar tu sistema de
             domicilios. Usa el menú lateral para navegar a las secciones de
-            Restaurantes, Productos, Menús, Clientes y Pedidos.
+            Restaurantes, Productos, Menús, Clientes, Pedidos, Direcciones,
+            Motocicletas, Conductores, Turnos, Incidencias y Fotos.
           </p>
-          <div class="d-flex flex-wrap gap-2">
-            <a
-              routerLink="/restaurants"
-              class="btn btn-sm btn-outline-primary"
-              appRipple
-              >Restaurantes</a
-            >
-            <a
-              routerLink="/products"
-              class="btn btn-sm btn-outline-info"
-              appRipple
-              >Productos</a
-            >
-            <a
-              routerLink="/menus"
-              class="btn btn-sm btn-outline-success"
-              appRipple
-              >Menús</a
-            >
-            <a
-              routerLink="/customers"
-              class="btn btn-sm btn-outline-warning"
-              appRipple
-              >Clientes</a
-            >
-            <a
-              routerLink="/orders"
-              class="btn btn-sm btn-outline-danger"
-              appRipple
-              >Pedidos</a
-            >
+
+          <!-- Sección: Entidades Principales -->
+          <div class="mb-4">
+            <h6 class="text-uppercase text-muted mb-2">
+              <small>📋 Entidades Principales</small>
+            </h6>
+            <div class="d-flex flex-wrap gap-2">
+              <a
+                routerLink="/restaurants"
+                class="btn btn-sm btn-outline-primary"
+                appRipple
+                >Restaurantes</a
+              >
+              <a
+                routerLink="/products"
+                class="btn btn-sm btn-outline-info"
+                appRipple
+                >Productos</a
+              >
+              <a
+                routerLink="/menus"
+                class="btn btn-sm btn-outline-success"
+                appRipple
+                >Menús</a
+              >
+              <a
+                routerLink="/customers"
+                class="btn btn-sm btn-outline-warning"
+                appRipple
+                >Clientes</a
+              >
+              <a
+                routerLink="/orders"
+                class="btn btn-sm btn-outline-danger"
+                appRipple
+                >Pedidos</a
+              >
+            </div>
+          </div>
+
+          <!-- Sección: Gestión de Delivery -->
+          <div>
+            <h6 class="text-uppercase text-muted mb-2">
+              <small>🏍️ Gestión de Delivery</small>
+            </h6>
+            <div class="d-flex flex-wrap gap-2">
+              <a
+                routerLink="/addresses"
+                class="btn btn-sm btn-outline-secondary"
+                appRipple
+                style="border-color: #9b59b6; color: #9b59b6"
+                >Direcciones</a
+              >
+              <a
+                routerLink="/motorcycles"
+                class="btn btn-sm btn-outline-secondary"
+                appRipple
+                style="border-color: #ff7f50; color: #ff7f50"
+                >Motocicletas</a
+              >
+              <a
+                routerLink="/drivers"
+                class="btn btn-sm btn-outline-secondary"
+                appRipple
+                style="border-color: #17a2b8; color: #17a2b8"
+                >Conductores</a
+              >
+              <a
+                routerLink="/shifts"
+                class="btn btn-sm btn-outline-secondary"
+                appRipple
+                style="border-color: #6610f2; color: #6610f2"
+                >Turnos</a
+              >
+              <a
+                routerLink="/issues"
+                class="btn btn-sm btn-outline-secondary"
+                appRipple
+                style="border-color: #dc3545; color: #dc3545"
+                >Incidencias</a
+              >
+              <a
+                routerLink="/photos"
+                class="btn btn-sm btn-outline-secondary"
+                appRipple
+                style="border-color: #e83e8c; color: #e83e8c"
+                >Fotos</a
+              >
+            </div>
           </div>
         </div>
       </div>
