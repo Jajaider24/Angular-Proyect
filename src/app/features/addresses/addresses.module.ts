@@ -12,13 +12,13 @@ import { AddressesComponent } from "./addresses.component";
 /**
  * Módulo feature para gestión completa de Addresses (Direcciones de entrega).
  * Proporciona CRUD completo con lazy loading para optimizar carga inicial.
- * 
+ *
  * Componentes incluidos:
  * - AddressesComponent: Contenedor principal con layout
  * - AddressesListComponent: Listado con búsqueda, filtros y paginación
  * - AddressesDetailComponent: Vista detallada de una dirección
  * - AddressesFormComponent: Formulario para crear/editar con validaciones reactivas
- * 
+ *
  * Este módulo se carga de forma diferida (lazy) cuando el usuario navega a /addresses
  */
 @NgModule({

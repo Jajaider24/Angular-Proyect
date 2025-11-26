@@ -7,13 +7,13 @@ import { AddressesComponent } from "./addresses.component";
 
 /**
  * Configuración de rutas para el módulo de Addresses.
- * 
+ *
  * Estructura de rutas:
  * /addresses          -> Listado de todas las direcciones
  * /addresses/create   -> Formulario para crear nueva dirección
  * /addresses/:id      -> Detalle de una dirección específica
  * /addresses/:id/edit -> Formulario para editar dirección existente
- * 
+ *
  * Todas estas rutas son hijas del componente contenedor AddressesComponent
  * que provee el layout común (header, breadcrumbs, etc.)
  */
@@ -22,25 +22,25 @@ const routes: Routes = [
     path: "",
     component: AddressesComponent,
     children: [
-      { 
-        path: "", 
+      {
+        path: "",
         component: AddressesListComponent,
-        data: { title: "Direcciones" }
+        data: { title: "Direcciones" },
       },
-      { 
-        path: "create", 
+      {
+        path: "create",
         component: AddressesFormComponent,
-        data: { title: "Nueva Dirección" }
+        data: { title: "Nueva Dirección" },
       },
-      { 
-        path: ":id", 
+      {
+        path: ":id",
         component: AddressesDetailComponent,
-        data: { title: "Detalle de Dirección" }
+        data: { title: "Detalle de Dirección" },
       },
-      { 
-        path: ":id/edit", 
+      {
+        path: ":id/edit",
         component: AddressesFormComponent,
-        data: { title: "Editar Dirección" }
+        data: { title: "Editar Dirección" },
       },
     ],
   },
