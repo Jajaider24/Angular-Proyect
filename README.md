@@ -28,4 +28,6 @@ npm install --force
 Correr el servidor
 ```
 ng serve
+
+npm install firebase
 ```

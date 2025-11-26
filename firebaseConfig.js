@@ -8,12 +8,12 @@ import {
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDA7UmElNlXAnPfDHvfJTcWvvh9Vka8jJ8",
-  authDomain: "proyecto-react-5fc5b.firebaseapp.com",
-  projectId: "proyecto-react-5fc5b",
-  storageBucket: "proyecto-react-5fc5b.firebasestorage.app",
-  messagingSenderId: "429402941051",
-  appId: "1:429402941051:web:c28445382064e5bb41e4de",
+  apiKey: "AIzaSyAT2dJZ7deC3rvdmPBgK-rXJ3XH_R5jnhM",
+  authDomain: "angular-proyect-9aeea.firebaseapp.com",
+  projectId: "angular-proyect-9aeea",
+  storageBucket: "angular-proyect-9aeea.firebasestorage.app",
+  messagingSenderId: "487504246800",
+  appId: "1:487504246800:web:4220f5387f9aa0622e7295",
 };
 
 // Initialize Firebase

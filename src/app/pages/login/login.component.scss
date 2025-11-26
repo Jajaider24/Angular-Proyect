@@ -1,3 +1,23 @@
 /* Styles moved into the component template (login.component.html).
    This file is intentionally left empty so component styles are
    sourced from the template <style> block. */
+
+/* Spinner tweaks for visibility inside brand buttons */
+.login-action-btn .spinner-border,
+.social-btn .spinner-border {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.12rem;
+}
+.social-btn.github .spinner-border {
+  border-top-color: #fff !important;
+  border-right-color: #fff !important;
+}
+.social-btn.microsoft .spinner-border {
+  border-top-color: #fff !important;
+  border-right-color: #fff !important;
+}
+.social-btn.google .spinner-border {
+  border-top-color: #4285f4 !important;
+  border-right-color: #4285f4 !important;
+}

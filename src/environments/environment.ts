@@ -6,4 +6,14 @@ export const environment = {
   // Habilita el modo dev que permite crear sesión local aunque el usuario
   // no exista en la base de datos. Úsalo solo en desarrollo.
   allowLocalLogin: true,
+  // Configuración de Firebase para ambiente local/development.
+  // Mueve o reemplaza estos valores por los de tu proyecto Firebase.
+  firebase: {
+    apiKey: "AIzaSyAT2dJZ7deC3rvdmPBgK-rXJ3XH_R5jnhM",
+    authDomain: "angular-proyect-9aeea.firebaseapp.com",
+    projectId: "angular-proyect-9aeea",
+    storageBucket: "angular-proyect-9aeea.firebasestorage.app",
+    messagingSenderId: "487504246800",
+    appId: "1:487504246800:web:4220f5387f9aa0622e7295",
+  },
 };

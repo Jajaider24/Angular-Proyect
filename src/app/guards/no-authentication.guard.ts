@@ -25,10 +25,12 @@ export class NoAuthenticationGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    if (!this.securityService.existSession()) { // Verifica si no existe una sesión activa 
+    if (!this.securityService.existSession()) {
+      // Verifica si no existe una sesión activa
       return true; // Permite el acceso a la ruta si no hay sesión activa
     } else {
-      this.router.navigate(["/dashboard"]); // Redirige al dashboard si hay una sesión activa
+      // Reemplazamos la URL para evitar que el usuario vuelva atrás al login
+      this.router.navigate(["/dashboard"], { replaceUrl: true }); // Redirige al dashboard si hay una sesión activa
       return false; // No permite el acceso a la ruta si hay sesión activa
     }
   }
