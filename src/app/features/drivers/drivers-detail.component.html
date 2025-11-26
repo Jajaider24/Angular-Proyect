@@ -31,10 +31,15 @@
         <div class="mb-4 p-3 bg-gradient-primary text-white rounded">
           <div class="row align-items-center">
             <div class="col">
-              <span class="h5 mb-0"><i class="ni ni-circle-08"></i> {{ driver.name }}</span>
+              <span class="h5 mb-0"
+                ><i class="ni ni-circle-08"></i> {{ driver.name }}</span
+              >
             </div>
             <div class="col text-right">
-              <span class="badge" [ngClass]="getStatusBadgeClass(driver.status)">
+              <span
+                class="badge"
+                [ngClass]="getStatusBadgeClass(driver.status)"
+              >
                 {{ getStatusLabel(driver.status) }}
               </span>
             </div>
@@ -45,7 +50,9 @@
           <div class="col-md-6">
             <div class="detail-item">
               <label class="detail-label">Número de Licencia</label>
-              <div class="detail-value text-uppercase">{{ driver.license_number }}</div>
+              <div class="detail-value text-uppercase">
+                {{ driver.license_number }}
+              </div>
             </div>
           </div>
           <div class="col-md-6">
@@ -60,7 +67,7 @@
           <div class="col-md-6">
             <div class="detail-item">
               <label class="detail-label">Email</label>
-              <div class="detail-value">{{ driver.email || 'N/A' }}</div>
+              <div class="detail-value">{{ driver.email || "N/A" }}</div>
             </div>
           </div>
         </div>

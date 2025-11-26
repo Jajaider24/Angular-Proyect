@@ -39,17 +39,20 @@ export class DriversDetailComponent implements OnInit, OnDestroy {
 
   loadDriver(): void {
     this.loading = true;
-    this.driversService.get(this.driverId).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (data) => {
-        this.driver = data;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error("Error:", err);
-        this.loading = false;
-        this.router.navigate(["/drivers"]);
-      },
-    });
+    this.driversService
+      .get(this.driverId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.driver = data;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error("Error:", err);
+          this.loading = false;
+          this.router.navigate(["/drivers"]);
+        },
+      });
   }
 
   editDriver(): void {
@@ -59,10 +62,13 @@ export class DriversDetailComponent implements OnInit, OnDestroy {
   deleteDriver(): void {
     if (!confirm("¿Eliminar este conductor?")) return;
 
-    this.driversService.delete(this.driverId).pipe(takeUntil(this.destroy$)).subscribe({
-      next: () => this.router.navigate(["/drivers"]),
-      error: (err) => console.error("Error:", err),
-    });
+    this.driversService
+      .delete(this.driverId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => this.router.navigate(["/drivers"]),
+        error: (err) => console.error("Error:", err),
+      });
   }
 
   goBack(): void {

@@ -29,17 +29,20 @@ export class DriversListComponent implements OnInit, OnDestroy {
 
   loadDrivers(): void {
     this.loading = true;
-    this.driversService.list().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (data) => {
-        this.drivers = data;
-        this.filteredDrivers = data;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error("Error:", err);
-        this.loading = false;
-      },
-    });
+    this.driversService
+      .list()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.drivers = data;
+          this.filteredDrivers = data;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error("Error:", err);
+          this.loading = false;
+        },
+      });
   }
 
   onSearch(): void {
@@ -70,13 +73,18 @@ export class DriversListComponent implements OnInit, OnDestroy {
   deleteDriver(id: number): void {
     if (!confirm("¿Eliminar este conductor?")) return;
 
-    this.driversService.delete(id).pipe(takeUntil(this.destroy$)).subscribe({
-      next: () => {
-        this.drivers = this.drivers.filter((d) => d.id !== id);
-        this.filteredDrivers = this.filteredDrivers.filter((d) => d.id !== id);
-      },
-      error: (err) => console.error("Error:", err),
-    });
+    this.driversService
+      .delete(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.drivers = this.drivers.filter((d) => d.id !== id);
+          this.filteredDrivers = this.filteredDrivers.filter(
+            (d) => d.id !== id
+          );
+        },
+        error: (err) => console.error("Error:", err),
+      });
   }
 
   createNew(): void {
