@@ -1,60 +1,89 @@
-import { Component, OnInit, ElementRef } from "@angular/core";
-import { ROUTES } from "../sidebar/sidebar.component";
 import {
   Location,
   LocationStrategy,
   PathLocationStrategy,
 } from "@angular/common";
+import { Component, ElementRef, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { Subscription } from "rxjs";
 import { User } from "src/app/models/User";
 import { SecurityService } from "src/app/services/security.service";
-import { Subscription } from "rxjs";
 import { WebSocketService } from "src/app/services/web-socket-service.service";
+import { ROUTES } from "../sidebar/sidebar.component";
+import { SidebarService } from "../sidebar/sidebar.service";
 
 @Component({
   selector: "app-navbar",
   templateUrl: "./navbar.component.html",
   styleUrls: ["./navbar.component.scss"],
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   public focus;
   public listTitles: any[];
   public location: Location;
-  user: User;  // Usuario logueado 
-  subscription: Subscription; 
-  constructor( 
+  public currentTitle: string | null = null;
+  user: User; // Usuario logueado
+  subscription: Subscription;
+  private subs: Subscription[] = [];
+  constructor(
     location: Location,
     private element: ElementRef,
     private router: Router,
     private securityService: SecurityService,
-    private webSocketService: WebSocketService
+    private webSocketService: WebSocketService,
+    private sidebarService: SidebarService
   ) {
     this.location = location;
-    this.subscription = this.securityService.getUser().subscribe((data) => { //Estar pendiente de la variable global reactiva (Subscription --> simulacion de conectado a una api)
+    this.subscription = this.securityService.getUser().subscribe((data) => {
+      //Estar pendiente de la variable global reactiva (Subscription --> simulacion de conectado a una api)
       this.user = data; //Pendiente de que haya un cambio
     });
 
     this.webSocketService.setNameEvent("ABC123"); // Suscribirse al evento WebSocket y escuchar mensajes
-    this.webSocketService.callback.subscribe((message) => { // Manejar el mensaje recibido y mostrar en consola
+    this.webSocketService.callback.subscribe((message) => {
+      // Manejar el mensaje recibido y mostrar en consola
       console.log("Mensaje recibido en el navbar: ", message); // Mostrar el mensaje recibido en la consola y hacer algo con él
     });
   }
 
   ngOnInit() {
     this.listTitles = ROUTES.filter((listTitle) => listTitle);
+    // subscribe to the centralized activePath to update the title
+    this.subs.push(
+      this.sidebarService.activePath$.subscribe((path) => {
+        const p =
+          path || this.location.prepareExternalUrl(this.location.path());
+        let found = this.listTitles.find(
+          (item) =>
+            item.path === p ||
+            p.startsWith(item.path + "/") ||
+            p.startsWith(item.path + "?")
+        );
+        this.currentTitle = found ? found.title : "Dashboard";
+      })
+    );
   }
   getTitle() {
-    var titlee = this.location.prepareExternalUrl(this.location.path());
-    if (titlee.charAt(0) === "#") {
-      titlee = titlee.slice(1);
-    }
+    return (
+      this.currentTitle ||
+      (() => {
+        var titlee = this.location.prepareExternalUrl(this.location.path());
+        if (titlee.charAt(0) === "#") {
+          titlee = titlee.slice(1);
+        }
+        for (var item = 0; item < this.listTitles.length; item++) {
+          if (this.listTitles[item].path === titlee) {
+            return this.listTitles[item].title;
+          }
+        }
+        return "Dashboard";
+      })()
+    );
+  }
 
-    for (var item = 0; item < this.listTitles.length; item++) {
-      if (this.listTitles[item].path === titlee) {
-        return this.listTitles[item].title;
-      }
-    }
-    return "Dashboard";
+  ngOnDestroy() {
+    this.subs.forEach((s) => s.unsubscribe());
+    if (this.subscription) this.subscription.unsubscribe();
   }
 
   // Cerrar sesión desde el menú del navbar
@@ -62,5 +91,9 @@ export class NavbarComponent implements OnInit {
     this.webSocketService.disconnect();
     this.securityService.logout();
     this.router.navigate(["/login"]);
+  }
+
+  toggleSidebar() {
+    this.sidebarService.toggle();
   }
 }

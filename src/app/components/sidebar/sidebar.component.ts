@@ -1,5 +1,7 @@
-import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { NavigationEnd, Router } from "@angular/router";
+import { Subscription } from "rxjs";
+import { SidebarService } from "./sidebar.service";
 
 declare interface RouteInfo {
   path: string;
@@ -95,16 +97,42 @@ export const ROUTES: RouteInfo[] = [
   templateUrl: "./sidebar.component.html",
   styleUrls: ["./sidebar.component.scss"],
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
   public menuItems: any[];
-  public isCollapsed = true;
+  public isCollapsed = false;
+  public activePath = "";
+  private subs: Subscription[] = [];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private sidebarService: SidebarService) {}
 
   ngOnInit() {
     this.menuItems = ROUTES.filter((menuItem) => menuItem);
-    this.router.events.subscribe((event) => {
-      this.isCollapsed = true;
-    });
+    this.subs.push(
+      this.sidebarService.collapsed$.subscribe((c) => (this.isCollapsed = c))
+    );
+    // subscribe to centralized activePath from SidebarService
+    this.subs.push(
+      this.sidebarService.activePath$.subscribe(
+        (p) => (this.activePath = p || this.router.url || "")
+      )
+    );
+  }
+
+  isActive(path: string) {
+    if (!path) return false;
+    const current = this.activePath || this.router.url || "";
+    return (
+      current === path ||
+      current.startsWith(path + "/") ||
+      current.startsWith(path + "?")
+    );
+  }
+
+  toggle() {
+    this.sidebarService.toggle();
+  }
+
+  ngOnDestroy() {
+    this.subs.forEach((s) => s.unsubscribe());
   }
 }

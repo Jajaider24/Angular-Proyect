@@ -43,46 +43,8 @@ const routes: Routes = [
       },
     ],
   },
-  {
-    path: "restaurants",
-    canActivate: [AuthenticationGuard],
-    loadChildren: () =>
-      import("./features/restaurants/restaurants.module").then(
-        (m) => m.RestaurantsModule
-      ),
-  },
-  {
-    path: "products",
-    canActivate: [AuthenticationGuard],
-    loadChildren: () =>
-      import("./features/products/products.module").then(
-        (m) => m.ProductsModule
-      ),
-  },
-  {
-    path: "menus",
-    canActivate: [AuthenticationGuard],
-    loadChildren: () =>
-      import("./features/menus/menus.module").then((m) => m.MenusModule),
-  },
-  {
-    path: "customers",
-    canActivate: [AuthenticationGuard],
-    loadChildren: () =>
-      import("./features/customers/customers.module").then(
-        (m) => m.CustomersModule
-      ),
-  },
-  {
-    path: "orders",
-    canActivate: [AuthenticationGuard],
-    loadChildren: () =>
-      import("./features/orders/orders.module").then((m) => m.OrdersModule),
-  },
-  {
-    path: "**",
-    redirectTo: "login",
-  },
+  // feature routes moved into admin layout routing so they render inside the AdminLayout
+  { path: "**", redirectTo: "login" },
 ];
 
 @NgModule({

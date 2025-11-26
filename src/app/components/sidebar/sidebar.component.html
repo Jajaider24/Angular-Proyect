@@ -7,7 +7,7 @@
     <button
       class="navbar-toggler"
       type="button"
-      (click)="isCollapsed = !isCollapsed"
+      (click)="toggle()"
       aria-controls="sidenav-collapse-main"
     >
       <span class="navbar-toggler-icon"></span>
@@ -107,11 +107,7 @@
             </a>
           </div>
           <div class="col-6 collapse-close">
-            <button
-              type="button"
-              class="navbar-toggler"
-              (click)="isCollapsed = !isCollapsed"
-            >
+            <button type="button" class="navbar-toggler" (click)="toggle()">
               <span></span>
               <span></span>
             </button>
@@ -143,8 +139,10 @@
           <a
             routerLinkActive="active"
             [routerLink]="[menuItem.path]"
+            [routerLinkActiveOptions]="{ exact: false }"
             class="nav-link"
             [class.has-icon]="menuItem.icon"
+            [class.active]="isActive(menuItem.path)"
           >
             <i *ngIf="menuItem.icon" [ngClass]="menuItem.icon"></i>
             <div class="menu-text">

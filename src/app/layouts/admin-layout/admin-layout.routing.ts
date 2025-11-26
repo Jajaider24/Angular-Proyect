@@ -4,4 +4,36 @@ import { DashboardComponent } from "../../pages/dashboard/dashboard.component";
 export const AdminLayoutRoutes: Routes = [
   { path: "dashboard", component: DashboardComponent },
   { path: "", redirectTo: "dashboard", pathMatch: "full" },
+  // feature modules routed inside the admin layout so sidebar keeps the layout
+  {
+    path: "restaurants",
+    loadChildren: () =>
+      import("../../features/restaurants/restaurants.module").then(
+        (m) => m.RestaurantsModule
+      ),
+  },
+  {
+    path: "products",
+    loadChildren: () =>
+      import("../../features/products/products.module").then(
+        (m) => m.ProductsModule
+      ),
+  },
+  {
+    path: "menus",
+    loadChildren: () =>
+      import("../../features/menus/menus.module").then((m) => m.MenusModule),
+  },
+  {
+    path: "customers",
+    loadChildren: () =>
+      import("../../features/customers/customers.module").then(
+        (m) => m.CustomersModule
+      ),
+  },
+  {
+    path: "orders",
+    loadChildren: () =>
+      import("../../features/orders/orders.module").then((m) => m.OrdersModule),
+  },
 ];
