@@ -1,0 +1,35 @@
+/* Sidebar tweaks for title alignment when icons are absent */
+.nav-link.has-icon i {
+  margin-right: 10px;
+  font-size: 1.05rem;
+}
+.nav-link .nav-title {
+  vertical-align: middle;
+}
+
+/* When icon absent ensure text has left padding for visual balance on desktop */
+.navbar-nav .nav-item .nav-link:not(.has-icon) {
+  padding-left: 1rem;
+}
+
+/* New styles for improved title design */
+.menu-text {
+  display: inline-block;
+  vertical-align: middle;
+}
+.menu-text .nav-title {
+  font-weight: 700;
+  font-size: 0.98rem;
+  line-height: 1.05;
+}
+.menu-text .nav-subtitle {
+  font-size: 0.74rem;
+  color: rgba(0, 0, 0, 0.45);
+  margin-top: 2px;
+  display: block;
+}
+
+/* Slight hover emphasis */
+.navbar-nav .nav-item .nav-link:hover .nav-title {
+  text-decoration: underline;
+}

@@ -1,0 +1,169 @@
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
+import { Order } from "src/app/core/models/order.model";
+import { OrdersService } from "src/app/core/services/orders.service";
+import Swal from "sweetalert2";
+
+@Component({
+  selector: "app-orders-list",
+  template: `
+    <div class="container mt-3">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h4 class="mb-0">Pedidos</h4>
+          <p class="text-muted mb-0">Listado de pedidos y estado de entrega</p>
+        </div>
+        <div>
+          <button class="btn btn-primary btn-sm" (click)="create()">
+            Crear pedido
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="loading" class="text-center py-3">Cargando pedidos...</div>
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+      <div *ngIf="!loading && !error" class="card">
+        <div class="card-body p-2">
+          <table class="table table-sm table-hover mb-0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente ID</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th class="text-end">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let o of orders">
+                <td>{{ o.id }}</td>
+                <td>{{ o.customerId }}</td>
+                <td>{{ o.totalPrice | currency }}</td>
+                <td>{{ o.status }}</td>
+                <td>
+                  {{ o.createdAt ? (o.createdAt | date : "short") : "-" }}
+                </td>
+                <td class="text-end">
+                  <button
+                    class="btn btn-sm btn-outline-secondary me-1"
+                    (click)="view(o.id)"
+                  >
+                    Ver
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-primary me-1"
+                    (click)="edit(o.id)"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    (click)="delete(o.id)"
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            (click)="prev()"
+            [disabled]="page <= 1 || loading"
+          >
+            Anterior
+          </button>
+          <button
+            class="btn btn-sm btn-outline-secondary ms-2"
+            (click)="next()"
+            [disabled]="!hasNext || loading"
+          >
+            Siguiente
+          </button>
+        </div>
+        <div class="text-muted">Página {{ page }}</div>
+      </div>
+    </div>
+  `,
+})
+export class OrdersListComponent implements OnInit {
+  orders: Order[] = [];
+  loading = false;
+  error: string | null = null;
+
+  constructor(private svc: OrdersService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.load();
+  }
+
+  // pagination fields
+  page = 1;
+  pageSize = 10;
+  hasNext = false;
+
+  load(page = this.page) {
+    this.loading = true;
+    this.error = null;
+    this.svc.list({ page, limit: this.pageSize }).subscribe({
+      next: (data) => {
+        this.orders = data || [];
+        this.hasNext = (data || []).length === this.pageSize;
+        this.loading = false;
+        this.page = page;
+      },
+      error: (err) => {
+        console.error("Failed loading orders", err);
+        this.error = "No fue posible cargar los pedidos.";
+        this.loading = false;
+      },
+    });
+  }
+
+  prev() {
+    if (this.page > 1) {
+      this.load(this.page - 1);
+    }
+  }
+  next() {
+    if (this.hasNext) {
+      this.load(this.page + 1);
+    }
+  }
+
+  view(id: number) {
+    this.router.navigate([`/orders/${id}`]);
+  }
+  edit(id: number) {
+    this.router.navigate([`/orders/${id}/edit`]);
+  }
+  create() {
+    this.router.navigate(["/orders/create"]);
+  }
+  delete(id: number) {
+    Swal.fire({
+      title: "¿Eliminar pedido?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((res) => {
+      if (!res.isConfirmed) return;
+      this.svc.delete(id).subscribe({
+        next: () => {
+          this.load();
+          Swal.fire("Eliminado", "El pedido fue eliminado.", "success");
+        },
+        error: () => Swal.fire("Error", "Error eliminando el pedido.", "error"),
+      });
+    });
+  }
+}
