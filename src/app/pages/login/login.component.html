@@ -1,79 +1,261 @@
-<div class="header bg-gradient-danger py-7 py-lg-8">
-  <div class="container">
-    <div class="header-body text-center mb-7">
-      <div class="row justify-content-center">
-        <div class="col-lg-5 col-md-6">
-          <h1 class="text-white">Welcome!</h1>
-          <p class="text-lead text-light">
-            Use these awesome forms to login or create new account in your
-            project for free.
-          </p>
-        </div>
-      </div>
+<style>
+  /* Moved styles from login.component.scss to the component template
+   so they are applied inline and the external scss can be emptied.
+   Adjusted margins to avoid overlap and preserve current layout. */
+  :root {
+    --bg-gradient-start: #f94144;
+    --bg-gradient-end: #f3722c;
+    --card-bg: #ffffff;
+    --muted: #6c757d;
+    --accent: #5e72e4;
+  }
+
+  .login-hero {
+    background: linear-gradient(
+      135deg,
+      var(--bg-gradient-start),
+      var(--bg-gradient-end)
+    );
+    color: #fff;
+    padding: 3.5rem 0 3.5rem 0;
+  }
+  .login-hero .hero-content {
+    max-width: 720px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 12;
+    margin-bottom: 0.5rem;
+  }
+  .login-hero h1 {
+    font-size: 2.25rem;
+    margin-bottom: 0.25rem;
+    font-weight: 700;
+  }
+  .login-hero .lead {
+    color: rgba(255, 255, 255, 0.92);
+    margin-bottom: 0;
+  }
+
+  .login-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    z-index: 1;
+    max-width: 560px;
+    margin: 1.5rem auto 1.5rem;
+    box-shadow: 0 8px 30px rgba(8, 18, 40, 0.06);
+  }
+
+  .social-title small {
+    color: var(--muted);
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+  .social-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1rem 1rem 1rem;
+    max-width: 360px;
+    margin: 0 auto;
+  }
+  .social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.65rem 1rem;
+    border-radius: 0.8rem;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: #fff;
+    color: #111;
+    font-weight: 700;
+    box-shadow: 0 8px 22px rgba(23, 23, 23, 0.06);
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+    width: 100%;
+    text-align: left;
+  }
+  .social-btn .icon {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .social-btn img {
+    width: 20px;
+    height: 20px;
+    display: block;
+  }
+  .social-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  }
+  .social-btn.github {
+    background: linear-gradient(180deg, #ffffff, #f8f9fa);
+    border-color: rgba(0, 0, 0, 0.06);
+  }
+  .social-btn.google {
+    background: #fff;
+    border: 1px solid #e7e7e7;
+  }
+  .social-btn.microsoft {
+    background: linear-gradient(90deg, #0078d4, #0063b1);
+    color: #fff;
+    border: none;
+  }
+  .social-btn.microsoft img {
+    filter: brightness(0) invert(1);
+  }
+
+  .card-body {
+    padding: 1.75rem;
+  }
+  .social-separator {
+    border-top: 1px solid #eef2f6;
+    margin: 0.9rem 0 0 0;
+    padding-top: 0.9rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .card-body .form-group {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .login-card .btn-primary {
+    background: var(--accent) !important;
+    border: none !important;
+    padding: 0.75rem 1.25rem;
+    font-weight: 700;
+    border-radius: 0.6rem;
+    min-width: 200px;
+    color: #fff !important;
+    opacity: 1 !important;
+    pointer-events: auto;
+    box-shadow: 0 6px 18px rgba(94, 114, 228, 0.18);
+  }
+  .login-card .btn[disabled],
+  .login-card .btn.disabled {
+    opacity: 0.65 !important;
+  }
+
+  .input-group-text {
+    background: transparent;
+    border: none;
+  }
+  .form-control {
+    border-radius: 0.5rem;
+    border: 1px solid #e9ecef;
+    padding: 0.8rem 0.9rem;
+  }
+  .custom-control .custom-control-input {
+    margin-top: 0.3rem;
+  }
+  .btn-primary {
+    background: var(--accent);
+    border: none;
+    padding: 0.75rem 1.25rem;
+    font-weight: 700;
+    border-radius: 0.6rem;
+  }
+  .btn-primary:hover {
+    filter: brightness(0.95);
+  }
+  .card {
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .social-buttons {
+      max-width: 100%;
+      padding: 0.5rem;
+    }
+    .login-card {
+      margin-top: 0.5rem;
+    }
+    .login-hero h1 {
+      font-size: 1.6rem;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .social-btn .text {
+      font-size: 0.95rem;
+    }
+  }
+</style>
+
+<div class="login-hero">
+  <div class="container text-center">
+    <div class="hero-content">
+      <h1>¡Bienvenid@!</h1>
+      <p class="lead">
+        Inicia sesión para acceder al panel. Usa tus redes sociales o tus
+        credenciales.
+      </p>
     </div>
-  </div>
-  <div class="separator separator-bottom separator-skew zindex-100">
-    <svg
-      x="0"
-      y="0"
-      viewBox="0 0 2560 100"
-      preserveAspectRatio="none"
-      version="1.1"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
-    </svg>
   </div>
 </div>
 <!-- Page content -->
-<div class="container mt--8 pb-5">
+<div class="container mt-0.025 pb-5">
   <div class="row justify-content-center">
     <div class="col-lg-5 col-md-7">
-      <div class="card bg-secondary shadow border-0">
-        <div class="card-header bg-transparent pb-5">
-          <div class="text-muted text-center mt-2 mb-3">
-            <small>Sign in with</small>
+      <div class="card bg-secondary shadow border-0 login-card">
+        <div class="card-header bg-transparent pb-4 text-center">
+          <div class="social-title">
+            <small>Inicia sesión con</small>
           </div>
-          <div class="btn-wrapper text-center">
+          <div class="social-buttons" role="group" aria-label="Social logins">
             <button
               type="button"
-              class="btn btn-neutral btn-icon me-2"
+              class="social-btn github"
               (click)="socialSignIn('github')"
+              aria-label="Sign in with GitHub"
             >
-              <span class="btn-inner--icon"
+              <span class="icon"
                 ><img src="../assets/img/icons/common/github.svg" alt="Github"
               /></span>
-              <span class="btn-inner--text">Github</span>
+              <span class="text">Continuar con GitHub</span>
             </button>
             <button
               type="button"
-              class="btn btn-neutral btn-icon me-2"
+              class="social-btn google"
               (click)="socialSignIn('google')"
+              aria-label="Sign in with Google"
             >
-              <span class="btn-inner--icon"
+              <span class="icon"
                 ><img src="../assets/img/icons/common/google.svg" alt="Google"
               /></span>
-              <span class="btn-inner--text">Google</span>
+              <span class="text">Continuar con Google</span>
             </button>
             <button
               type="button"
-              class="btn btn-neutral btn-icon"
+              class="social-btn microsoft"
               (click)="socialSignIn('microsoft')"
+              aria-label="Sign in with Microsoft"
             >
-              <span class="btn-inner--icon"
+              <span class="icon"
                 ><img
                   src="../assets/img/icons/common/microsoft.svg"
                   alt="Microsoft"
               /></span>
-              <span class="btn-inner--text">Microsoft</span>
+              <span class="text">Continuar con Microsoft</span>
             </button>
           </div>
+          <!-- .social-buttons -->
         </div>
+        <!-- .card-header -->
         <div class="card-body px-lg-5 py-lg-5">
           <div class="text-center text-muted mb-4">
-            <small>Or sign in with credentials</small>
+            <small>O iniciar Sesión con Credenciales:</small>
           </div>
-          <form role="form">
+          <form role="form" novalidate>
             <div class="form-group mb-3">
               <div class="input-group input-group-alternative">
                 <div class="input-group-prepend">
@@ -85,6 +267,7 @@
                   class="form-control"
                   placeholder="Email"
                   type="email"
+                  name="email"
                   [(ngModel)]="user.email"
                 />
               </div>
@@ -100,6 +283,7 @@
                   class="form-control"
                   placeholder="Password"
                   type="password"
+                  name="password"
                   [(ngModel)]="user.password"
                 />
               </div>
@@ -113,7 +297,7 @@
                 type="checkbox"
               />
               <label class="custom-control-label" for=" customCheckLogin">
-                <span class="text-muted">Remember me</span>
+                <span class="text-muted">Recordar</span>
               </label>
             </div>
             <div class="text-center">
@@ -122,7 +306,7 @@
                 class="btn btn-primary my-4"
                 (click)="login()"
               >
-                Sign in
+                Iniciar Sesión
               </button>
             </div>
           </form>
@@ -131,12 +315,12 @@
       <div class="row mt-3">
         <div class="col-6">
           <a href="javascript:void(0)" class="text-light"
-            ><small>Forgot password?</small></a
+            ><small>¿Olvidaste tu contraseña?</small></a
           >
         </div>
         <div class="col-6 text-right">
           <a href="javascript:void(0)" class="text-light"
-            ><small>Create new account</small></a
+            ><small>Crear nueva cuenta</small></a
           >
         </div>
       </div>
