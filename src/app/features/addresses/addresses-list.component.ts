@@ -6,7 +6,7 @@ import { AddressesService } from "src/app/core/services/addresses.service";
 
 /**
  * Componente para listar todas las direcciones de entrega del sistema.
- * 
+ *
  * Funcionalidades:
  * - Listado paginado de direcciones
  * - Búsqueda en tiempo real por calle, ciudad, código postal
@@ -14,7 +14,7 @@ import { AddressesService } from "src/app/core/services/addresses.service";
  * - Eliminación con confirmación (SweetAlert2)
  * - Manejo de estados de carga y error
  * - Limpieza automática de suscripciones con takeUntil
- * 
+ *
  * Campos mostrados:
  * - ID, Calle, Ciudad, Estado, Código Postal
  * - Order ID (para identificar a qué pedido pertenece)
@@ -27,14 +27,14 @@ import { AddressesService } from "src/app/core/services/addresses.service";
 export class AddressesListComponent implements OnInit, OnDestroy {
   // Lista de direcciones obtenida del backend
   addresses: Address[] = [];
-  
+
   // Lista filtrada por búsqueda (para no mutar la original)
   filteredAddresses: Address[] = [];
-  
+
   // Estados de UI
   loading = false;
   searchTerm = "";
-  
+
   // Subject para limpiar suscripciones al destruir el componente
   private destroy$ = new Subject<void>();
 
@@ -83,7 +83,7 @@ export class AddressesListComponent implements OnInit, OnDestroy {
    */
   onSearch(): void {
     const term = this.searchTerm.toLowerCase().trim();
-    
+
     if (!term) {
       // Si no hay término, mostrar todo
       this.filteredAddresses = this.addresses;

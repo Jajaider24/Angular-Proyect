@@ -6,13 +6,13 @@ import { BaseApiService } from "./base-api.service";
 /**
  * Servicio para gestionar las operaciones CRUD de Photos (Fotos de incidencias).
  * Las fotos sirven como evidencia visual de los problemas reportados en Issues.
- * 
+ *
  * Campos principales:
  * - issue_id: ID de la incidencia asociada (FK a Issue)
  * - image_url: URL donde está almacenada la imagen
  * - caption: Descripción o título de la foto (opcional)
  * - taken_at: Fecha/hora en que se tomó la foto (opcional)
- * 
+ *
  * Nota: Este servicio puede incluir métodos adicionales para subir archivos
  * directamente al servidor o a un storage service (S3, Azure Blob, etc.)
  */
