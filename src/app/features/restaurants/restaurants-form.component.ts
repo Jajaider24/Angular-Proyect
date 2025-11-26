@@ -40,24 +40,71 @@ export class RestaurantsFormComponent implements OnInit {
   load(id: number) {
     this.loading = true;
     this.svc.get(id).subscribe({
-      next: (r) => this.form.patchValue(r as Partial<Restaurant>),
+      next: (r) => {
+        // Si el backend devuelve address como string, necesitamos convertirlo
+        // al formato del formulario (objeto con street y city)
+        const addressStr = (r as any).address || "";
+        const addressParts = addressStr.split(",").map((s: string) => s.trim());
+
+        this.form.patchValue({
+          name: (r as any).name,
+          phone: (r as any).phone,
+          address: {
+            street: addressParts[0] || "",
+            city: addressParts[1] || "",
+          },
+        });
+      },
       error: () => (this.loading = false),
       complete: () => (this.loading = false),
     });
   }
 
   save() {
-    if (this.form.invalid) return;
-    const payload = this.form.value;
+    // Marcar todos los campos como touched para mostrar errores de validación
+    this.form.markAllAsTouched();
+
+    if (this.form.invalid) {
+      console.warn("⚠️ Formulario inválido. Errores:", this.form.errors);
+      return;
+    }
+
+    // Obtener los valores del formulario y aplanar la estructura de address
+    const formValue = this.form.value;
+    const payload = {
+      name: formValue.name,
+      phone: formValue.phone || "",
+      address:
+        formValue.address?.street && formValue.address?.city
+          ? `${formValue.address.street}, ${formValue.address.city}`.trim()
+          : formValue.address?.street || formValue.address?.city || "",
+      email: "", // El backend espera email, lo enviamos vacío por ahora
+    };
+
+    console.log("📤 Enviando datos:", payload);
+
     this.loading = true;
     const obs =
       this.isEdit && this.id
         ? this.svc.update(this.id, payload)
         : this.svc.create(payload);
+
     obs.subscribe({
-      next: () => this.router.navigate(["/restaurants"]),
-      error: () => (this.loading = false),
-      complete: () => (this.loading = false),
+      next: (response) => {
+        console.log("✅ Restaurante guardado exitosamente:", response);
+        this.router.navigate(["/restaurants"]);
+      },
+      error: (err) => {
+        console.error("❌ Error al guardar restaurante:", err);
+        alert(
+          "Error al guardar: " +
+            (err?.error?.message || err?.message || "Error desconocido")
+        );
+        this.loading = false;
+      },
+      complete: () => {
+        this.loading = false;
+      },
     });
   }
 
