@@ -4,7 +4,6 @@
 -->
 <div class="row">
   <div class="col-lg-8 offset-lg-2">
-    
     <!-- Loading spinner -->
     <div class="card shadow" *ngIf="loading">
       <div class="card-body">
@@ -26,19 +25,13 @@
             <h3 class="mb-0">Detalle de Dirección #{{ address.id }}</h3>
           </div>
           <div class="col text-right">
-            <button 
-              class="btn btn-sm btn-secondary mr-2" 
-              (click)="goBack()">
+            <button class="btn btn-sm btn-secondary mr-2" (click)="goBack()">
               <i class="ni ni-bold-left"></i> Volver
             </button>
-            <button 
-              class="btn btn-sm btn-primary mr-2" 
-              (click)="editAddress()">
+            <button class="btn btn-sm btn-primary mr-2" (click)="editAddress()">
               <i class="ni ni-settings"></i> Editar
             </button>
-            <button 
-              class="btn btn-sm btn-danger" 
-              (click)="deleteAddress()">
+            <button class="btn btn-sm btn-danger" (click)="deleteAddress()">
               <i class="ni ni-fat-remove"></i> Eliminar
             </button>
           </div>
@@ -47,7 +40,6 @@
 
       <!-- Cuerpo del detalle -->
       <div class="card-body">
-        
         <!-- Información de la orden -->
         <div class="mb-4 p-3 bg-gradient-primary text-white rounded">
           <div class="row align-items-center">
@@ -66,7 +58,7 @@
 
         <!-- Datos de la dirección -->
         <h4 class="mb-3">Datos de la Dirección</h4>
-        
+
         <div class="row mb-3">
           <div class="col-md-12">
             <div class="detail-item">
@@ -145,7 +137,7 @@
 
         <!-- Mapa de ubicación (TODO: Integrar con Google Maps) -->
         <div class="mt-4 p-4 bg-light rounded text-center">
-          <i class="ni ni-world text-muted" style="font-size: 3rem;"></i>
+          <i class="ni ni-world text-muted" style="font-size: 3rem"></i>
           <p class="mb-0 mt-2 text-muted">
             <small>Integración con mapa próximamente</small>
           </p>

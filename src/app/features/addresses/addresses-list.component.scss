@@ -4,7 +4,7 @@
   // Mejorar espaciado de filas
   tbody tr {
     transition: background-color 0.2s ease;
-    
+
     &:hover {
       background-color: rgba(0, 0, 0, 0.02);
     }
@@ -13,7 +13,7 @@
 
 // Badge personalizado para códigos postales
 .badge-secondary {
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.85rem;
 }
 

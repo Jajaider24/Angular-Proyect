@@ -6,7 +6,7 @@ import { AddressesService } from "src/app/core/services/addresses.service";
 
 /**
  * Componente para mostrar el detalle completo de una dirección.
- * 
+ *
  * Funcionalidades:
  * - Muestra todos los campos de la dirección en formato de lectura
  * - Navegación rápida a edición y eliminación
@@ -21,13 +21,13 @@ import { AddressesService } from "src/app/core/services/addresses.service";
 export class AddressesDetailComponent implements OnInit, OnDestroy {
   // Dirección actual
   address?: Address;
-  
+
   // Estados de UI
   loading = false;
-  
+
   // ID de la dirección
   addressId!: number;
-  
+
   // Subject para limpieza de suscripciones
   private destroy$ = new Subject<void>();
 
