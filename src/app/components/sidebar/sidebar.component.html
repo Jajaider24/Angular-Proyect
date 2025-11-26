@@ -19,9 +19,11 @@
       [routerLink]="['/dashboard']"
     >
       <img
-        src="./assets/img/brand/red.png"
+        src="./assets/img/brand/logoproyect.png"
         class="navbar-brand-img"
-        alt="..."
+        alt="Logo Proyecto"
+        width="36"
+        height="36"
       />
     </a>
     <!-- User -->
@@ -103,7 +105,7 @@
         <div class="row">
           <div class="col-6 collapse-brand">
             <a routerLinkActive="active" [routerLink]="['/dashboard']">
-              <img src="./assets/img/brand/blue.png" />
+              <img src="./assets/img/brand/logoproyect.png" alt="logo" />
             </a>
           </div>
           <div class="col-6 collapse-close">
@@ -143,7 +145,11 @@
             class="nav-link"
             [class.has-icon]="menuItem.icon"
             [class.active]="isActive(menuItem.path)"
+            [attr.data-color]="menuItem.colorKey"
+            appRipple
           >
+            <!-- indicador de color pequeño -->
+            <span class="menu-dot" aria-hidden="true"></span>
             <i *ngIf="menuItem.icon" [ngClass]="menuItem.icon"></i>
             <div class="menu-text">
               <div class="nav-title">{{ menuItem.title }}</div>
@@ -154,37 +160,7 @@
           </a>
         </li>
       </ul>
-      <!-- Divider -->
-      <hr class="my-3" />
-      <!-- Heading -->
-      <h6 class="navbar-heading text-muted">Documentación</h6>
-      <!-- Navigation -->
-      <ul class="navbar-nav mb-md-3">
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            href="https://demos.creative-tim.com/argon-dashboard-angular/documentation/tutorial"
-          >
-            <i class="ni ni-spaceship"></i> Comenzando
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            href="https://demos.creative-tim.com/argon-dashboard-angular/documentation/colors"
-          >
-            <i class="ni ni-palette"></i> Fundamentos
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            href="https://demos.creative-tim.com/argon-dashboard-angular/documentation/alerts"
-          >
-            <i class="ni ni-ui-04"></i> Componentes
-          </a>
-        </li>
-      </ul>
+      <!-- Documentation links removed per project requirements -->
     </div>
   </div>
 </nav>

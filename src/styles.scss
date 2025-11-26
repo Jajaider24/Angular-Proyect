@@ -12,3 +12,113 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial;
 }
+
+/* Global button ripple and accent-aware hover styles
+   These use the `data-accent` attribute placed on the `body` by the Navbar
+   so action buttons across pages inherit the current section color. */
+body[data-accent] {
+  --accent-primary: #5e72e4;
+  --accent-info: #11cdef;
+  --accent-success: #2dce89;
+  --accent-warning: #fb6340;
+  --accent-danger: #f5365c;
+  --accent-muted: #8898aa;
+}
+
+/* Generic button hover using the active accent (more subtle) */
+body[data-accent="primary"] .btn:hover {
+  box-shadow: 0 8px 20px rgba(94, 114, 228, 0.12);
+}
+body[data-accent="info"] .btn:hover {
+  box-shadow: 0 8px 20px rgba(17, 205, 239, 0.12);
+}
+body[data-accent="success"] .btn:hover {
+  box-shadow: 0 8px 20px rgba(45, 206, 137, 0.12);
+}
+body[data-accent="warning"] .btn:hover {
+  box-shadow: 0 8px 20px rgba(251, 99, 64, 0.12);
+}
+body[data-accent="danger"] .btn:hover {
+  box-shadow: 0 8px 20px rgba(245, 54, 92, 0.12);
+}
+body[data-accent="muted"] .btn:hover {
+  box-shadow: 0 8px 20px rgba(136, 152, 170, 0.08);
+}
+
+/* Ripple effect for .btn elements (originates from center for simplicity) */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+.btn::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0.28;
+  pointer-events: none;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.45s ease;
+}
+body[data-accent="primary"] .btn::after {
+  background: var(--accent-primary);
+}
+body[data-accent="info"] .btn::after {
+  background: var(--accent-info);
+}
+body[data-accent="success"] .btn::after {
+  background: var(--accent-success);
+}
+body[data-accent="warning"] .btn::after {
+  background: var(--accent-warning);
+}
+body[data-accent="danger"] .btn::after {
+  background: var(--accent-danger);
+}
+body[data-accent="muted"] .btn::after {
+  background: var(--accent-muted);
+}
+.btn:active::after {
+  transform: translate(-50%, -50%) scale(8);
+  opacity: 0;
+}
+
+/* Apply a subtle accent border to action buttons inside table rows */
+table .btn {
+  border-radius: 6px;
+}
+body[data-accent="primary"] table .btn-outline-primary {
+  box-shadow: 0 0 0 1px rgba(94, 114, 228, 0.12) inset;
+}
+
+/* Make small action icons in tables look consistent (padding/size) */
+.table .btn {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+/* Styles for programmatic ripple element created by the directive */
+.ripple {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0.32;
+  pointer-events: none;
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease;
+  will-change: transform, opacity;
+}
+.ripple.ripple-active {
+  transform: translate(-50%, -50%) scale(18);
+  opacity: 0;
+}
+
+/* ensure parent is positioned */
+.btn,
+.nav-link {
+  position: relative;
+}

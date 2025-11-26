@@ -60,9 +60,30 @@ export class NavbarComponent implements OnInit, OnDestroy {
             p.startsWith(item.path + "?")
         );
         this.currentTitle = found ? found.title : "Dashboard";
+        // compute accent key from the found item's icon class (eg 'text-primary' -> 'primary')
+        if (found && found.icon) {
+          const token = (found.icon as string)
+            .split(/\s+/)
+            .find((t) => t.startsWith("text-") || t.startsWith("bg-"));
+          this.currentAccentKey = token
+            ? token.replace(/^(text-|bg-)/, "")
+            : "muted";
+        } else {
+          this.currentAccentKey = "muted";
+        }
+        // propagate accent globally so other components (buttons, lists) can style accordingly
+        try {
+          document.body.setAttribute(
+            "data-accent",
+            this.currentAccentKey || "muted"
+          );
+        } catch (e) {
+          // server-side or test environments may not have document
+        }
       })
     );
   }
+  public currentAccentKey: string = "muted";
   getTitle() {
     return (
       this.currentTitle ||

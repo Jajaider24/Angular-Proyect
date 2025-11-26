@@ -33,3 +33,171 @@
 .navbar-nav .nav-item .nav-link:hover .nav-title {
   text-decoration: underline;
 }
+
+/* Accent color tokens for sidebar (map to Argon/Bootstrap colors) */
+:host {
+  --accent-primary: #5e72e4;
+  --accent-info: #11cdef;
+  --accent-success: #2dce89;
+  --accent-warning: #fb6340;
+  --accent-danger: #f5365c;
+  --accent-muted: #8898aa;
+}
+
+/* small colored square indicator before each item */
+.navbar-nav .nav-item .nav-link .menu-dot {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 50%; /* indicador redondo */
+  margin-right: 0.75rem;
+  vertical-align: middle;
+  flex: 0 0 auto;
+  opacity: 0.95;
+  transition: transform 0.18s ease, box-shadow 0.22s ease,
+    background-color 0.18s ease;
+}
+
+/* map data-color to actual dot color and active left border */
+.nav-link[data-color="primary"] .menu-dot {
+  background: var(--accent-primary);
+}
+.nav-link.active[data-color="primary"] {
+  border-left: 4px solid var(--accent-primary);
+}
+.nav-link[data-color="primary"]:hover .menu-dot {
+  box-shadow: 0 8px 20px rgba(94, 114, 228, 0.18);
+  transform: scale(1.12);
+}
+.nav-link[data-color="info"]:hover .menu-dot {
+  box-shadow: 0 8px 20px rgba(17, 205, 239, 0.18);
+  transform: scale(1.12);
+}
+.nav-link[data-color="success"]:hover .menu-dot {
+  box-shadow: 0 8px 20px rgba(45, 206, 137, 0.18);
+  transform: scale(1.12);
+}
+.nav-link[data-color="warning"]:hover .menu-dot {
+  box-shadow: 0 8px 20px rgba(251, 99, 64, 0.18);
+  transform: scale(1.12);
+}
+.nav-link[data-color="danger"]:hover .menu-dot {
+  box-shadow: 0 8px 20px rgba(245, 54, 92, 0.18);
+  transform: scale(1.12);
+}
+.nav-link[data-color="muted"]:hover .menu-dot {
+  box-shadow: 0 8px 20px rgba(136, 152, 170, 0.14);
+  transform: scale(1.08);
+}
+
+.nav-link[data-color="info"] .menu-dot {
+  background: var(--accent-info);
+}
+.nav-link.active[data-color="info"] {
+  border-left: 4px solid var(--accent-info);
+}
+
+.nav-link[data-color="success"] .menu-dot {
+  background: var(--accent-success);
+}
+.nav-link.active[data-color="success"] {
+  border-left: 4px solid var(--accent-success);
+}
+
+.nav-link[data-color="warning"] .menu-dot {
+  background: var(--accent-warning);
+}
+.nav-link.active[data-color="warning"] {
+  border-left: 4px solid var(--accent-warning);
+}
+
+.nav-link[data-color="danger"] .menu-dot {
+  background: var(--accent-danger);
+}
+.nav-link.active[data-color="danger"] {
+  border-left: 4px solid var(--accent-danger);
+}
+
+.nav-link[data-color="muted"] .menu-dot {
+  background: var(--accent-muted);
+}
+.nav-link.active[data-color="muted"] {
+  border-left: 4px solid var(--accent-muted);
+}
+
+/* When active, color the title to the accent for stronger affordance */
+.nav-link.active .nav-title {
+  color: inherit; /* will be set via the border color/parent selector */
+}
+.navbar-nav .nav-item .nav-link {
+  position: relative; /* necesario para el efecto ripple */
+  overflow: hidden;
+}
+
+/* efecto ripple centrado (escala desde el centro) */
+.navbar-nav .nav-item .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0.35;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease;
+  pointer-events: none;
+}
+
+/* color del ripple por cada data-color */
+.nav-link[data-color="primary"]::after {
+  background: var(--accent-primary);
+}
+.nav-link[data-color="info"]::after {
+  background: var(--accent-info);
+}
+.nav-link[data-color="success"]::after {
+  background: var(--accent-success);
+}
+.nav-link[data-color="warning"]::after {
+  background: var(--accent-warning);
+}
+.nav-link[data-color="danger"]::after {
+  background: var(--accent-danger);
+}
+.nav-link[data-color="muted"]::after {
+  background: var(--accent-muted);
+}
+
+/* activar la animación al hacer click */
+.navbar-nav .nav-item .nav-link:active::after {
+  transform: translate(-50%, -50%) scale(8);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.45s ease;
+}
+
+/* Title color per accent when active */
+.nav-link.active[data-color="primary"] .nav-title {
+  color: var(--accent-primary);
+}
+.nav-link.active[data-color="info"] .nav-title {
+  color: var(--accent-info);
+}
+.nav-link.active[data-color="success"] .nav-title {
+  color: var(--accent-success);
+}
+.nav-link.active[data-color="warning"] .nav-title {
+  color: var(--accent-warning);
+}
+.nav-link.active[data-color="danger"] .nav-title {
+  color: var(--accent-danger);
+}
+.nav-link.active[data-color="muted"] .nav-title {
+  color: var(--accent-muted);
+}
+
+/* Ensure icon keeps its color but spacing is neat */
+.nav-link .ni {
+  font-size: 1.05rem;
+  margin-right: 0.35rem;
+}

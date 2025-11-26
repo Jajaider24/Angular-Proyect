@@ -4,3 +4,132 @@
          quede pegado al navbar. Si quieres un pequeño espacio, usa 0.5rem/1rem. */
   margin-bottom: 0;
 }
+
+/* Ensure navbar content (title, search, avatar) has room and doesn't get overlapped
+   Add right padding to the navbar container so page headers (dashboard cards) don't
+   visually collide with the avatar on the right. */
+.navbar-top .container-fluid {
+  padding-right: 120px; /* reserve space for avatar and actions */
+}
+
+/* Accent tokens reused from sidebar to keep palette consistent */
+:host {
+  --accent-primary: #5e72e4;
+  --accent-info: #11cdef;
+  --accent-success: #2dce89;
+  --accent-warning: #fb6340;
+  --accent-danger: #f5365c;
+  --accent-muted: #8898aa;
+}
+
+/* Navbar accent by active section (data-accent attribute) */
+nav#navbar-main[data-accent="primary"] {
+  background: linear-gradient(
+    90deg,
+    rgba(94, 114, 228, 0.95),
+    rgba(94, 114, 228, 0.85)
+  );
+}
+nav#navbar-main[data-accent="info"] {
+  background: linear-gradient(
+    90deg,
+    rgba(17, 205, 239, 0.95),
+    rgba(17, 205, 239, 0.85)
+  );
+}
+nav#navbar-main[data-accent="success"] {
+  background: linear-gradient(
+    90deg,
+    rgba(45, 206, 137, 0.95),
+    rgba(45, 206, 137, 0.85)
+  );
+}
+nav#navbar-main[data-accent="warning"] {
+  background: linear-gradient(
+    90deg,
+    rgba(251, 99, 64, 0.95),
+    rgba(251, 99, 64, 0.85)
+  );
+}
+nav#navbar-main[data-accent="danger"] {
+  background: linear-gradient(
+    90deg,
+    rgba(245, 54, 92, 0.95),
+    rgba(245, 54, 92, 0.85)
+  );
+}
+nav#navbar-main[data-accent="muted"] {
+  background: linear-gradient(
+    90deg,
+    rgba(136, 152, 170, 0.95),
+    rgba(136, 152, 170, 0.85)
+  );
+}
+
+/* Ensure the toggle button and search icon are visible and slightly tinted with the accent */
+nav#navbar-main[data-accent] .btn-link i,
+nav#navbar-main[data-accent] .input-group-text i {
+  opacity: 0.95;
+}
+
+/* Style the sidebar toggle button to be a small pill with soft background using accent */
+.btn-link[title="Toggle sidebar"] {
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 6px 9px;
+}
+
+/* If needed, color the toggle icon to be slightly brighter on dark backgrounds */
+nav#navbar-main[data-accent] .btn-link i {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Title style: keep uppercase but add subtle shadow for legibility */
+.navbar-top .h4 {
+  letter-spacing: 0.6px;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Subtle hover glow for buttons/icons matching the current accent */
+nav#navbar-main[data-accent="primary"] .btn-link:hover {
+  box-shadow: 0 8px 22px rgba(94, 114, 228, 0.16);
+}
+nav#navbar-main[data-accent="info"] .btn-link:hover {
+  box-shadow: 0 8px 22px rgba(17, 205, 239, 0.16);
+}
+nav#navbar-main[data-accent="success"] .btn-link:hover {
+  box-shadow: 0 8px 22px rgba(45, 206, 137, 0.16);
+}
+nav#navbar-main[data-accent="warning"] .btn-link:hover {
+  box-shadow: 0 8px 22px rgba(251, 99, 64, 0.16);
+}
+nav#navbar-main[data-accent="danger"] .btn-link:hover {
+  box-shadow: 0 8px 22px rgba(245, 54, 92, 0.16);
+}
+nav#navbar-main[data-accent="muted"] .btn-link:hover {
+  box-shadow: 0 8px 22px rgba(136, 152, 170, 0.12);
+}
+
+/* small ripple on the navbar toggle for tactile feedback */
+.btn-link {
+  position: relative;
+  overflow: hidden;
+}
+.btn-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0.25;
+  transition: transform 0.35s ease, opacity 0.45s ease;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.85);
+}
+.btn-link:active::after {
+  transform: translate(-50%, -50%) scale(6);
+  opacity: 0;
+}

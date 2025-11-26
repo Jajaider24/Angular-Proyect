@@ -1,11 +1,16 @@
 <div class="mag">
-  <nav class="navbar navbar-top navbar-expand-md navbar-dark" id="navbar-main">
+  <nav
+    class="navbar navbar-top navbar-expand-md navbar-dark"
+    id="navbar-main"
+    [attr.data-accent]="currentAccentKey"
+  >
     <div class="container-fluid">
       <!-- Sidebar toggle (desktop) + Brand -->
       <button
         class="btn btn-link text-white d-none d-md-inline me-2"
         (click)="toggleSidebar()"
         title="Toggle sidebar"
+        appRipple
       >
         <i class="fa fa-bars"></i>
       </button>

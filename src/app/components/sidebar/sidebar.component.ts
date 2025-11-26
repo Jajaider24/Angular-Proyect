@@ -106,7 +106,17 @@ export class SidebarComponent implements OnInit, OnDestroy {
   constructor(private router: Router, private sidebarService: SidebarService) {}
 
   ngOnInit() {
-    this.menuItems = ROUTES.filter((menuItem) => menuItem);
+    // Enriquecer cada item con una clave de color (ej: 'primary','info','success')
+    this.menuItems = ROUTES.filter((menuItem) => menuItem).map((m) => {
+      const icon = (m.icon || "").toString();
+      const colorToken = icon
+        .split(/\s+/)
+        .find((t) => t.startsWith("text-") || t.startsWith("bg-"));
+      const colorKey = colorToken
+        ? colorToken.replace(/^(text-|bg-)/, "")
+        : "muted";
+      return { ...m, colorKey };
+    });
     this.subs.push(
       this.sidebarService.collapsed$.subscribe((c) => (this.isCollapsed = c))
     );
