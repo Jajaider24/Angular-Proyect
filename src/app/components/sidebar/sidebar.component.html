@@ -1,5 +1,5 @@
 <nav
-  class="navbar navbar-vertical navbar-expand-md navbar-light bg-white"
+  class="navbar navbar-vertical navbar-expand-md navbar-light"
   id="sidenav-main"
 >
   <div class="container-fluid">
@@ -160,25 +160,27 @@
           </a>
         </li>
       </ul>
-      <!-- Reports / Visualizations section (separate bottom area) -->
       <hr class="my-3" />
-      <div class="mt-auto pb-3 px-3 sidebar-reports">
-        <a
-          class="nav-link d-flex align-items-center justify-content-between"
-          [routerLink]="['/reports']"
-          title="Gráficos e Informes Visuales"
-          appRipple
-        >
-          <div class="d-flex align-items-center">
-            <i class="ni ni-chart-pie text-primary mr-2"></i>
-            <div>
+      <!-- Reports / Visualizations placed as a nav item pinned to bottom -->
+      <ul class="navbar-nav mt-auto sidebar-reports-list">
+        <li class="nav-item sidebar-reports">
+          <a
+            class="nav-link"
+            [routerLink]="['/reports']"
+            routerLinkActive="active"
+            [attr.data-color]="'primary'"
+            title="Gráficos e Informes Visuales"
+            appRipple
+          >
+            <span class="menu-dot" aria-hidden="true"></span>
+            <i class="ni ni-chart-pie"></i>
+            <div class="menu-text">
               <div class="nav-title">Gráficos e Informes Visuales</div>
               <div class="nav-subtitle">Informes: tortas, barras y series</div>
             </div>
-          </div>
-          <i class="fa fa-angle-right text-muted"></i>
-        </a>
-      </div>
+          </a>
+        </li>
+      </ul>
     </div>
   </div>
 </nav>

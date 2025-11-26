@@ -44,6 +44,12 @@
   --accent-muted: #8898aa;
 }
 
+/* Sidebar background and subtle border to visually separate it from content */
+#sidenav-main {
+  background: linear-gradient(180deg, #f7fbff 0%, #f1f5f9 100%);
+  border-right: 1px solid rgba(22, 27, 34, 0.04);
+}
+
 /* small colored square indicator before each item */
 .navbar-nav .nav-item .nav-link .menu-dot {
   width: 10px;
@@ -125,11 +131,11 @@
   border-left: 4px solid var(--accent-muted);
 }
 
-/* styles for the reports quick link at the bottom */
+/* styles for the reports quick link (now a normal nav-item pinned to bottom) */
 .sidebar-reports .nav-link {
-  background: rgba(246, 247, 250, 0.9);
-  border-radius: 8px;
-  padding: 0.6rem 0.75rem;
+  background: transparent; /* match other nav items */
+  border-radius: 0;
+  padding: 0.45rem 0.75rem;
 }
 .sidebar-reports .nav-title {
   font-weight: 700;
@@ -139,16 +145,20 @@
   color: rgba(0, 0, 0, 0.45);
 }
 
-/* position reports block at the bottom of the sidebar */
+/* make collapse area a column so we can pin the reports list to the bottom */
 #sidenav-main .collapse {
-  position: relative;
-  padding-bottom: 3.5rem; /* reserve space for bottom action */
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0;
 }
-#sidenav-main .sidebar-reports {
-  position: absolute;
-  bottom: 1rem;
-  left: 1rem;
-  right: 1rem;
+
+/* the reports list sits as a normal list but pushed to the bottom */
+.sidebar-reports-list {
+  margin: 0;
+  padding: 0 0.5rem 1rem 0.5rem;
+}
+.sidebar-reports {
+  margin: 0.25rem 0 0 0;
 }
 
 /* When active, color the title to the accent for stronger affordance */
