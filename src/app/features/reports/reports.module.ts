@@ -5,6 +5,7 @@ import { ReportsRoutingModule } from "./reports-routing.module";
 import { ReportsComponent } from "./reports.component";
 import { ReportsService } from "./reports.service";
 
+
 @NgModule({
   declarations: [ReportsComponent],
   imports: [CommonModule, HttpClientModule, ReportsRoutingModule],

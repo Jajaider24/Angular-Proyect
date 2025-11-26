@@ -29,5 +29,5 @@ Correr el servidor
 ```
 ng serve
 
-npm install firebase
+npm install -g firebase-tools
 ```

@@ -49,6 +49,11 @@ export class FirebaseAuthService {
       this.enabled = true;
 
       // listen auth state changes to keep session in sync
+      // choose oauth endpoint: use proxy during development to avoid CORS
+      const oauthEndpoint = environment.production
+        ? `${environment.url_security}/oauth-login`
+        : `/oauth-login`;
+
       onAuthStateChanged(this.firebaseAuth, async (user: any) => {
         this._user.next(user);
         if (user) {
@@ -57,15 +62,33 @@ export class FirebaseAuthService {
           this._processing.next(true);
           // try exchange with backend to obtain application JWT
           try {
-            const resp: any = await this.http
-              .post(`${environment.url_security}/oauth-login`, {
-                provider:
-                  user.providerData && user.providerData[0]
-                    ? user.providerData[0].providerId
-                    : "firebase",
-                idToken,
-              })
-              .toPromise();
+            const body = {
+              provider:
+                user.providerData && user.providerData[0]
+                  ? user.providerData[0].providerId
+                  : "firebase",
+              idToken,
+            };
+
+            // If in production, stick to configured URL; in dev try common alternatives
+            const endpointsToTry = environment.production
+              ? [oauthEndpoint]
+              : [
+                  "/oauth-login",
+                  "/auth/oauth-login",
+                  "/api/oauth-login",
+                  "/login/oauth",
+                  "/auth/login",
+                ];
+
+            // TypeScript may resolve a different FirebaseAuthService type (there's
+            // another service with the same class name in the workspace). Cast
+            // to `any` here to avoid a spurious TS2339 while keeping runtime
+            // behavior intact.
+            const resp: any = await (this as any).tryExchangeEndpoints(
+              endpointsToTry,
+              body
+            );
             // backend should return { id, name, email, token }
             this.security.saveSession(resp);
             try {
@@ -77,6 +100,7 @@ export class FirebaseAuthService {
             } catch (e) {}
           } catch (err) {
             // Mostrar alerta visible para ayudar a detectar problemas de CORS/backend
+            console.error("OAuth exchange error", err);
             try {
               // Import dinámico para evitar romper si sweetalert2 no está instalado
               // (pero por defecto está en package.json de este proyecto)
@@ -85,7 +109,11 @@ export class FirebaseAuthService {
               Swal.fire({
                 icon: "warning",
                 title: "Error al validar sesión con el backend",
-                html: "No se pudo completar el intercambio con el servidor. Verifica CORS o usa el proxy de Angular para el entorno de desarrollo.",
+                html:
+                  "No se pudo completar el intercambio con el servidor. Verifica CORS o usa el proxy de Angular para el entorno de desarrollo." +
+                  (err && err.status
+                    ? `<br><small>HTTP ${err.status}</small>`
+                    : ""),
                 confirmButtonText: "Entendido",
               });
             } catch (e) {
@@ -94,19 +122,43 @@ export class FirebaseAuthService {
                 e
               );
             }
-            // No hacemos fallback que cree una sesión local ni redirección automática.
-            // Si el backend no acepta el intercambio (por CORS u otro error), es
-            // más seguro cerrar la sesión de Firebase para evitar redirecciones
-            // automáticas al dashboard sin una sesión de aplicación válida.
+            // Si estamos en modo desarrollo y el backend no tiene la ruta
+            // (404) o no está disponible, permitir un fallback local opcional
+            // para facilitar el desarrollo (crear sesión local usando idToken).
+            // Esto se controla mediante `environment.allowLocalLogin`.
             try {
+              const httpStatus = err && err.status ? Number(err.status) : null;
+              if (
+                environment.allowLocalLogin &&
+                (httpStatus === 404 || httpStatus === 0 || !httpStatus)
+              ) {
+                console.warn(
+                  "Backend oauth-login not found — creating local session because allowLocalLogin=true"
+                );
+                const dataSesion: any = {
+                  id: user.uid || null,
+                  name: user.displayName || user.email,
+                  email: user.email,
+                  token: idToken,
+                  photoURL: user.photoURL || "",
+                };
+                this.security.saveSession(dataSesion);
+                try {
+                  localStorage.setItem(TOKEN_KEY, idToken);
+                } catch {}
+                try {
+                  this.router.navigate(["/dashboard"], { replaceUrl: true });
+                } catch (e) {}
+                // return early — evitamos cerrar sesión
+                return;
+              }
+
+              // Si no aplicamos el fallback, cerramos la sesión de Firebase
+              // para evitar redirecciones sin sesión de aplicación válida.
               // cerrar sesión de Firebase (evita que onAuthStateChanged vuelva a disparar un usuario)
               // eslint-disable-next-line @typescript-eslint/no-var-requires
               const { signOut } = require("firebase/auth");
               try {
-                // signOut puede lanzarse; envuelto en try/catch
-                // usamos la referencia this.firebaseAuth inicializada arriba
-                // si no está disponible, ignoramos.
-                // (También podríamos usar firebaseSignOut importado, pero mantenemos dinámica para compatibilidad)
                 await signOut(this.firebaseAuth);
               } catch (e) {
                 try {
@@ -148,6 +200,29 @@ export class FirebaseAuthService {
       );
       this.enabled = false;
     }
+  }
+
+  // Try a list of endpoints sequentially until one returns a successful response.
+  private async tryExchangeEndpoints(
+    endpoints: string[],
+    body: any
+  ): Promise<any | null> {
+    for (const ep of endpoints) {
+      try {
+        console.log("Attempting OAuth exchange at", ep);
+        // Use relative endpoints so Angular proxy can forward in dev
+        const r = await this.http.post(ep, body).toPromise();
+        console.log("Exchange succeeded at", ep);
+        return r;
+      } catch (err: any) {
+        const status = err && err.status ? err.status : null;
+        console.warn(`Exchange attempt to ${ep} failed`, status || err);
+        // If failure is not 404, stop and propagate error to surface server problems
+        if (status && status !== 404) throw err;
+        // otherwise try next endpoint
+      }
+    }
+    return null;
   }
 
   private ensureEnabled() {

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
-import { map } from 'rxjs/operators';
+import { map } from "rxjs/operators";
 
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
@@ -10,9 +10,11 @@ import { User } from "../models/User";
 @Injectable({
   providedIn: "root",
 })
-export class SecurityService {  // Servicio para manejar la seguridad y autenticación de usuarios y sesiones y almacenamiento en local storage
+export class SecurityService {
+  // Servicio para manejar la seguridad y autenticación de usuarios y sesiones y almacenamiento en local storage
   theUser = new BehaviorSubject<User>(new User()); // Objeto BehaviorSubject para almacenar la información del usuario logueado
-  constructor(private http: HttpClient) { // Inyección de dependencias del cliente HTTP para realizar peticiones al backend
+  constructor(private http: HttpClient) {
+    // Inyección de dependencias del cliente HTTP para realizar peticiones al backend
     this.verifyActualSession(); // Verifica si hay una sesión activa al inicializar el servicio
   }
 
@@ -22,7 +24,8 @@ export class SecurityService {  // Servicio para manejar la seguridad y autentic
    * @param infoUsuario JSON con la información de correo y contraseña
    * @returns Respuesta HTTP la cual indica si el usuario tiene permiso de acceso
    */
-  login(user: User): Observable<any> { // Método para iniciar sesión del usuario y enviar sus credenciales al backend
+  login(user: User): Observable<any> {
+    // Método para iniciar sesión del usuario y enviar sus credenciales al backend
     return this.http.post<any>(`${environment.url_security}/login`, user); // Realiza una petición POST al endpoint de login del backend con la información del usuario
   }
   /**
@@ -34,7 +37,11 @@ export class SecurityService {  // Servicio para manejar la seguridad y autentic
     // Llamamos al endpoint de customers y buscamos el email
     return this.http.get<any[]>(`${environment.url_backend}/customers`).pipe(
       map((resp: any) => {
-        const found = Array.isArray(resp) ? resp.find(u => u.email && u.email.toLowerCase() === email.toLowerCase()) : null;
+        const found = Array.isArray(resp)
+          ? resp.find(
+              (u) => u.email && u.email.toLowerCase() === email.toLowerCase()
+            )
+          : null;
         if (!found) {
           // Si está habilitado el modo de desarrollo, crear una sesión local "comodín"
           if (environment.allowLocalLogin) {
@@ -43,18 +50,18 @@ export class SecurityService {  // Servicio para manejar la seguridad y autentic
               id: fakeId,
               name: email,
               email: email,
-              token: '' // Sin token real en este modo
+              token: "", // Sin token real en este modo
             };
             this.saveSession(dataSesion);
             return dataSesion;
           }
-          throw new Error('Usuario no encontrado');
+          throw new Error("Usuario no encontrado");
         }
         const dataSesion: any = {
           id: found.id,
           name: found.name || found.email,
           email: found.email,
-          token: '' // Sin token real en este modo
+          token: "", // Sin token real en este modo
         };
         this.saveSession(dataSesion);
         return dataSesion;
@@ -71,7 +78,9 @@ export class SecurityService {  // Servicio para manejar la seguridad y autentic
       name: dataSesion["name"],
       email: dataSesion["email"],
       password: "",
-      token: dataSesion["token"],
+      // Prefer explicit token, otherwise fallback to providerAccessToken (GitHub/MS providers)
+      token: dataSesion["token"] || dataSesion["providerAccessToken"] || "",
+      photoURL: dataSesion["photoURL"] || "",
     };
     localStorage.setItem("sesion", JSON.stringify(data)); // Guarda la información del usuario en el local storage del navegador
     this.setUser(data); // Actualiza la información del usuario en el BehaviorSubject
@@ -81,7 +90,8 @@ export class SecurityService {  // Servicio para manejar la seguridad y autentic
    * que acabó de validarse correctamente
    * @param user información del usuario logueado
    */
-  setUser(user: User) { // Método para actualizar la información del usuario logueado
+  setUser(user: User) {
+    // Método para actualizar la información del usuario logueado
     this.theUser.next(user); // Actualiza el valor del BehaviorSubject con la información del usuario logueado
   }
   /**
@@ -90,7 +100,7 @@ export class SecurityService {  // Servicio para manejar la seguridad y autentic
    * @returns
    */
   getUser() {
-    return this.theUser.asObservable(); 
+    return this.theUser.asObservable();
   }
   /**
    * Permite obtener la información de usuario
@@ -134,9 +144,10 @@ export class SecurityService {  // Servicio para manejar la seguridad y autentic
    * Verifica si hay una sesion activa
    * @returns
    */
-  existSession(): boolean {  // Método para verificar si existe una sesión activa
-    let sesionActual = this.getSessionData();  // Obtiene la información de la sesión del local storage
-    return sesionActual ? true : false;  // Retorna true si existe una sesión activa, de lo contrario retorna false
+  existSession(): boolean {
+    // Método para verificar si existe una sesión activa
+    let sesionActual = this.getSessionData(); // Obtiene la información de la sesión del local storage
+    return sesionActual ? true : false; // Retorna true si existe una sesión activa, de lo contrario retorna false
   }
   /**
    * Permite obtener los dato de la sesión activa en el

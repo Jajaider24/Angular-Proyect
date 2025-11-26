@@ -227,11 +227,23 @@ export class ReportsComponent implements AfterViewInit {
     // Expected formats:
     // { labels: [...], values: [...] }
     // { series: [{date, value}, ...] }
+    // { labels: [...], datasets: [{ label, data: [...] }, ...] }
     if (Array.isArray(payload.labels) && Array.isArray(payload.values)) {
       return {
         labels: payload.labels,
         data: payload.values.map((v: any) => Number(v)),
       };
+    }
+
+    // Handle common Chart.js-like shape: { labels: [...], datasets: [{label, data: [...]}, ...] }
+    if (Array.isArray(payload.labels) && Array.isArray(payload.datasets)) {
+      const first = payload.datasets[0];
+      if (first && Array.isArray(first.data)) {
+        return {
+          labels: payload.labels,
+          data: first.data.map((v: any) => Number(v)),
+        };
+      }
     }
     if (Array.isArray(payload.series)) {
       const labels = payload.series.map((s: any) => s.date ?? s.label ?? "");

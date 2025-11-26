@@ -6,10 +6,39 @@
     "logLevel": "warn",
     "pathRewrite": { "^/oauth-login": "/oauth-login" }
   },
-  "/api": {
+  "/auth/oauth-login": {
     "target": "http://127.0.0.1:5000",
     "secure": false,
     "changeOrigin": true,
-    "logLevel": "warn"
+    "logLevel": "warn",
+    "pathRewrite": { "^/auth/oauth-login": "/auth/oauth-login" }
+  },
+  "/api/oauth-login": {
+    "target": "http://127.0.0.1:5000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "warn",
+    "pathRewrite": { "^/api/oauth-login": "/api/oauth-login" }
+  },
+  "/login/oauth": {
+    "target": "http://127.0.0.1:5000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "warn",
+    "pathRewrite": { "^/login/oauth": "/login/oauth" }
+  },
+  "/auth/login": {
+    "target": "http://127.0.0.1:5000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "warn",
+    "pathRewrite": { "^/auth/login": "/auth/login" }
+  },
+
+  "/api": {
+    "target": "http://localhost:3000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
   }
 }
