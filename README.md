@@ -30,4 +30,6 @@ Correr el servidor
 ng serve
 
 npm install -g firebase-tools
+
+pm install lucide-angular lucide --save --legacy-peer-deps
 ```

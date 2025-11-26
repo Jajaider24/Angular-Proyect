@@ -237,3 +237,58 @@
   font-size: 1.05rem;
   margin-right: 0.35rem;
 }
+
+/* Lucide icon styling: reemplazo del punto de color con iconos dinámicos */
+.nav-link .menu-icon {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+  vertical-align: middle;
+  flex: 0 0 auto;
+  transition: transform 220ms cubic-bezier(0.2,0.9,0.2,1), filter 220ms ease, opacity 180ms ease;
+  will-change: transform;
+}
+
+/* Ensure the rendered SVG uses the currentColor so CSS color rules apply */
+.nav-link i-lucide.menu-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Hover: slight lift and glow */
+.navbar-nav .nav-item .nav-link:hover .menu-icon {
+  transform: translateY(-2px) scale(1.08);
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.12));
+}
+
+/* Active: stronger scale and subtle rotation for playfulness */
+.nav-link.active .menu-icon {
+  transform: scale(1.15) rotate(-4deg);
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15));
+}
+
+/* Color mapping per data-color so icons match the accent */
+.nav-link[data-color="primary"] .menu-icon {
+  color: var(--accent-primary);
+}
+.nav-link[data-color="info"] .menu-icon {
+  color: var(--accent-info);
+}
+.nav-link[data-color="success"] .menu-icon {
+  color: var(--accent-success);
+}
+.nav-link[data-color="warning"] .menu-icon {
+  color: var(--accent-warning);
+}
+.nav-link[data-color="danger"] .menu-icon {
+  color: var(--accent-danger);
+}
+.nav-link[data-color="muted"] .menu-icon {
+  color: var(--accent-muted);
+}

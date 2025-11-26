@@ -143,14 +143,31 @@
             [routerLink]="[menuItem.path]"
             [routerLinkActiveOptions]="{ exact: false }"
             class="nav-link"
-            [class.has-icon]="menuItem.icon"
+            [class.has-icon]="menuItem.lucide || menuItem.icon"
             [class.active]="isActive(menuItem.path)"
             [attr.data-color]="menuItem.colorKey"
             appRipple
           >
-            <!-- indicador de color pequeño -->
-            <span class="menu-dot" aria-hidden="true"></span>
-            <i *ngIf="menuItem.icon" [ngClass]="menuItem.icon"></i>
+            <!-- Icono Lucide reemplazando el punto de color -->
+            <i-lucide
+              *ngIf="menuItem.lucide"
+              [name]="menuItem.lucide"
+              [size]="20"
+              [attr.data-color]="menuItem.colorKey"
+              class="menu-icon"
+            ></i-lucide>
+            <!-- Fallback: icono clásico si no hay Lucide -->
+            <i
+              *ngIf="!menuItem.lucide && menuItem.icon"
+              [ngClass]="menuItem.icon"
+              class="menu-icon"
+            ></i>
+            <!-- Fallback: punto de color si no hay ningún icono -->
+            <span 
+              *ngIf="!menuItem.lucide && !menuItem.icon" 
+              class="menu-dot" 
+              aria-hidden="true"
+            ></span>
             <div class="menu-text">
               <div class="nav-title">{{ menuItem.title }}</div>
               <div *ngIf="menuItem.subtitle" class="nav-subtitle">
@@ -172,8 +189,12 @@
             title="Gráficos e Informes Visuales"
             appRipple
           >
-            <span class="menu-dot" aria-hidden="true"></span>
-            <i class="ni ni-chart-pie"></i>
+            <i-lucide
+              name="BarChart3"
+              [size]="20"
+              data-color="primary"
+              class="menu-icon"
+            ></i-lucide>
             <div class="menu-text">
               <div class="nav-title">Gráficos e Informes Visuales</div>
               <div class="nav-subtitle">Informes: tortas, barras y series</div>

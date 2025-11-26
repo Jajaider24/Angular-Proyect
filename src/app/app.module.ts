@@ -10,6 +10,22 @@ import { AuthLayoutComponent } from "./layouts/auth-layout/auth-layout.component
 
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
+// Importamos solo los iconos de Lucide que realmente usamos en el sidebar
+import {
+  ShoppingBag,
+  Package,
+  BookOpen,
+  Users,
+  ShoppingCart,
+  MapPin,
+  Bike,
+  UserCircle,
+  CalendarDays,
+  AlertCircle,
+  Camera,
+  BarChart3
+} from "lucide-angular";
+import { LucideAngularModule } from "lucide-angular";
 import { AppRoutingModule } from "./app-routing.module";
 import { ComponentsModule } from "./components/components.module";
 import { CoreModule } from "./core/core.module";
@@ -24,6 +40,21 @@ import { SharedModule } from "./shared/shared.module";
     HttpClientModule,
     ComponentsModule,
     NgbModule,
+    // Register Lucide icons (solo los que usamos para optimizar el bundle)
+    LucideAngularModule.pick({
+      ShoppingBag,
+      Package,
+      BookOpen,
+      Users,
+      ShoppingCart,
+      MapPin,
+      Bike,
+      UserCircle,
+      CalendarDays,
+      AlertCircle,
+      Camera,
+      BarChart3
+    }),
     RouterModule,
     AppRoutingModule,
     CoreModule,

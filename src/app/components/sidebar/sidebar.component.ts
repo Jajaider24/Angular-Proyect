@@ -7,6 +7,7 @@ declare interface RouteInfo {
   path: string;
   title: string;
   icon: string;
+  lucide?: string;
   subtitle?: string;
   class: string;
 }
@@ -16,6 +17,7 @@ export const ROUTES: RouteInfo[] = [
     path: "/restaurants",
     title: "Restaurantes",
     icon: "ni-shop text-primary",
+    lucide: "ShoppingBag",
     subtitle: "Gestionar locales y datos",
     class: "",
   },
@@ -23,6 +25,7 @@ export const ROUTES: RouteInfo[] = [
     path: "/products",
     title: "Productos",
     icon: "ni-basket text-info",
+    lucide: "Package",
     subtitle: "Catalogar productos",
     class: "",
   },
@@ -30,6 +33,7 @@ export const ROUTES: RouteInfo[] = [
     path: "/menus",
     title: "Menús",
     icon: "ni-books text-success",
+    lucide: "BookOpen",
     subtitle: "Asignar productos a restaurantes",
     class: "",
   },
@@ -37,6 +41,7 @@ export const ROUTES: RouteInfo[] = [
     path: "/customers",
     title: "Clientes",
     icon: "ni-single-02 text-warning",
+    lucide: "Users",
     subtitle: "Usuarios finales",
     class: "",
   },
@@ -44,6 +49,7 @@ export const ROUTES: RouteInfo[] = [
     path: "/orders",
     title: "Pedidos",
     icon: "ni-delivery-fast text-danger",
+    lucide: "ShoppingCart",
     subtitle: "Órdenes y estado de entrega",
     class: "",
   },
@@ -52,6 +58,7 @@ export const ROUTES: RouteInfo[] = [
     path: "/addresses",
     title: "Direcciones",
     icon: "ni-pin-3 text-muted",
+    lucide: "MapPin",
     subtitle: "Direcciones de entrega",
     class: "",
   },
@@ -59,6 +66,7 @@ export const ROUTES: RouteInfo[] = [
     path: "/motorcycles",
     title: "Motocicletas",
     icon: "ni-scooter text-muted",
+    lucide: "Bike",
     subtitle: "Vehículos de reparto",
     class: "",
   },
@@ -66,6 +74,7 @@ export const ROUTES: RouteInfo[] = [
     path: "/drivers",
     title: "Conductores",
     icon: "ni-user-run text-muted",
+    lucide: "UserCircle",
     subtitle: "Gestión de conductores",
     class: "",
   },
@@ -73,6 +82,7 @@ export const ROUTES: RouteInfo[] = [
     path: "/shifts",
     title: "Turnos",
     icon: "ni-calendar-grid-58 text-muted",
+    lucide: "CalendarDays",
     subtitle: "Asignaciones moto-conductor",
     class: "",
   },
@@ -80,6 +90,7 @@ export const ROUTES: RouteInfo[] = [
     path: "/issues",
     title: "Incidencias",
     icon: "ni-alert-circle text-muted",
+    lucide: "AlertCircle",
     subtitle: "Registrar fallas y accidentes",
     class: "",
   },
@@ -87,6 +98,7 @@ export const ROUTES: RouteInfo[] = [
     path: "/photos",
     title: "Fotos",
     icon: "ni-camera-compact text-muted",
+    lucide: "Camera",
     subtitle: "Evidencias y fotos",
     class: "",
   },
