@@ -12,13 +12,13 @@ import { MotorcyclesComponent } from "./motorcycles.component";
 /**
  * Módulo feature para gestión completa de Motorcycles (Motocicletas).
  * Gestiona la flota de motos disponibles para delivery.
- * 
+ *
  * Campos clave:
  * - license_plate: Placa única de identificación
  * - brand: Marca de la moto
  * - year: Año de fabricación
  * - status: Estado (available, in_use, maintenance)
- * 
+ *
  * Relaciones:
  * - Una moto puede tener múltiples Orders asignadas
  * - Una moto puede tener múltiples Shifts (turnos)
