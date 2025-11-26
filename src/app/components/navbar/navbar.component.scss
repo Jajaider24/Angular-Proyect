@@ -1,3 +1,6 @@
 .mag {
-    margin-bottom: 300px;
+  /* Reducir el espacio inferior del navbar para evitar la gran área en blanco
+         Antes estaba en 300px (muy grande). Ajustamos a 0 para que el contenido
+         quede pegado al navbar. Si quieres un pequeño espacio, usa 0.5rem/1rem. */
+  margin-bottom: 0;
 }

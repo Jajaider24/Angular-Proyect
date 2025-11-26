@@ -94,20 +94,41 @@ export class FirebaseAuthService {
                 e
               );
             }
-            // fallback: save firebase idToken directly
-            const dataSesion: any = {
-              id: user.uid || null,
-              name: user.displayName || user.email,
-              email: user.email,
-              token: idToken,
-            };
-            this.security.saveSession(dataSesion);
+            // No hacemos fallback que cree una sesión local ni redirección automática.
+            // Si el backend no acepta el intercambio (por CORS u otro error), es
+            // más seguro cerrar la sesión de Firebase para evitar redirecciones
+            // automáticas al dashboard sin una sesión de aplicación válida.
             try {
-              localStorage.setItem(TOKEN_KEY, idToken);
-            } catch {}
-            try {
-              this.router.navigate(["/dashboard"], { replaceUrl: true });
-            } catch (e) {}
+              // cerrar sesión de Firebase (evita que onAuthStateChanged vuelva a disparar un usuario)
+              // eslint-disable-next-line @typescript-eslint/no-var-requires
+              const { signOut } = require("firebase/auth");
+              try {
+                // signOut puede lanzarse; envuelto en try/catch
+                // usamos la referencia this.firebaseAuth inicializada arriba
+                // si no está disponible, ignoramos.
+                // (También podríamos usar firebaseSignOut importado, pero mantenemos dinámica para compatibilidad)
+                await signOut(this.firebaseAuth);
+              } catch (e) {
+                try {
+                  // como fallback, intentamos el alias importado
+                  // eslint-disable-next-line @typescript-eslint/no-var-requires
+                  const fb = require("firebase/auth");
+                  if (fb && fb.signOut) {
+                    await fb.signOut(this.firebaseAuth);
+                  }
+                } catch (e2) {
+                  console.warn(
+                    "No se pudo cerrar sesión de Firebase automáticamente",
+                    e2
+                  );
+                }
+              }
+            } catch (e) {
+              console.warn(
+                "Error durante el intento de cerrar sesión tras fallo de intercambio",
+                e
+              );
+            }
           } finally {
             // intercambio terminado
             this._processing.next(false);

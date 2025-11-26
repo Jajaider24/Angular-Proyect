@@ -358,7 +358,12 @@
           <div class="text-center text-muted mb-4">
             <small>O iniciar Sesión con Credenciales:</small>
           </div>
-          <form role="form" novalidate>
+          <form
+            #loginForm="ngForm"
+            (ngSubmit)="login(loginForm)"
+            role="form"
+            novalidate
+          >
             <div class="form-group mb-3">
               <div class="input-group input-group-alternative">
                 <div class="input-group-prepend">
@@ -371,8 +376,25 @@
                   placeholder="Email"
                   type="email"
                   name="email"
+                  required
+                  email
                   [(ngModel)]="user.email"
+                  #emailModel="ngModel"
                 />
+              </div>
+              <div
+                *ngIf="
+                  emailModel.invalid &&
+                  (emailModel.touched || loginForm.submitted)
+                "
+                class="text-danger small mt-1"
+              >
+                <span *ngIf="emailModel.errors?.required"
+                  >El email es obligatorio.</span
+                >
+                <span *ngIf="emailModel.errors?.email"
+                  >Formato de email no válido.</span
+                >
               </div>
             </div>
             <div class="form-group">
@@ -387,8 +409,25 @@
                   placeholder="Password"
                   type="password"
                   name="password"
+                  required
+                  minlength="4"
                   [(ngModel)]="user.password"
+                  #passwordModel="ngModel"
                 />
+              </div>
+              <div
+                *ngIf="
+                  passwordModel.invalid &&
+                  (passwordModel.touched || loginForm.submitted)
+                "
+                class="text-danger small mt-1"
+              >
+                <span *ngIf="passwordModel.errors?.required"
+                  >La contraseña es obligatoria.</span
+                >
+                <span *ngIf="passwordModel.errors?.minlength"
+                  >La contraseña debe tener al menos 4 caracteres.</span
+                >
               </div>
             </div>
             <div
@@ -405,10 +444,9 @@
             </div>
             <div class="text-center">
               <button
-                type="button"
+                type="submit"
                 class="btn btn-primary my-4 login-action-btn"
-                (click)="login()"
-                [disabled]="isLoading"
+                [disabled]="isLoading || loginForm.invalid"
                 style="
                   background: linear-gradient(
                     90deg,

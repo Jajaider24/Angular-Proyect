@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { NgForm } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { User } from "src/app/models/User";
@@ -56,10 +57,20 @@ export class LoginComponent implements OnInit, OnDestroy {
       );
     }
   }
-  login() {
+  login(form?: NgForm) {
     // Método para autenticar al usuario
     console.log("componente " + JSON.stringify(this.user)); // Log del usuario que intenta iniciar sesión
     if (this.isLoading) return; // evitar envíos múltiples
+
+    // Si recibimos el formulario, validamos y prevenimos envío si es inválido
+    if (form && form.invalid) {
+      // marca todos los controles como tocados para mostrar errores
+      try {
+        form.control.markAllAsTouched();
+      } catch (e) {}
+      return;
+    }
+
     this.isLoading = true;
 
     // Intentamos el login tradicional al backend si existe el endpoint
