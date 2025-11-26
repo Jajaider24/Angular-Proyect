@@ -7,7 +7,7 @@ import { MotorcyclesService } from "src/app/core/services/motorcycles.service";
 
 /**
  * Formulario para crear/editar motocicletas con validaciones completas.
- * 
+ *
  * Validaciones:
  * - license_plate: Requerida, formato placa (alfanumérico 6-10 chars), única
  * - brand: Requerida, 2-50 caracteres
@@ -25,14 +25,14 @@ export class MotorcyclesFormComponent implements OnInit, OnDestroy {
   isEdit = false;
   submitted = false;
   motorcycleId?: number;
-  
+
   // Opciones para el select de status
   statusOptions = [
     { value: "available", label: "Disponible" },
     { value: "in_use", label: "En Uso" },
     { value: "maintenance", label: "Mantenimiento" },
   ];
-  
+
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -44,7 +44,7 @@ export class MotorcyclesFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.buildForm();
-    
+
     const idParam = this.route.snapshot.paramMap.get("id");
     if (idParam) {
       this.isEdit = true;
@@ -60,7 +60,7 @@ export class MotorcyclesFormComponent implements OnInit, OnDestroy {
 
   private buildForm(): void {
     const currentYear = new Date().getFullYear();
-    
+
     this.form = this.fb.group({
       license_plate: [
         "",
@@ -122,9 +122,10 @@ export class MotorcyclesFormComponent implements OnInit, OnDestroy {
     const payload = this.form.value;
     this.loading = true;
 
-    const operation = this.isEdit && this.motorcycleId
-      ? this.motorcyclesService.update(this.motorcycleId, payload)
-      : this.motorcyclesService.create(payload);
+    const operation =
+      this.isEdit && this.motorcycleId
+        ? this.motorcyclesService.update(this.motorcycleId, payload)
+        : this.motorcyclesService.create(payload);
 
     operation.pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
@@ -147,7 +148,11 @@ export class MotorcyclesFormComponent implements OnInit, OnDestroy {
 
   hasError(field: string): boolean {
     const control = this.form.get(field);
-    return !!(control && control.invalid && (control.dirty || control.touched || this.submitted));
+    return !!(
+      control &&
+      control.invalid &&
+      (control.dirty || control.touched || this.submitted)
+    );
   }
 
   getErrorMessage(field: string): string {
@@ -157,8 +162,10 @@ export class MotorcyclesFormComponent implements OnInit, OnDestroy {
     const errors = control.errors;
 
     if (errors["required"]) return "Este campo es obligatorio";
-    if (errors["minlength"]) return `Mínimo ${errors["minlength"].requiredLength} caracteres`;
-    if (errors["maxlength"]) return `Máximo ${errors["maxlength"].requiredLength} caracteres`;
+    if (errors["minlength"])
+      return `Mínimo ${errors["minlength"].requiredLength} caracteres`;
+    if (errors["maxlength"])
+      return `Máximo ${errors["maxlength"].requiredLength} caracteres`;
     if (errors["min"]) return `El valor mínimo es ${errors["min"].min}`;
     if (errors["max"]) return `El valor máximo es ${errors["max"].max}`;
     if (errors["pattern"]) {
