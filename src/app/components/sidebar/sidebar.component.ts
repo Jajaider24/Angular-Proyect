@@ -53,11 +53,11 @@ export const ROUTES: RouteInfo[] = [
     subtitle: "Órdenes y estado de entrega",
     class: "",
   },
-  // Secondary / supporting entities (icons present but subtle)
+  // Secondary / supporting entities (icons present with distinctive colors)
   {
     path: "/addresses",
     title: "Direcciones",
-    icon: "ni-pin-3 text-muted",
+    icon: "ni-pin-3 text-purple",
     lucide: "MapPin",
     subtitle: "Direcciones de entrega",
     class: "",
@@ -65,7 +65,7 @@ export const ROUTES: RouteInfo[] = [
   {
     path: "/motorcycles",
     title: "Motocicletas",
-    icon: "ni-scooter text-muted",
+    icon: "ni-scooter text-orange",
     lucide: "Bike",
     subtitle: "Vehículos de reparto",
     class: "",
@@ -73,7 +73,7 @@ export const ROUTES: RouteInfo[] = [
   {
     path: "/drivers",
     title: "Conductores",
-    icon: "ni-user-run text-muted",
+    icon: "ni-user-run text-cyan",
     lucide: "UserCircle",
     subtitle: "Gestión de conductores",
     class: "",
@@ -81,7 +81,7 @@ export const ROUTES: RouteInfo[] = [
   {
     path: "/shifts",
     title: "Turnos",
-    icon: "ni-calendar-grid-58 text-muted",
+    icon: "ni-calendar-grid-58 text-indigo",
     lucide: "CalendarDays",
     subtitle: "Asignaciones moto-conductor",
     class: "",
@@ -89,7 +89,7 @@ export const ROUTES: RouteInfo[] = [
   {
     path: "/issues",
     title: "Incidencias",
-    icon: "ni-alert-circle text-muted",
+    icon: "ni-alert-circle text-red",
     lucide: "AlertCircle",
     subtitle: "Registrar fallas y accidentes",
     class: "",
@@ -97,7 +97,7 @@ export const ROUTES: RouteInfo[] = [
   {
     path: "/photos",
     title: "Fotos",
-    icon: "ni-camera-compact text-muted",
+    icon: "ni-camera-compact text-pink",
     lucide: "Camera",
     subtitle: "Evidencias y fotos",
     class: "",
