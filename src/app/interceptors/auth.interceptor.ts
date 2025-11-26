@@ -26,10 +26,19 @@ export class AuthInterceptor implements HttpInterceptor {
     const theUser = this.securityService.activeUserSession || {};
     const token = theUser["token"];
 
-    // No añadir token en llamadas públicas (login/token-validation)
-    const isPublic =
-      request.url.includes("/login") ||
-      request.url.includes("/token-validation");
+    // No añadir token en llamadas públicas (solo rutas exactas del frontend)
+    // Evitamos usar `includes` porque `/auth/login` o `/login/oauth` podrían
+    // coincidir y provocar que no se añada Authorization a llamadas API.
+    let pathname = request.url;
+    try {
+      // Normaliza a pathname incluso si request.url es absoluto.
+      const urlObj = new URL(request.url, window.location.origin);
+      pathname = urlObj.pathname;
+    } catch (e) {
+      // Si URL no es parseable, mantenemos request.url como fallback.
+    }
+
+    const isPublic = pathname === "/login" || pathname === "/token-validation";
 
     const authRequest =
       isPublic || !token

@@ -54,138 +54,39 @@ export class FirebaseAuthService {
         ? `${environment.url_security}/oauth-login`
         : `/oauth-login`;
 
+      // Escuchamos cambios de estado en Firebase y mantenemos una sesión local
+      // totalmente cliente (NO se realizan peticiones al backend). Aquí guardamos
+      // el usuario en `SecurityService` y en `localStorage` para que los guards
+      // y el interceptor funcionen basados exclusivamente en estado local.
       onAuthStateChanged(this.firebaseAuth, async (user: any) => {
         this._user.next(user);
         if (user) {
-          const idToken = await user.getIdToken();
-          // indicamos que empezamos el intercambio con el backend
+          // Indicamos que estamos procesando el inicio de sesión localmente
           this._processing.next(true);
-          // try exchange with backend to obtain application JWT
           try {
-            const body = {
-              provider:
-                user.providerData && user.providerData[0]
-                  ? user.providerData[0].providerId
-                  : "firebase",
-              idToken,
+            const idToken = await user.getIdToken();
+            // Construimos la sesión mínima necesaria y la guardamos en localStorage
+            const dataSesion: any = {
+              id: user.uid || null,
+              name: user.displayName || user.email,
+              email: user.email,
+              token: idToken,
+              photoURL: user.photoURL || "",
             };
-
-            // If in production, stick to configured URL; in dev try common alternatives
-            const endpointsToTry = environment.production
-              ? [oauthEndpoint]
-              : [
-                  "/oauth-login",
-                  "/auth/oauth-login",
-                  "/api/oauth-login",
-                  "/login/oauth",
-                  "/auth/login",
-                ];
-
-            // TypeScript may resolve a different FirebaseAuthService type (there's
-            // another service with the same class name in the workspace). Cast
-            // to `any` here to avoid a spurious TS2339 while keeping runtime
-            // behavior intact.
-            const resp: any = await (this as any).tryExchangeEndpoints(
-              endpointsToTry,
-              body
-            );
-            // backend should return { id, name, email, token }
-            this.security.saveSession(resp);
+            // Guardar sesión de aplicación en el servicio de seguridad (localStorage)
+            this.security.saveSession(dataSesion);
             try {
-              localStorage.setItem(TOKEN_KEY, resp.token || idToken);
+              localStorage.setItem(TOKEN_KEY, idToken);
             } catch {}
-            // Redirigir al dashboard reemplazando la entrada de historial
+            // Redirigimos al dashboard (reemplazando la entrada de historial)
             try {
               this.router.navigate(["/dashboard"], { replaceUrl: true });
             } catch (e) {}
-          } catch (err) {
-            // Mostrar alerta visible para ayudar a detectar problemas de CORS/backend
-            console.error("OAuth exchange error", err);
-            try {
-              // Import dinámico para evitar romper si sweetalert2 no está instalado
-              // (pero por defecto está en package.json de este proyecto)
-              // eslint-disable-next-line @typescript-eslint/no-var-requires
-              const Swal = require("sweetalert2");
-              Swal.fire({
-                icon: "warning",
-                title: "Error al validar sesión con el backend",
-                html:
-                  "No se pudo completar el intercambio con el servidor. Verifica CORS o usa el proxy de Angular para el entorno de desarrollo." +
-                  (err && err.status
-                    ? `<br><small>HTTP ${err.status}</small>`
-                    : ""),
-                confirmButtonText: "Entendido",
-              });
-            } catch (e) {
-              console.warn(
-                "No se pudo mostrar la alerta (sweetalert2 no disponible)",
-                e
-              );
-            }
-            // Si estamos en modo desarrollo y el backend no tiene la ruta
-            // (404) o no está disponible, permitir un fallback local opcional
-            // para facilitar el desarrollo (crear sesión local usando idToken).
-            // Esto se controla mediante `environment.allowLocalLogin`.
-            try {
-              const httpStatus = err && err.status ? Number(err.status) : null;
-              if (
-                environment.allowLocalLogin &&
-                (httpStatus === 404 || httpStatus === 0 || !httpStatus)
-              ) {
-                console.warn(
-                  "Backend oauth-login not found — creating local session because allowLocalLogin=true"
-                );
-                const dataSesion: any = {
-                  id: user.uid || null,
-                  name: user.displayName || user.email,
-                  email: user.email,
-                  token: idToken,
-                  photoURL: user.photoURL || "",
-                };
-                this.security.saveSession(dataSesion);
-                try {
-                  localStorage.setItem(TOKEN_KEY, idToken);
-                } catch {}
-                try {
-                  this.router.navigate(["/dashboard"], { replaceUrl: true });
-                } catch (e) {}
-                // return early — evitamos cerrar sesión
-                return;
-              }
-
-              // Si no aplicamos el fallback, cerramos la sesión de Firebase
-              // para evitar redirecciones sin sesión de aplicación válida.
-              // cerrar sesión de Firebase (evita que onAuthStateChanged vuelva a disparar un usuario)
-              // eslint-disable-next-line @typescript-eslint/no-var-requires
-              const { signOut } = require("firebase/auth");
-              try {
-                await signOut(this.firebaseAuth);
-              } catch (e) {
-                try {
-                  // como fallback, intentamos el alias importado
-                  // eslint-disable-next-line @typescript-eslint/no-var-requires
-                  const fb = require("firebase/auth");
-                  if (fb && fb.signOut) {
-                    await fb.signOut(this.firebaseAuth);
-                  }
-                } catch (e2) {
-                  console.warn(
-                    "No se pudo cerrar sesión de Firebase automáticamente",
-                    e2
-                  );
-                }
-              }
-            } catch (e) {
-              console.warn(
-                "Error durante el intento de cerrar sesión tras fallo de intercambio",
-                e
-              );
-            }
           } finally {
-            // intercambio terminado
             this._processing.next(false);
           }
         } else {
+          // Si no hay usuario en Firebase, limpiamos la sesión local
           this.security.logout();
           try {
             localStorage.removeItem(TOKEN_KEY);
@@ -202,28 +103,10 @@ export class FirebaseAuthService {
     }
   }
 
-  // Try a list of endpoints sequentially until one returns a successful response.
-  private async tryExchangeEndpoints(
-    endpoints: string[],
-    body: any
-  ): Promise<any | null> {
-    for (const ep of endpoints) {
-      try {
-        console.log("Attempting OAuth exchange at", ep);
-        // Use relative endpoints so Angular proxy can forward in dev
-        const r = await this.http.post(ep, body).toPromise();
-        console.log("Exchange succeeded at", ep);
-        return r;
-      } catch (err: any) {
-        const status = err && err.status ? err.status : null;
-        console.warn(`Exchange attempt to ${ep} failed`, status || err);
-        // If failure is not 404, stop and propagate error to surface server problems
-        if (status && status !== 404) throw err;
-        // otherwise try next endpoint
-      }
-    }
-    return null;
-  }
+  // NOTE: Backend exchange attempts are disabled. The app uses a local-only
+  // session persisted in `localStorage` via `SecurityService.saveSession()`.
+  // This avoids any network calls to exchange provider tokens with a backend
+  // that does not implement OAuth endpoints.
 
   private ensureEnabled() {
     if (!this.enabled)
@@ -241,19 +124,31 @@ export class FirebaseAuthService {
     this._processing.next(true);
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(this.firebaseAuth, provider);
+    const credential: any = (result as any).credential;
+    const providerAccessToken = credential?.accessToken || null;
     const user = result.user;
-    const token = await user.getIdToken();
-    const dataSesion: any = {
-      id: user.uid || null,
-      name: user.displayName || user.email,
-      email: user.email,
-      token,
-    };
-    this.security.saveSession(dataSesion);
+    const idToken = await user.getIdToken();
     try {
-      localStorage.setItem(TOKEN_KEY, token);
-    } catch {}
-    return dataSesion;
+      // Construimos la sesión mínima a partir de Firebase y la guardamos localmente
+      const dataSesion: any = {
+        id: user.uid || null,
+        name: user.displayName || user.email,
+        email: user.email,
+        token: idToken,
+        providerAccessToken: providerAccessToken,
+        photoURL: user.photoURL || "",
+      };
+      this.security.saveSession(dataSesion);
+      try {
+        localStorage.setItem(TOKEN_KEY, idToken);
+      } catch {}
+      try {
+        this.router.navigate(["/dashboard"], { replaceUrl: true });
+      } catch (e) {}
+      return dataSesion;
+    } finally {
+      this._processing.next(false);
+    }
   }
 
   /**
@@ -327,22 +222,35 @@ export class FirebaseAuthService {
    */
   async signInWithGithub(): Promise<any> {
     this.ensureEnabled();
+    this._processing.next(true);
     const provider = new GithubAuthProvider();
     provider.addScope("user:email");
     const result = await signInWithPopup(this.firebaseAuth, provider);
+    const credential: any = (result as any).credential;
+    const providerAccessToken = credential?.accessToken || null;
     const user = result.user;
-    const token = await user.getIdToken();
-    const dataSesion: any = {
-      id: user.uid || null,
-      name: user.displayName || user.email,
-      email: user.email,
-      token,
-    };
-    this.security.saveSession(dataSesion);
+    const idToken = await user.getIdToken();
+
     try {
-      localStorage.setItem(TOKEN_KEY, token);
-    } catch {}
-    return dataSesion;
+      const dataSesion: any = {
+        id: user.uid || null,
+        name: user.displayName || user.email,
+        email: user.email,
+        token: idToken,
+        providerAccessToken: providerAccessToken,
+        photoURL: user.photoURL || "",
+      };
+      this.security.saveSession(dataSesion);
+      try {
+        localStorage.setItem(TOKEN_KEY, idToken);
+      } catch {}
+      try {
+        this.router.navigate(["/dashboard"], { replaceUrl: true });
+      } catch (e) {}
+      return dataSesion;
+    } finally {
+      this._processing.next(false);
+    }
   }
 
   /**
@@ -353,20 +261,31 @@ export class FirebaseAuthService {
     this._processing.next(true);
     const provider = new OAuthProvider("microsoft.com");
     provider.addScope("email");
-    const result = await signInWithPopup(this.firebaseAuth, provider);
+    const result = await signInWithPopup(this.firebaseAuth, provider as any);
+    const credential: any = (result as any).credential;
+    const providerAccessToken = credential?.accessToken || null;
     const user = result.user;
-    const token = await user.getIdToken();
-    const dataSesion: any = {
-      id: user.uid || null,
-      name: user.displayName || user.email,
-      email: user.email,
-      token,
-    };
-    this.security.saveSession(dataSesion);
+    const idToken = await user.getIdToken();
     try {
-      localStorage.setItem(TOKEN_KEY, token);
-    } catch {}
-    return dataSesion;
+      const dataSesion: any = {
+        id: user.uid || null,
+        name: user.displayName || user.email,
+        email: user.email,
+        token: idToken,
+        providerAccessToken: providerAccessToken,
+        photoURL: user.photoURL || "",
+      };
+      this.security.saveSession(dataSesion);
+      try {
+        localStorage.setItem(TOKEN_KEY, idToken);
+      } catch {}
+      try {
+        this.router.navigate(["/dashboard"], { replaceUrl: true });
+      } catch (e) {}
+      return dataSesion;
+    } finally {
+      this._processing.next(false);
+    }
   }
 
   async signOut(): Promise<void> {

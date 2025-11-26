@@ -27,10 +27,18 @@ export class AuthenticationGuard implements CanActivate {
     | Promise<boolean | UrlTree> // Implementamos el método canActivate y definimos su tipo de retorno
     | boolean
     | UrlTree {
-    if (this.securityService.existSession()) {
+    const exists = this.securityService.existSession();
+    console.log(
+      "AuthenticationGuard: existSession() =>",
+      exists,
+      "route:",
+      state.url
+    );
+    if (exists) {
       return true;
     } else {
       // Use replaceUrl to avoid extra history entries
+      console.warn("AuthenticationGuard: no session, redirecting to /login");
       this.router.navigate(["/login"], { replaceUrl: true });
       return false;
     }

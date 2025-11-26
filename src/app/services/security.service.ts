@@ -147,6 +147,22 @@ export class SecurityService {
   existSession(): boolean {
     // Método para verificar si existe una sesión activa
     let sesionActual = this.getSessionData(); // Obtiene la información de la sesión del local storage
+    // Log para depuración: mostrar si hay datos en localStorage y su longitud
+    try {
+      console.debug(
+        "SecurityService.existSession: sesion raw =>",
+        sesionActual
+      );
+      if (sesionActual) {
+        const parsed = JSON.parse(sesionActual);
+        console.debug("SecurityService.existSession: parsed =>", parsed);
+      }
+    } catch (e) {
+      console.warn(
+        "SecurityService.existSession: no se pudo parsear sesion",
+        e
+      );
+    }
     return sesionActual ? true : false; // Retorna true si existe una sesión activa, de lo contrario retorna false
   }
   /**

@@ -12,4 +12,6 @@ export const environment = {
     messagingSenderId: "487504246800",
     appId: "1:487504246800:web:4220f5387f9aa0622e7295",
   },
+  // En producción siempre debe estar en false
+  allowLocalLogin: false,
 };
