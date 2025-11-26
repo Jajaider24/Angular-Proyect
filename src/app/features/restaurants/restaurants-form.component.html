@@ -3,26 +3,26 @@
 
   <form [formGroup]="form" (ngSubmit)="save()">
     <div class="mb-3">
-      <label class="form-label">Name</label>
+      <label class="form-label">Nombre restaurante</label>
       <input class="form-control" formControlName="name" />
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Phone</label>
+      <label class="form-label">Teléfono</label>
       <input class="form-control" formControlName="phone" />
     </div>
 
     <div formGroupName="address" class="mb-3">
-      <label class="form-label">Street</label>
+      <label class="form-label">Direccion</label>
       <input class="form-control" formControlName="street" />
-      <label class="form-label mt-2">City</label>
+      <label class="form-label mt-2">Ciudad</label>
       <input class="form-control" formControlName="city" />
     </div>
 
     <div class="mt-3">
-      <button class="btn btn-primary" type="submit">Save</button>
+      <button class="btn btn-primary" type="submit">Guardar</button>
       <button class="btn btn-secondary ms-2" type="button" (click)="cancel()">
-        Cancel
+        Cancelar
       </button>
     </div>
   </form>

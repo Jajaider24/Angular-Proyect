@@ -3,10 +3,10 @@
   <p *ngIf="restaurant.address">
     {{ restaurant.address.street }} - {{ restaurant.address.city }}
   </p>
-  <p *ngIf="restaurant.phone">Phone: {{ restaurant.phone }}</p>
+  <p *ngIf="restaurant.phone">Teléfono: {{ restaurant.phone }}</p>
   <div class="mt-3">
-    <button class="btn btn-secondary" (click)="back()">Back</button>
+    <button class="btn btn-secondary" (click)="back()">Volver</button>
   </div>
 </div>
 
-<div *ngIf="!restaurant && loading">Loading...</div>
+<div *ngIf="!restaurant && loading">Cargando...</div>

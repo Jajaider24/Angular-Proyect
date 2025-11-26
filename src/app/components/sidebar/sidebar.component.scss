@@ -125,6 +125,32 @@
   border-left: 4px solid var(--accent-muted);
 }
 
+/* styles for the reports quick link at the bottom */
+.sidebar-reports .nav-link {
+  background: rgba(246, 247, 250, 0.9);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+}
+.sidebar-reports .nav-title {
+  font-weight: 700;
+}
+.sidebar-reports .nav-subtitle {
+  font-size: 0.72rem;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+/* position reports block at the bottom of the sidebar */
+#sidenav-main .collapse {
+  position: relative;
+  padding-bottom: 3.5rem; /* reserve space for bottom action */
+}
+#sidenav-main .sidebar-reports {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+}
+
 /* When active, color the title to the accent for stronger affordance */
 .nav-link.active .nav-title {
   color: inherit; /* will be set via the border color/parent selector */
