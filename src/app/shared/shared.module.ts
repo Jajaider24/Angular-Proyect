@@ -7,6 +7,7 @@ import { ChatbotComponent } from "./components/chatbot/chatbot.component";
 import { CrudDetailComponent } from "./crud/crud-detail.component";
 import { CrudFormComponent } from "./crud/crud-form.component";
 import { CrudListComponent } from "./crud/crud-list.component";
+import { ReplacePipe } from "./pipes/replace.pipe";
 
 // Función requerida por ngx-lottie para cargar animaciones
 export function playerFactory() {
@@ -19,6 +20,7 @@ export function playerFactory() {
     CrudDetailComponent,
     CrudFormComponent,
     ChatbotComponent,
+    ReplacePipe,
   ],
   imports: [
     CommonModule,
@@ -30,6 +32,7 @@ export function playerFactory() {
     CrudDetailComponent,
     CrudFormComponent,
     ChatbotComponent,
+    ReplacePipe,
     CommonModule,
     FormsModule,
   ],

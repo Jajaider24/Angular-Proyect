@@ -14,6 +14,17 @@ export const environment = {
   },
   // En producción siempre debe estar en false
   allowLocalLogin: false,
-  // API Key de Google Gemini para el chatbot inteligente
-  geminiApiKey: "AIzaSyCG_pJ9_XMzlIgRBKYsm5TILicxYz-rlaE",
+  // ========================================
+  // 🔑 API Key de Google Gemini (CHATBOT)
+  // ========================================
+  // ⚠️ IMPORTANTE: Esta API Key ha expirado o no es válida
+  //
+  // Para obtener una nueva:
+  // 1. Ve a: https://aistudio.google.com/app/apikey
+  // 2. Inicia sesión con tu cuenta Google
+  // 3. Crea una nueva API Key
+  // 4. Reemplaza el valor abajo con tu nueva key
+  //
+  // REEMPLAZA "TU_NUEVA_API_KEY_AQUI" con la key que obtengas:
+  geminiApiKey: "AIzaSyAlkoIEouBOh5tIHk7b7rqOE6ejRVgfJ4A",
 };

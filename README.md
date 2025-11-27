@@ -38,3 +38,8 @@ npm install lucide-angular lucide --save --legacy-peer-deps
 
 npm install lottie-web@5.12.2 ngx-lottie@9.0.0 --save --legacy-peer-deps
 ```
+```
+````
+Libreria para que funcione el chatbot con Gemini
+````
+npm install @google/genai

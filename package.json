@@ -25,6 +25,8 @@
     "@angular/platform-browser": "^14.2.0",
     "@angular/platform-browser-dynamic": "^14.2.0",
     "@angular/router": "^14.2.0",
+    "@google/genai": "^1.30.0",
+    "@google/generative-ai": "^0.24.1",
     "@ng-bootstrap/ng-bootstrap": "^13.0.0",
     "@popperjs/core": "^2.11.4",
     "bootstrap": "4.6.1",

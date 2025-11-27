@@ -61,14 +61,8 @@ export class ChatbotComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Mensaje de bienvenida inicial
-    const welcomeMessage =
-      "¡Hola! 👋 Soy tu asistente virtual del sistema de delivery. " +
-      "¿En qué puedo ayudarte hoy? Puedes preguntarme sobre restaurantes, pedidos, conductores y más.";
-    this.addBotMessage(welcomeMessage);
-
-    // Hablar mensaje de bienvenida (opcional, se puede comentar si molesta)
-    setTimeout(() => this.speak(welcomeMessage), 500);
+    // Mensaje de bienvenida inicial (se agrega al abrir el chat, no al cargar)
+    // No se ejecuta automáticamente para evitar que hable al cargar el proyecto
   }
 
   ngOnDestroy(): void {
@@ -82,9 +76,21 @@ export class ChatbotComponent implements OnInit, OnDestroy {
 
   /**
    * Alternar visibilidad del chatbox
+   * Cuando se abre por primera vez, muestra mensaje de bienvenida
    */
   toggleChat(): void {
     this.isOpen = !this.isOpen;
+
+    // Si se está abriendo el chat y no hay mensajes, mostrar bienvenida
+    if (this.isOpen && this.chatHistory.length === 0) {
+      const welcomeMessage =
+        "¡Hola! 👋 Soy tu asistente virtual del sistema de delivery. " +
+        "¿En qué puedo ayudarte hoy? Puedes preguntarme sobre restaurantes, pedidos, conductores y más.";
+      this.addBotMessage(welcomeMessage);
+
+      // Hablar mensaje de bienvenida solo al abrir el chat
+      setTimeout(() => this.speak(welcomeMessage), 500);
+    }
   }
 
   /**
@@ -117,10 +123,14 @@ export class ChatbotComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error("❌ Error al comunicarse con Gemini:", err);
-          this.addBotMessage(
+
+          // Mostrar el mensaje de error detallado del servicio
+          const errorMessage =
+            err.message ||
             "Lo siento, tuve un problema al procesar tu pregunta. " +
-              "Por favor intenta de nuevo o contacta al administrador."
-          );
+              "Por favor intenta de nuevo o contacta al administrador.";
+
+          this.addBotMessage(errorMessage);
           this.loading = false;
         },
       });
@@ -138,6 +148,21 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     this.addBotMessage(
       "¡Conversación reiniciada! 🔄 ¿En qué más puedo ayudarte?"
     );
+  }
+
+  /**
+   * Envía una pregunta rápida predefinida al chatbot.
+   * Esta función es llamada desde los botones de sugerencias.
+   * @param question - La pregunta predefinida a enviar.
+   */
+  sendQuickQuestion(question: string): void {
+    if (!question || !question.trim()) {
+      return;
+    }
+
+    // Asignar la pregunta al input y enviar
+    this.userInput = question;
+    this.sendMessage();
   }
 
   /**

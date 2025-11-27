@@ -1,22 +1,22 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, throwError } from "rxjs";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { from, Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { environment } from "src/environments/environment";
 
 /**
- * Servicio para integración con Google Gemini API
+ * Servicio para integración con Google Gemini API usando SDK oficial
  *
  * Maneja la comunicación con la API de Gemini para responder preguntas
  * del usuario sobre el sistema de delivery. Incluye:
  * - Context-awareness del dominio de negocio
  * - Manejo de errores y reintentos
  * - Formateo de respuestas
- * - Rate limiting (opcional)
+ * - SDK oficial de Google Generative AI
  *
  * Configuración:
  * Necesitas obtener una API Key de Google AI Studio:
- * https://makersuite.google.com/app/apikey
+ * https://aistudio.google.com/app/apikey
  *
  * Luego agrégala en environment.ts:
  * geminiApiKey: 'TU_API_KEY_AQUI'
@@ -25,9 +25,11 @@ import { environment } from "src/environments/environment";
   providedIn: "root",
 })
 export class GeminiService {
-  // URL base de la API de Gemini
-  private readonly apiUrl =
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
+  // Cliente de Google Generative AI
+  private genAI: GoogleGenerativeAI;
+
+  // Modelo a usar
+  private model: any;
 
   // API Key desde environment (más seguro)
   private apiKey = environment.geminiApiKey;
@@ -70,80 +72,88 @@ Si el usuario pregunta algo fuera del tema, responde: "Lo siento, solo puedo ayu
 Responde de forma clara, concisa y amigable. Usa emojis cuando sea apropiado.
 `;
 
-  constructor(private http: HttpClient) {}
+  constructor() {
+    // Inicializar el cliente de Google Generative AI con la API Key
+    console.log("🚀 Inicializando Google Generative AI SDK...");
+    this.genAI = new GoogleGenerativeAI(this.apiKey);
+
+    // Obtener el modelo gemini-2.5-flash (el modelo más reciente)
+    this.model = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    console.log("✅ Modelo Gemini 2.5 Flash inicializado correctamente");
+  }
 
   /**
-   * Envía una pregunta a Gemini y devuelve la respuesta
+   * Envía una pregunta a Gemini y devuelve la respuesta usando el SDK oficial
    * @param question Pregunta del usuario
    * @returns Observable con la respuesta del bot
    */
   askQuestion(question: string): Observable<string> {
+    // Verificar que tenemos API Key
+    console.log("🔑 Verificando API Key...");
+    console.log("📍 API Key presente:", this.apiKey ? "Sí" : "No");
+    console.log("📏 Longitud de API Key:", this.apiKey?.length || 0);
+
+    if (!this.apiKey || this.apiKey === "TU_NUEVA_API_KEY_AQUI") {
+      return throwError(
+        () =>
+          new Error(
+            "🔑 ERROR: No hay una API Key válida configurada.\n\n" +
+              "Por favor:\n" +
+              "1. Ve a: https://aistudio.google.com/app/apikey\n" +
+              "2. Genera una nueva API Key\n" +
+              "3. Actualiza 'src/environments/environment.ts'\n" +
+              "4. Reinicia el servidor (ng serve)"
+          )
+      );
+    }
+
     // Construir el prompt completo con contexto
     const fullPrompt = `${this.systemContext}\n\nUsuario pregunta: ${question}\n\nResponde de forma amigable y útil:`;
 
-    // Preparar payload para Gemini API
-    const payload = {
-      contents: [
-        {
-          parts: [
-            {
-              text: fullPrompt,
-            },
-          ],
-        },
-      ],
-      generationConfig: {
-        temperature: 0.7, // Creatividad moderada
-        maxOutputTokens: 500, // Respuestas concisas
-        topP: 0.9,
-        topK: 40,
-      },
-    };
+    console.log("🌐 Enviando pregunta a Gemini usando SDK oficial...");
 
-    // Headers con API Key
-    const headers = new HttpHeaders({
-      "Content-Type": "application/json",
-    });
-
-    // URL completa con API Key como query param
-    const urlWithKey = `${this.apiUrl}?key=${this.apiKey}`;
-
-    // Hacer request a Gemini
-    return this.http.post<any>(urlWithKey, payload, { headers }).pipe(
+    // Usar el SDK de Google Generative AI para generar contenido
+    // Convertir la Promise a Observable para mantener la compatibilidad con RxJS
+    return from(this.model.generateContent(fullPrompt)).pipe(
       // Extraer el texto de la respuesta
-      map((response) => {
-        console.log("✅ Respuesta de Gemini:", response);
+      map((result: any) => {
+        console.log("✅ Respuesta recibida de Gemini");
 
-        if (
-          response?.candidates &&
-          response.candidates.length > 0 &&
-          response.candidates[0]?.content?.parts &&
-          response.candidates[0].content.parts.length > 0
-        ) {
-          return response.candidates[0].content.parts[0].text;
-        }
+        const response = result.response;
+        const text = response.text();
 
-        throw new Error("Formato de respuesta inválido");
+        console.log("📝 Texto extraído:", text.substring(0, 100) + "...");
+        return text;
       }),
 
       // Manejo de errores
       catchError((error) => {
         console.error("❌ Error en Gemini API:", error);
+        console.error("📊 Detalles del error:", error);
 
         let errorMessage = "Error al comunicarse con el asistente virtual.";
 
-        if (error.status === 400) {
+        // El SDK puede lanzar diferentes tipos de errores
+        if (
+          error.message?.includes("API_KEY_INVALID") ||
+          error.message?.includes("API key not valid")
+        ) {
           errorMessage =
-            "La pregunta no pudo ser procesada. Intenta reformularla.";
-        } else if (error.status === 401 || error.status === 403) {
+            "🔑 ERROR DE AUTENTICACIÓN: La API Key de Gemini NO es válida.\n\n" +
+            "Por favor:\n" +
+            "1. Ve a: https://aistudio.google.com/app/apikey\n" +
+            "2. Verifica que la API Key sea correcta\n" +
+            "3. Asegúrate de haber habilitado la Generative Language API\n" +
+            "4. Actualiza 'src/environments/environment.ts'\n" +
+            "5. Reinicia el servidor (ng serve)";
+        } else if (error.message?.includes("quota")) {
           errorMessage =
-            "Error de autenticación con Gemini API. Verifica la API Key.";
-        } else if (error.status === 429) {
+            "⏱️ Límite de solicitudes excedido. Por favor espera un momento e intenta de nuevo.";
+        } else if (error.message?.includes("SAFETY")) {
           errorMessage =
-            "Límite de solicitudes excedido. Por favor espera un momento.";
-        } else if (error.status === 500) {
-          errorMessage =
-            "El servicio de Gemini está experimentando problemas. Intenta más tarde.";
+            "⚠️ La respuesta fue bloqueada por las políticas de seguridad. Intenta reformular tu pregunta.";
+        } else if (error.message) {
+          errorMessage = `❌ Error: ${error.message}`;
         }
 
         return throwError(() => new Error(errorMessage));

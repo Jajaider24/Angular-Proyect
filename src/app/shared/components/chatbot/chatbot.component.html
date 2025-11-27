@@ -20,7 +20,7 @@
   <div *ngIf="isOpen" class="chat-box">
     <!-- Header con título y botones de control -->
     <div id="chat-title">
-      <strong>Asistente Virtual</strong>
+      <strong>🤖 Asistente Delivery</strong>
 
       <!-- Botón silenciar/activar voz -->
       <button
@@ -28,7 +28,7 @@
         (click)="toggleVoice()"
         [title]="isSpeaking ? 'Silenciar' : 'Voz activa'"
       >
-        {{ isSpeaking ? "🔇" : "🔊" }}
+        {{ isSpeaking ? "🔊" : "🔇" }}
       </button>
 
       <!-- Botón refresh -->
@@ -57,7 +57,33 @@
 
     <!-- Mensaje descriptivo -->
     <div id="chat-message">
-      <small>Pregúntame sobre el sistema de delivery 🍔🏍️</small>
+      <small>¡Hola! Pregunta lo que necesites sobre el sistema 🚀</small>
+      <div class="quick-questions">
+        <button
+          class="quick-question-btn"
+          (click)="sendQuickQuestion('¿Cómo crear un restaurante?')"
+        >
+          📝 Restaurante
+        </button>
+        <button
+          class="quick-question-btn"
+          (click)="sendQuickQuestion('¿Qué es un menú?')"
+        >
+          📋 Menú
+        </button>
+        <button
+          class="quick-question-btn"
+          (click)="sendQuickQuestion('¿Cómo funciona el mapa?')"
+        >
+          🗺️ Mapa
+        </button>
+        <button
+          class="quick-question-btn"
+          (click)="sendQuickQuestion('¿Qué campos tiene un pedido?')"
+        >
+          📦 Pedido
+        </button>
+      </div>
     </div>
 
     <!-- Historial de conversación -->
@@ -71,7 +97,7 @@
         <div class="message-bubble">
           <strong *ngIf="msg.role === 'user'">Tú:</strong>
           <strong *ngIf="msg.role === 'bot'">🤖 Bot:</strong>
-          <p>{{ msg.content }}</p>
+          <p [innerHTML]="msg.content | replace : '\n' : '<br>'"></p>
           <span class="message-time">
             {{ msg.timestamp | date : "short" }}
           </span>
