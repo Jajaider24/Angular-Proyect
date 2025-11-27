@@ -22,9 +22,13 @@
     <div id="chat-title">
       <strong>Asistente Virtual</strong>
 
-      <!-- Botón cerrar -->
-      <button class="close-button" (click)="toggleChat()" title="Cerrar chat">
-        ✕
+      <!-- Botón silenciar/activar voz -->
+      <button
+        class="voice-button"
+        (click)="toggleVoice()"
+        [title]="isSpeaking ? 'Silenciar' : 'Voz activa'"
+      >
+        {{ isSpeaking ? "🔇" : "🔊" }}
       </button>
 
       <!-- Botón refresh -->
@@ -35,17 +39,20 @@
       >
         🔄
       </button>
+
+      <!-- Botón cerrar -->
+      <button class="close-button" (click)="toggleChat()" title="Cerrar chat">
+        ✕
+      </button>
     </div>
 
-    <!-- Avatar animado -->
-    <div class="avatar">
-      <div class="avatar-face">
-        <div class="avatar-eyes">
-          <div class="eye left-eye"></div>
-          <div class="eye right-eye"></div>
-        </div>
-        <div class="avatar-mouth" [class.speaking]="loading"></div>
-      </div>
+    <!-- Avatar animado con Lottie -->
+    <div class="avatar-container">
+      <ng-lottie
+        [options]="avatarOptions"
+        [styles]="{ width: '120px', height: '120px' }"
+        [class.speaking]="isSpeaking || loading"
+      ></ng-lottie>
     </div>
 
     <!-- Mensaje descriptivo -->

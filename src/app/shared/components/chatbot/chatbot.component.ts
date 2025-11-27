@@ -1,20 +1,23 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { AnimationOptions } from "ngx-lottie";
 import { Subject, takeUntil } from "rxjs";
 import { GeminiService } from "../../../services/gemini.service";
 
 /**
- * Componente ChatBot Inteligente
+ * Componente ChatBot Inteligente con Avatar Animado y Voz Sintética
  *
  * Asistente virtual basado en la API de Gemini que responde preguntas frecuentes
  * sobre el sistema de delivery. Implementa:
- * - Interfaz flotante de chat con avatar animado
+ * - Interfaz flotante de chat con avatar animado Lottie
  * - Historial de conversación persistente
  * - Integración con Gemini API para respuestas inteligentes
+ * - Síntesis de voz (Text-to-Speech) para respuestas del bot
  * - Manejo de estados: abierto/cerrado, cargando, error
  *
  * Características:
  * - Botón flotante para abrir/cerrar el chat
- * - Avatar animado (opcional con voz sintética)
+ * - Avatar animado Lottie con animaciones suaves
+ * - Voz sintética que lee las respuestas del bot
  * - Historial scrolleable de mensajes
  * - Refresh para reiniciar conversación
  * - Context-aware: conoce el dominio del sistema de delivery
@@ -29,6 +32,14 @@ export class ChatbotComponent implements OnInit, OnDestroy {
   isOpen = false;
   loading = false;
   userInput = "";
+  isSpeaking = false;
+
+  // Configuración de animación Lottie para el avatar
+  avatarOptions: AnimationOptions = {
+    path: "/assets/avatar-animation.json",
+    loop: true,
+    autoplay: true,
+  };
 
   // Historial de mensajes { role: 'user' | 'bot', content: string, timestamp: Date }
   chatHistory: Array<{
@@ -40,17 +51,31 @@ export class ChatbotComponent implements OnInit, OnDestroy {
   // Subject para cleanup de subscripciones
   private destroy$ = new Subject<void>();
 
-  constructor(private geminiService: GeminiService) {}
+  // Instancia de Web Speech API para síntesis de voz
+  private speechSynthesis: SpeechSynthesis;
+  private currentUtterance: SpeechSynthesisUtterance | null = null;
+
+  constructor(private geminiService: GeminiService) {
+    // Inicializar Web Speech API si está disponible
+    this.speechSynthesis = window.speechSynthesis;
+  }
 
   ngOnInit(): void {
     // Mensaje de bienvenida inicial
-    this.addBotMessage(
+    const welcomeMessage =
       "¡Hola! 👋 Soy tu asistente virtual del sistema de delivery. " +
-        "¿En qué puedo ayudarte hoy? Puedes preguntarme sobre restaurantes, pedidos, conductores y más."
-    );
+      "¿En qué puedo ayudarte hoy? Puedes preguntarme sobre restaurantes, pedidos, conductores y más.";
+    this.addBotMessage(welcomeMessage);
+
+    // Hablar mensaje de bienvenida (opcional, se puede comentar si molesta)
+    setTimeout(() => this.speak(welcomeMessage), 500);
   }
 
   ngOnDestroy(): void {
+    // Detener cualquier voz en reproducción
+    this.stopSpeaking();
+
+    // Cleanup de subscripciones
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -128,7 +153,7 @@ export class ChatbotComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Agregar mensaje del bot al historial
+   * Agregar mensaje del bot al historial y reproducir voz
    */
   private addBotMessage(content: string): void {
     this.chatHistory.push({
@@ -137,6 +162,9 @@ export class ChatbotComponent implements OnInit, OnDestroy {
       timestamp: new Date(),
     });
     this.scrollToBottom();
+
+    // Reproducir respuesta en voz sintética (con pequeño delay)
+    setTimeout(() => this.speak(content), 300);
   }
 
   /**
@@ -159,6 +187,79 @@ export class ChatbotComponent implements OnInit, OnDestroy {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       this.sendMessage();
+    }
+  }
+
+  /**
+   * Síntesis de voz: Hace que el avatar "hable" el texto
+   * Utiliza Web Speech API para convertir texto a voz
+   * @param text Texto que el avatar dirá en voz alta
+   */
+  speak(text: string): void {
+    // Verificar soporte del navegador
+    if (!this.speechSynthesis) {
+      console.warn("⚠️ Síntesis de voz no disponible en este navegador");
+      return;
+    }
+
+    // Detener cualquier voz anterior
+    this.stopSpeaking();
+
+    // Crear nueva utterance (declaración de voz)
+    this.currentUtterance = new SpeechSynthesisUtterance(text);
+
+    // Configurar voz en español
+    const voices = this.speechSynthesis.getVoices();
+    const spanishVoice = voices.find(
+      (voice) => voice.lang.startsWith("es") || voice.lang.startsWith("ES")
+    );
+
+    if (spanishVoice) {
+      this.currentUtterance.voice = spanishVoice;
+    }
+
+    // Configuración de la voz
+    this.currentUtterance.lang = "es-ES";
+    this.currentUtterance.rate = 1.0; // Velocidad normal
+    this.currentUtterance.pitch = 1.0; // Tono normal
+    this.currentUtterance.volume = 0.8; // Volumen al 80%
+
+    // Eventos de la voz
+    this.currentUtterance.onstart = () => {
+      this.isSpeaking = true;
+      console.log("🗣️ Avatar hablando...");
+    };
+
+    this.currentUtterance.onend = () => {
+      this.isSpeaking = false;
+      console.log("🔇 Avatar terminó de hablar");
+    };
+
+    this.currentUtterance.onerror = (event) => {
+      this.isSpeaking = false;
+      console.error("❌ Error en síntesis de voz:", event);
+    };
+
+    // Reproducir voz
+    this.speechSynthesis.speak(this.currentUtterance);
+  }
+
+  /**
+   * Detener la voz actual
+   */
+  stopSpeaking(): void {
+    if (this.speechSynthesis && this.speechSynthesis.speaking) {
+      this.speechSynthesis.cancel();
+      this.isSpeaking = false;
+    }
+  }
+
+  /**
+   * Alternar voz on/off
+   */
+  toggleVoice(): void {
+    if (this.isSpeaking) {
+      this.stopSpeaking();
     }
   }
 }
