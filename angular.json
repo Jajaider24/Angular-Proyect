@@ -138,6 +138,9 @@
           }
         }
       }
+    },
+    "cli": {
+      "analytics": "59ca838f-48ee-4a3a-9438-c9c94eb9bd76"
     }
   },
   "defaultProject": "argon-dashboard-angular",

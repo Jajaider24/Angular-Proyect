@@ -1,0 +1,57 @@
+<div class="container mt-3">
+  <h5 class="mb-3">{{ isEdit ? 'Editar pedido' : 'Crear pedido' }}</h5>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="card p-3">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Cliente</label>
+        <select class="form-select" formControlName="customerId">
+          <option [ngValue]="null">Selecciona un cliente</option>
+          <option *ngFor="let c of customers" [ngValue]="c.id">{{ c.name || (c.email || c.id) }}</option>
+        </select>
+        <div class="text-danger small" *ngIf="form.get('customerId')?.touched && form.get('customerId')?.invalid">Requerido</div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Menú</label>
+        <select class="form-select" formControlName="menuId">
+          <option [ngValue]="null">Selecciona un menú</option>
+          <option *ngFor="let m of menus" [ngValue]="m.id">{{ m.name || m.id }}</option>
+        </select>
+        <div class="text-danger small" *ngIf="form.get('menuId')?.touched && form.get('menuId')?.invalid">Requerido</div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Motocicleta (opcional)</label>
+        <select class="form-select" formControlName="motorcycleId">
+          <option [ngValue]="null">Sin asignar</option>
+          <option *ngFor="let m of motorcycles" [ngValue]="m.id">{{ m.license_plate || m.id }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Cantidad</label>
+        <input type="number" min="1" class="form-control" formControlName="quantity" />
+        <div class="text-danger small" *ngIf="form.get('quantity')?.touched && form.get('quantity')?.invalid">Mínimo 1</div>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Total</label>
+        <input type="number" min="0" step="0.01" class="form-control" formControlName="totalPrice" />
+        <div class="text-danger small" *ngIf="form.get('totalPrice')?.touched && form.get('totalPrice')?.invalid">No puede ser negativo</div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Estado</label>
+        <select class="form-select" formControlName="status">
+          <option *ngFor="let s of statuses" [ngValue]="s">{{ s }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mt-3 d-flex gap-2">
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Guardar</button>
+      <button class="btn btn-secondary" type="button" (click)="cancel()">Cancelar</button>
+    </div>
+  </form>
+</div>

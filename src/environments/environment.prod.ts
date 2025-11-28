@@ -1,5 +1,8 @@
 export const environment = {
   production: true,
+  // Aliases para consistencia con servicios (ajusta a tu backend real)
+  apiUrl: "https://api.tu-dominio.com",
+  socketUrl: "https://api.tu-dominio.com",
   // En producción debes reemplazar por la configuración de Firebase
   // correspondiente a tu proyecto (no subir claves públicas que no
   // correspondan al entorno). Estos valores son placeholders y deben

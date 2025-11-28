@@ -1,7 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
 import { Order } from "src/app/core/models/order.model";
 import { OrdersService } from "src/app/core/services/orders.service";
+import { MotorcyclesService } from "src/app/core/services/motorcycles.service";
+import { environment } from "src/environments/environment";
 import Swal from "sweetalert2";
 
 @Component({
@@ -59,6 +62,13 @@ import Swal from "sweetalert2";
                     Editar
                   </button>
                   <button
+                    class="btn btn-sm btn-outline-success me-1"
+                    (click)="track(o)"
+                    [title]="o.motorcycleId ? 'Rastrear entrega' : 'Pedido sin moto asignada'"
+                  >
+                    Rastrear
+                  </button>
+                  <button
                     class="btn btn-sm btn-outline-danger"
                     (click)="delete(o.id)"
                   >
@@ -98,7 +108,12 @@ export class OrdersListComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  constructor(private svc: OrdersService, private router: Router) {}
+  constructor(
+    private svc: OrdersService,
+    private motos: MotorcyclesService,
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.load();
@@ -164,6 +179,52 @@ export class OrdersListComponent implements OnInit {
         },
         error: () => Swal.fire("Error", "Error eliminando el pedido.", "error"),
       });
+    });
+  }
+
+  // Inicia el seguimiento de la moto asociada y navega al mapa
+  track(o: Order) {
+    if (!o.motorcycleId) {
+      Swal.fire(
+        "Sin motocicleta",
+        "Este pedido no tiene una moto asignada aún.",
+        "info"
+      );
+      return;
+    }
+
+    this.motos.get(o.motorcycleId).subscribe({
+      next: (moto: any) => {
+        const plate = moto?.license_plate || moto?.plate || null;
+        if (!plate) {
+          Swal.fire(
+            "Sin placa",
+            "No fue posible resolver la placa de la motocicleta.",
+            "warning"
+          );
+          return;
+        }
+        this.http
+          .post(`${environment.url_backend}/motorcycles/track/${plate}`, {})
+          .subscribe({
+            next: () =>
+              this.router.navigate(["/orders/map"], {
+                queryParams: { plate },
+              }),
+            error: () =>
+              Swal.fire(
+                "Error",
+                "No fue posible iniciar el rastreo para la placa indicada.",
+                "error"
+              ),
+          });
+      },
+      error: () =>
+        Swal.fire(
+          "Error",
+          "No fue posible obtener los datos de la motocicleta.",
+          "error"
+        ),
     });
   }
 }

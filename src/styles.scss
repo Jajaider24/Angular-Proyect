@@ -122,3 +122,6 @@ body[data-accent="primary"] table .btn-outline-primary {
 .nav-link {
   position: relative;
 }
+
+/* Leaflet CSS (necesario para que el mapa se renderice correctamente) */
+@import url("https://unpkg.com/leaflet@1.9.3/dist/leaflet.css");
