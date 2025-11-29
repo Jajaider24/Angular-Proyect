@@ -5,9 +5,11 @@ import { RouterModule } from "@angular/router";
 
 import { ShiftsRoutingModule } from "./shifts-routing.module";
 import { ShiftsListComponent } from "./shifts-list.component";
+import { ShiftsDetailComponent } from "./shifts-detail.component";
+import { ShiftsFormComponent } from "./shifts-form.component";
 
 @NgModule({
-  declarations: [ShiftsListComponent],
+  declarations: [ShiftsListComponent, ShiftsDetailComponent, ShiftsFormComponent],
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, ShiftsRoutingModule],
 })
 export class ShiftsModule {}

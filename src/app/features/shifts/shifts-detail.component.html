@@ -1,0 +1,52 @@
+<div class="container mt-3" *ngIf="shift; else loadingTpl">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h4 class="mb-0">Detalle Turno #{{ shift.id }}</h4>
+      <p class="text-muted mb-0">Información del turno y estado</p>
+    </div>
+    <div>
+      <button class="btn btn-sm btn-outline-secondary" (click)="backToList()">Volver</button>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h6 class="text-uppercase text-muted">Conductor</h6>
+          <p class="mb-2">{{ driverMap[shift.driverId]?.name || 'ID ' + shift.driverId }}</p>
+          <h6 class="text-uppercase text-muted">Moto</h6>
+          <p class="mb-2">{{ motorcycleMap[shift.motorcycleId]?.licensePlate || 'ID ' + shift.motorcycleId }}</p>
+        </div>
+        <div class="col-md-6">
+          <h6 class="text-uppercase text-muted">Inicio</h6>
+          <p class="mb-2">{{ formatDate(shift.startTime) }}</p>
+          <h6 class="text-uppercase text-muted">Fin</h6>
+          <p class="mb-2">{{ formatDate(shift.endTime) }}</p>
+        </div>
+      </div>
+      <hr />
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+          <span class="badge" [ngClass]="shift.status">{{ shift.status || 'sin_estado' }}</span>
+          <span class="ms-3 text-sm text-muted">Duración: {{ getDuration() }}</span>
+        </div>
+        <div class="mt-2 mt-md-0">
+          <button *ngIf="canFinalize()" class="btn btn-sm btn-success me-2" (click)="finalizeShift()">Finalizar</button>
+          <button *ngIf="canCancel()" class="btn btn-sm btn-danger" (click)="cancelShift()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h6 class="text-uppercase text-muted">Acciones rápidas</h6>
+      <p class="text-sm mb-0">Utiliza los botones para finalizar o cancelar el turno según corresponda.</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="container mt-3 text-center">Cargando turno...</div>
+</ng-template>

@@ -1,0 +1,7 @@
+.badge {
+  &.scheduled { background: #11cdef; }
+  &.in_progress { background: #fb6340; }
+  &.finished { background: #2dce89; }
+  &.cancelled { background: #f5365c; }
+  &.sin_estado { background: #8898aa; }
+}

@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, forkJoin, takeUntil } from "rxjs";
 import Swal from "sweetalert2";
 
 import { Shift } from "src/app/core/models";
 import { ShiftsService } from "src/app/core/services/shifts.service";
+import { DriversService } from "src/app/core/services/drivers.service";
+import { MotorcyclesService } from "src/app/core/services/motorcycles.service";
 
 @Component({
   selector: "app-shifts-list",
@@ -16,9 +18,16 @@ export class ShiftsListComponent implements OnInit, OnDestroy {
   filteredShifts: Shift[] = [];
   loading = false;
   searchTerm = "";
+  driverMap: Record<number, string> = {};
+  motorcycleMap: Record<number, string> = {};
   private destroy$ = new Subject<void>();
 
-  constructor(private shiftsService: ShiftsService, private router: Router) {}
+  constructor(
+    private shiftsService: ShiftsService,
+    private driversService: DriversService,
+    private motorcyclesService: MotorcyclesService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadShifts();
@@ -31,13 +40,21 @@ export class ShiftsListComponent implements OnInit, OnDestroy {
 
   loadShifts(): void {
     this.loading = true;
-    this.shiftsService
-      .list()
+    forkJoin({
+      shifts: this.shiftsService.list(),
+      drivers: this.driversService.list(),
+      motorcycles: this.motorcyclesService.list(),
+    })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (data) => {
-          this.shifts = data;
-          this.filteredShifts = data;
+        next: ({ shifts, drivers, motorcycles }) => {
+          this.shifts = shifts;
+          this.filteredShifts = shifts;
+          this.driverMap = drivers.reduce((acc, d) => ({ ...acc, [d.id]: d.name }), {});
+          this.motorcycleMap = motorcycles.reduce(
+            (acc, m) => ({ ...acc, [m.id]: m.licensePlate }),
+            {}
+          );
           this.loading = false;
         },
         error: (err) => {

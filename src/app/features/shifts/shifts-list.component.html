@@ -32,8 +32,8 @@
           <thead>
             <tr>
               <th>ID</th>
-              <th>Conductor ID</th>
-              <th>Moto ID</th>
+              <th>Conductor</th>
+              <th>Moto</th>
               <th>Inicio</th>
               <th>Fin</th>
               <th>Estado</th>
@@ -43,8 +43,8 @@
           <tbody>
             <tr *ngFor="let s of filteredShifts">
               <td>{{ s.id }}</td>
-              <td>{{ s.driverId }}</td>
-              <td>{{ s.motorcycleId }}</td>
+              <td>{{ driverMap[s.driverId] || ('ID ' + s.driverId) }}</td>
+              <td>{{ motorcycleMap[s.motorcycleId] || ('ID ' + s.motorcycleId) }}</td>
               <td>{{ formatDate(s.startTime) }}</td>
               <td>{{ formatDate(s.endTime) }}</td>
               <td>
