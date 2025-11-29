@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
+import Swal from "sweetalert2";
 import { Motorcycle } from "src/app/core/models";
 import { MotorcyclesService } from "src/app/core/services/motorcycles.service";
 
@@ -74,20 +75,29 @@ export class MotorcyclesListComponent implements OnInit, OnDestroy {
   }
 
   deleteMotorcycle(id: number): void {
-    if (!confirm("¿Eliminar esta motocicleta?")) return;
-
-    this.motorcyclesService
-      .delete(id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.motorcycles = this.motorcycles.filter((m) => m.id !== id);
-          this.filteredMotorcycles = this.filteredMotorcycles.filter(
-            (m) => m.id !== id
-          );
-        },
-        error: (err) => console.error("Error:", err),
-      });
+    Swal.fire({
+      title: "¿Eliminar motocicleta?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((res) => {
+      if (!res.isConfirmed) return;
+      this.motorcyclesService
+        .delete(id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.motorcycles = this.motorcycles.filter((m) => m.id !== id);
+            this.filteredMotorcycles = this.filteredMotorcycles.filter(
+              (m) => m.id !== id
+            );
+            Swal.fire("Eliminada", "La motocicleta fue eliminada.", "success");
+          },
+          error: () => Swal.fire("Error", "No fue posible eliminar.", "error"),
+        });
+    });
   }
 
   createNew(): void {

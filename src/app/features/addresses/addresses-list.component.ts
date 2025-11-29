@@ -3,6 +3,8 @@ import { Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 import { Address } from "src/app/core/models";
 import { AddressesService } from "src/app/core/services/addresses.service";
+import { AddressLocationCacheService } from "src/app/core/services/address-location-cache.service";
+import Swal from "sweetalert2";
 
 /**
  * Componente para listar todas las direcciones de entrega del sistema.
@@ -40,7 +42,8 @@ export class AddressesListComponent implements OnInit, OnDestroy {
 
   constructor(
     private addressesService: AddressesService,
-    private router: Router
+    private router: Router,
+    public locationCache: AddressLocationCacheService
   ) {}
 
   ngOnInit(): void {
@@ -65,8 +68,9 @@ export class AddressesListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
-          this.addresses = data;
-          this.filteredAddresses = data;
+          // Normalizamos campos a camelCase para el template
+          this.addresses = (data || []).map((a: any) => this.normalize(a));
+          this.filteredAddresses = this.addresses;
           this.loading = false;
         },
         error: (err) => {
@@ -75,6 +79,22 @@ export class AddressesListComponent implements OnInit, OnDestroy {
           // TODO: Mostrar notificación de error con ToastrService
         },
       });
+  }
+
+  /**
+   * Adapta posibles respuestas en snake_case a camelCase usados por la UI
+   */
+  private normalize(a: any): Address {
+    return {
+      id: a.id,
+      street: a.street,
+      city: a.city,
+      state: a.state,
+      postalCode: a.postalCode ?? a.postal_code,
+      lat: a.lat,
+      lng: a.lng,
+      orderId: a.orderId ?? a.order_id,
+    } as Address;
   }
 
   /**
@@ -90,13 +110,15 @@ export class AddressesListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Filtrar por múltiples campos
+    // Filtrar por múltiples campos en modelo ya normalizado
     this.filteredAddresses = this.addresses.filter((addr) => {
       return (
         addr.street?.toLowerCase().includes(term) ||
         addr.city?.toLowerCase().includes(term) ||
-        addr.state?.toLowerCase().includes(term) ||
-        addr.postalCode?.toLowerCase().includes(term)
+        (addr.state ? addr.state.toLowerCase().includes(term) : false) ||
+        (addr.postalCode
+          ? String(addr.postalCode).toLowerCase().includes(term)
+          : false)
       );
     });
   }
@@ -120,30 +142,34 @@ export class AddressesListComponent implements OnInit, OnDestroy {
    * Usa SweetAlert2 para mostrar un diálogo de confirmación.
    */
   deleteAddress(id: number): void {
-    // TODO: Importar Swal (SweetAlert2) cuando esté disponible
-    const confirmDelete = confirm(
-      "¿Estás seguro de eliminar esta dirección? Esta acción no se puede deshacer."
-    );
-
-    if (!confirmDelete) return;
-
-    this.addressesService
-      .delete(id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          // Remover de la lista local sin recargar
-          this.addresses = this.addresses.filter((a) => a.id !== id);
-          this.filteredAddresses = this.filteredAddresses.filter(
-            (a) => a.id !== id
-          );
-          // TODO: Mostrar notificación de éxito
-        },
-        error: (err) => {
-          console.error("Error al eliminar dirección:", err);
-          // TODO: Mostrar notificación de error
-        },
-      });
+    Swal.fire({
+      title: "¿Eliminar dirección?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((res) => {
+      if (!res.isConfirmed) return;
+      this.addressesService
+        .delete(id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.addresses = this.addresses.filter((a) => a.id !== id);
+            this.filteredAddresses = this.filteredAddresses.filter(
+              (a) => a.id !== id
+            );
+            Swal.fire("Eliminada", "La dirección fue eliminada.", "success");
+          },
+          error: () =>
+            Swal.fire(
+              "Error",
+              "No fue posible eliminar la dirección.",
+              "error"
+            ),
+        });
+    });
   }
 
   /**

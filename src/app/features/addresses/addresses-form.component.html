@@ -157,6 +157,33 @@
             </small>
           </div>
 
+          <!-- Mapa interactivo para coordenadas -->
+          <div class="form-group">
+            <label class="form-control-label">
+              Coordenadas (opcional)
+            </label>
+            <div class="mb-2 text-muted">
+              <small>
+                Haz clic en el mapa para fijar la ubicación. Puedes arrastrar el marcador.
+              </small>
+            </div>
+            <div id="addressFormMap" style="height: 320px; border-radius: 8px; overflow: hidden;" class="mb-2"></div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text">Lat</span>
+                  <input type="text" class="form-control" formControlName="lat" readonly />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text">Lng</span>
+                  <input type="text" class="form-control" formControlName="lng" readonly />
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Botones de acción -->
           <hr class="my-4" />
           <div class="text-right">

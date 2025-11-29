@@ -1,3 +1,15 @@
+/* Leaflet map styles (tiles, markers) */
+@import url("~leaflet/dist/leaflet.css");
+
+/* Ajustes para asegurar que el ícono del marcador se vea nítido y no colapse */
+.leaflet-container img.leaflet-marker-icon,
+.leaflet-container img.leaflet-marker-shadow {
+  image-rendering: auto;
+  display: inline-block;
+}
+
+/* Evitar que reglas globales de img (si existieran) deformen el ícono */
+img.leaflet-marker-icon { max-width: none !important; }
 /* Minimal global styles to satisfy angular.json reference. */
 @import "./assets/scss/argon.scss";
 

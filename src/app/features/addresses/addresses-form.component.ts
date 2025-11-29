@@ -5,6 +5,21 @@ import { Subject, takeUntil } from "rxjs";
 import { Address } from "src/app/core/models";
 import { AddressesService } from "src/app/core/services/addresses.service";
 import { OrdersService } from "src/app/core/services/orders.service";
+import * as L from "leaflet";
+import { AddressLocationCacheService } from "src/app/core/services/address-location-cache.service";
+
+// Ícono por defecto Leaflet (CDN) para evitar problemas de resolución de assets
+const DEFAULT_LEAFLET_ICON = L.icon({
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+// @ts-ignore sobrescribimos configuración global
+L.Marker.prototype.options.icon = DEFAULT_LEAFLET_ICON;
 
 /**
  * Componente para crear y editar direcciones de entrega.
@@ -43,13 +58,16 @@ export class AddressesFormComponent implements OnInit, OnDestroy {
 
   // Subject para limpieza de suscripciones
   private destroy$ = new Subject<void>();
+  private map?: L.Map;
+  private marker?: L.Marker;
 
   constructor(
     private fb: FormBuilder,
     private addressesService: AddressesService,
     private ordersService: OrdersService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private locationCache: AddressLocationCacheService
   ) {}
 
   ngOnInit(): void {
@@ -65,13 +83,13 @@ export class AddressesFormComponent implements OnInit, OnDestroy {
       this.isEdit = true;
       this.addressId = Number(idParam);
       this.loadAddress(this.addressId);
+    } else {
+      // Modo creación: inicializar mapa centrado por defecto
+      setTimeout(() => this.initMap(), 0);
     }
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+  // (Eliminado ngOnDestroy duplicado; ver al final para cleanup del mapa y suscripciones)
 
   /**
    * Construye el formulario reactivo con todas las validaciones.
@@ -126,6 +144,10 @@ export class AddressesFormComponent implements OnInit, OnDestroy {
 
       // Información adicional: opcional, máximo 500 caracteres
       additional_info: ["", [Validators.maxLength(500)]],
+
+      // Coordenadas opcionales para ubicación precisa
+      lat: [null],
+      lng: [null],
     });
   }
 
@@ -157,8 +179,45 @@ export class AddressesFormComponent implements OnInit, OnDestroy {
       .get(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (address) => {
-          this.form.patchValue(address);
+        next: (address: any) => {
+          // Normalizar y hacer patch
+          const normalized: Partial<Address> = {
+            id: address.id,
+            street: address.street,
+            city: address.city,
+            state: address.state,
+            postalCode: address.postalCode ?? address.postal_code,
+            lat: address.lat ?? address.latitude,
+            lng: address.lng ?? address.longitude,
+            orderId: address.orderId ?? address.order_id,
+          } as any;
+          this.form.patchValue({
+            order_id: normalized.orderId,
+            street: normalized.street,
+            city: normalized.city,
+            state: normalized.state,
+            postal_code: normalized.postalCode,
+            additional_info: (address as any).additional_info,
+            lat: normalized.lat,
+            lng: normalized.lng,
+          });
+          // Recuperar coords cache si backend no las devolvió
+          if ((!normalized.lat || !normalized.lng) && this.addressId) {
+            const cached = this.locationCache.get(this.addressId);
+            if (cached) {
+              this.form.patchValue({ lat: cached.lat, lng: cached.lng });
+              setTimeout(() => this.initMap(cached.lat, cached.lng), 0);
+            } else {
+              setTimeout(() => this.initMap(), 0);
+            }
+          } else {
+          // Inicializar mapa si hay coords
+            if (normalized.lat && normalized.lng) {
+              setTimeout(() => this.initMap(normalized.lat!, normalized.lng!), 0);
+            } else {
+              setTimeout(() => this.initMap(), 0);
+            }
+          }
           this.loading = false;
         },
         error: (err) => {
@@ -186,7 +245,17 @@ export class AddressesFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const payload = this.form.value;
+    const v = this.form.value;
+    const payload: any = {
+      order_id: v.order_id,
+      street: v.street,
+      city: v.city,
+      state: v.state,
+      postal_code: v.postal_code,
+      additional_info: v.additional_info,
+      lat: v.lat,
+      lng: v.lng,
+    };
     this.loading = true;
 
     // Decidir operación según modo
@@ -196,8 +265,12 @@ export class AddressesFormComponent implements OnInit, OnDestroy {
         : this.addressesService.create(payload);
 
     operation.pipe(takeUntil(this.destroy$)).subscribe({
-      next: () => {
-        // TODO: Mostrar notificación de éxito
+      next: (saved: any) => {
+        // Persistir coords solo en cache local
+        if (v.lat && v.lng) {
+          const id = this.isEdit ? this.addressId! : saved?.id;
+          if (id) this.locationCache.set(id, Number(v.lat), Number(v.lng));
+        }
         this.router.navigate(["/addresses"]);
       },
       error: (err) => {
@@ -258,5 +331,51 @@ export class AddressesFormComponent implements OnInit, OnDestroy {
     }
 
     return "Valor inválido";
+  }
+
+  /** Mapa interactivo para seleccionar coordenadas */
+  private initMap(lat?: number, lng?: number) {
+    if (this.map) {
+      this.map.remove();
+      this.map = undefined;
+    }
+    const center: [number, number] = [lat ?? 5.0703, lng ?? -75.5138]; // Manizales por defecto
+    this.map = L.map("addressFormMap", { center, zoom: 14 });
+    setTimeout(() => this.map?.invalidateSize(), 150);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap contributors",
+      maxZoom: 19,
+    }).addTo(this.map);
+
+    if (lat && lng) {
+      this.marker = L.marker([lat, lng], { draggable: true }).addTo(this.map);
+      this.marker.on("dragend", () => {
+        const p = this.marker!.getLatLng();
+        this.form.patchValue({ lat: p.lat, lng: p.lng });
+      });
+    }
+
+    this.map.on("click", (e: L.LeafletMouseEvent) => {
+      const { latlng } = e;
+      if (!this.marker) {
+        this.marker = L.marker(latlng, { draggable: true }).addTo(this.map!);
+        this.marker.on("dragend", () => {
+          const p = this.marker!.getLatLng();
+          this.form.patchValue({ lat: p.lat, lng: p.lng });
+        });
+      } else {
+        this.marker.setLatLng(latlng);
+      }
+      this.form.patchValue({ lat: latlng.lat, lng: latlng.lng });
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    if (this.map) {
+      this.map.remove();
+      this.map = undefined;
+    }
   }
 }

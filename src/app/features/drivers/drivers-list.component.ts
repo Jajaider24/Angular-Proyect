@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 import { Driver } from "src/app/core/models";
 import { DriversService } from "src/app/core/services/drivers.service";
+import Swal from "sweetalert2";
 
 @Component({
   selector: "app-drivers-list",
@@ -71,20 +72,30 @@ export class DriversListComponent implements OnInit, OnDestroy {
   }
 
   deleteDriver(id: number): void {
-    if (!confirm("¿Eliminar este conductor?")) return;
-
-    this.driversService
-      .delete(id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.drivers = this.drivers.filter((d) => d.id !== id);
-          this.filteredDrivers = this.filteredDrivers.filter(
-            (d) => d.id !== id
-          );
-        },
-        error: (err) => console.error("Error:", err),
-      });
+    Swal.fire({
+      title: "¿Eliminar conductor?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((res) => {
+      if (!res.isConfirmed) return;
+      this.driversService
+        .delete(id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.drivers = this.drivers.filter((d) => d.id !== id);
+            this.filteredDrivers = this.filteredDrivers.filter(
+              (d) => d.id !== id
+            );
+            Swal.fire("Eliminado", "El conductor fue eliminado.", "success");
+          },
+          error: () =>
+            Swal.fire("Error", "No fue posible eliminar.", "error"),
+        });
+    });
   }
 
   createNew(): void {

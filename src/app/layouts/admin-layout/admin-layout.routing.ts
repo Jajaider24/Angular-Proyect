@@ -70,11 +70,11 @@ export const AdminLayoutRoutes: Routes = [
   },
   // TODO: Descomentar cuando se creen los módulos
   // // Turnos de trabajo (conductor + moto)
-  // {
-  //   path: "shifts",
-  //   loadChildren: () =>
-  //     import("../../features/shifts/shifts.module").then((m) => m.ShiftsModule),
-  // },
+  {
+    path: "shifts",
+    loadChildren: () =>
+      import("../../features/shifts/shifts.module").then((m) => m.ShiftsModule),
+  },
   // // Incidencias/problemas de las motos
   // {
   //   path: "issues",
