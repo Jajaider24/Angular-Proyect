@@ -1,9 +1,70 @@
-<div class="restaurant-detail" *ngIf="restaurant">
-  <h4>{{ restaurant.name }}</h4>
-  <p *ngIf="restaurant.address">
-    {{ restaurant.address.street }} - {{ restaurant.address.city }}
-  </p>
-  <p *ngIf="restaurant.phone">Teléfono: {{ restaurant.phone }}</p>
+<div class="restaurant-detail" *ngIf="restaurant as r">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h4 class="mb-0">{{ r.name }}</h4>
+    <span class="badge bg-secondary">ID: {{ r.id }}</span>
+  </div>
+
+  <!-- Información principal del restaurante -->
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="text-muted small">Dirección</div>
+          <div>
+            <!-- Backend entrega address como string -->
+            {{ r.address || '—' }}
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="text-muted small">Teléfono</div>
+          <div>{{ r.phone || '—' }}</div>
+        </div>
+        <div class="col-md-3">
+          <div class="text-muted small">Email</div>
+          <div>{{ r.email || '—' }}</div>
+        </div>
+        <div class="col-md-3">
+          <div class="text-muted small">Creado</div>
+          <div>{{ r.created_at | date:'medium' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menús asociados al restaurante (si el backend los provee) -->
+  <div class="card mb-3" *ngIf="r.menus?.length">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <span>Menús asignados</span>
+      <span class="badge bg-info">{{ r.menus.length }}</span>
+    </div>
+    <div class="card-body p-0">
+      <table class="table table-sm mb-0">
+        <thead>
+          <tr>
+            <th>Menú</th>
+            <th>Productos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of r.menus">
+            <td>{{ m.name || m.id }}</td>
+            <td>
+              <!-- soporte flexible: products puede ser número o array -->
+              <ng-container *ngIf="m.products as prods">
+                <ng-container *ngIf="prods?.length !== undefined; else countOnly">
+                  {{ prods.length }}
+                </ng-container>
+                <ng-template #countOnly>{{ prods }}</ng-template>
+              </ng-container>
+              <ng-container *ngIf="!m.products">—</ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Acciones -->
   <div class="mt-3">
     <button class="btn btn-secondary" (click)="back()">Volver</button>
   </div>

@@ -1,0 +1,40 @@
+<div class="container mt-3">
+  <h4 *ngIf="!isEdit">Crear menú</h4>
+  <h4 *ngIf="isEdit">Editar menú</h4>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="card p-3">
+    <div class="mb-3">
+      <label class="form-label">Restaurante <span class="text-danger">*</span></label>
+      <select class="form-select" formControlName="restaurant_id" [class.is-invalid]="submitted && f.restaurant_id.invalid">
+        <option [ngValue]="null">Selecciona restaurante</option>
+        <option *ngFor="let r of restaurants" [ngValue]="r.id">{{ r.name }}</option>
+      </select>
+      <div *ngIf="submitted && f.restaurant_id.invalid" class="invalid-feedback">El restaurante es obligatorio.</div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Producto <span class="text-danger">*</span></label>
+      <select class="form-select" formControlName="product_id" [class.is-invalid]="submitted && f.product_id.invalid">
+        <option [ngValue]="null">Selecciona producto</option>
+        <option *ngFor="let p of products" [ngValue]="p.id">{{ p.name }}</option>
+      </select>
+      <div *ngIf="submitted && f.product_id.invalid" class="invalid-feedback">El producto es obligatorio.</div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Precio <span class="text-danger">*</span></label>
+      <input type="number" step="0.01" class="form-control" formControlName="price" [class.is-invalid]="submitted && f.price.invalid" />
+      <div *ngIf="submitted && f.price.invalid" class="invalid-feedback">El precio debe ser mayor o igual a 0.</div>
+    </div>
+
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox" id="chkAvail" formControlName="availability">
+      <label class="form-check-label" for="chkAvail">Disponible</label>
+    </div>
+
+    <div class="d-flex justify-content-end">
+      <button type="button" class="btn btn-secondary me-2" (click)="cancel()">Cancelar</button>
+      <button type="submit" class="btn btn-primary" [disabled]="loading">{{ isEdit ? 'Guardar' : 'Crear' }}</button>
+    </div>
+  </form>
+</div>

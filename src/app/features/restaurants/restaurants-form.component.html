@@ -22,6 +22,21 @@
     </div>
 
     <div class="mb-3">
+      <label class="form-label">Correo electrónico <span class="text-danger">*</span></label>
+      <input
+        class="form-control"
+        formControlName="email"
+        placeholder="correo@dominio.com"
+        [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched"
+      />
+      <div class="invalid-feedback" *ngIf="form.get('email')?.touched && form.get('email')?.errors">
+        <span *ngIf="form.get('email')?.errors?.['required']">El correo es obligatorio.</span>
+        <span *ngIf="form.get('email')?.errors?.['email']">Formato de correo inválido.</span>
+        <span *ngIf="form.get('email')?.errors?.['maxlength']">Máximo 100 caracteres.</span>
+      </div>
+    </div>
+
+    <div class="mb-3">
       <label class="form-label">Teléfono</label>
       <input class="form-control" formControlName="phone" />
     </div>

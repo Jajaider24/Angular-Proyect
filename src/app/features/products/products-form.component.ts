@@ -44,8 +44,20 @@ import Swal from "sweetalert2";
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Categoría</label>
-          <input formControlName="category" class="form-control" />
+          <label class="form-label">Categoría <span class="text-danger">*</span></label>
+          <select
+            formControlName="category"
+            class="form-select"
+            [class.is-invalid]="submitted && f.category.invalid"
+          >
+            <option value="">Selecciona una categoría</option>
+            <option *ngFor="let c of categoryCatalog" [value]="c.value">
+              {{ c.label }}
+            </option>
+          </select>
+          <div *ngIf="submitted && f.category.invalid" class="invalid-feedback">
+            La categoría es obligatoria.
+          </div>
         </div>
 
         <div class="mb-3">
@@ -54,7 +66,12 @@ import Swal from "sweetalert2";
             formControlName="description"
             class="form-control"
             rows="3"
+            [class.is-invalid]="submitted && f.description.invalid"
+            placeholder="Describe el producto (ingredientes, tamaño, etc.)"
           ></textarea>
+          <div *ngIf="submitted && f.description.invalid" class="invalid-feedback">
+            Máximo 500 caracteres.
+          </div>
         </div>
 
         <div class="d-flex justify-content-end">
@@ -79,6 +96,21 @@ export class ProductsFormComponent implements OnInit {
   submitted = false;
   isEdit = false;
   id: number | null = null;
+  // Catálogo propuesto de categorías acorde al dominio del proyecto
+  categoryCatalog = [
+    { value: "burgers", label: "Hamburguesas" },
+    { value: "pizzas", label: "Pizzas" },
+    { value: "chicken", label: "Pollo" },
+    { value: "grill", label: "Parrilla" },
+    { value: "salads", label: "Ensaladas" },
+    { value: "snacks", label: "Snacks" },
+    { value: "desserts", label: "Postres" },
+    { value: "drinks", label: "Bebidas" },
+    { value: "veggie", label: "Vegetariano/Vegano" },
+    { value: "soups", label: "Sopas" },
+    { value: "breakfast", label: "Desayunos" },
+    { value: "combos", label: "Combos" },
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -89,8 +121,8 @@ export class ProductsFormComponent implements OnInit {
     this.form = this.fb.group({
       name: ["", Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
-      category: [""],
-      description: [""],
+      category: ["", Validators.required],
+      description: ["", Validators.maxLength(500)],
     });
   }
 

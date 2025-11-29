@@ -6,12 +6,14 @@ import { ProductsFormComponent } from "./products-form.component";
 import { ProductsListComponent } from "./products-list.component";
 import { ProductsRoutingModule } from "./products-routing.module";
 import { ProductsComponent } from "./products.component";
+import { ProductsDetailComponent } from "./products-detail.component";
 
 @NgModule({
   declarations: [
     ProductsComponent,
     ProductsListComponent,
     ProductsFormComponent,
+    ProductsDetailComponent,
   ],
   imports: [
     CommonModule,

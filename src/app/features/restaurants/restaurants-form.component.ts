@@ -23,6 +23,14 @@ export class RestaurantsFormComponent implements OnInit {
   ) {
     this.form = this.fb.group({
       name: ["", Validators.required],
+      email: [
+        "",
+        [
+          Validators.required,
+          Validators.email,
+          Validators.maxLength(100),
+        ],
+      ],
       phone: [""],
       address: this.fb.group({ street: [""], city: [""] }),
     });
@@ -48,6 +56,7 @@ export class RestaurantsFormComponent implements OnInit {
 
         this.form.patchValue({
           name: (r as any).name,
+          email: (r as any).email || "",
           phone: (r as any).phone,
           address: {
             street: addressParts[0] || "",
@@ -73,12 +82,12 @@ export class RestaurantsFormComponent implements OnInit {
     const formValue = this.form.value;
     const payload = {
       name: formValue.name,
+      email: (formValue.email || "").trim(),
       phone: formValue.phone || "",
       address:
         formValue.address?.street && formValue.address?.city
           ? `${formValue.address.street}, ${formValue.address.city}`.trim()
           : formValue.address?.street || formValue.address?.city || "",
-      email: "", // El backend espera email, lo enviamos vacío por ahora
     };
 
     console.log("📤 Enviando datos:", payload);

@@ -40,9 +40,9 @@ import Swal from "sweetalert2";
             <tbody>
               <tr *ngFor="let m of menus">
                 <td>{{ m.id }}</td>
-                <td>{{ m.restaurantId }}</td>
-                <td>{{ m.productId }}</td>
-                <td>{{ m.price || "-" }}</td>
+                <td>{{ m?.restaurant?.name || m?.restaurant_id }}</td>
+                <td>{{ m?.product?.name || m?.product_id }}</td>
+                <td>{{ m?.price | currency }}</td>
                 <td class="text-end">
                   <button
                     class="btn btn-sm btn-outline-secondary me-1"

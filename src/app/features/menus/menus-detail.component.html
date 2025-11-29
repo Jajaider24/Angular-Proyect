@@ -1,0 +1,43 @@
+<div class="menu-detail" *ngIf="menu as m">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h4 class="mb-0">Menú #{{ m.id }}</h4>
+    <span class="badge bg-secondary">ID: {{ m.id }}</span>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="text-muted small">Restaurante</div>
+          <div>{{ m.restaurant?.name || m.restaurant_id }}</div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-muted small">Producto</div>
+          <div>{{ m.product?.name || m.product_id }}</div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-muted small">Precio</div>
+          <div>{{ m.price | currency }}</div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-muted small">Disponible</div>
+          <div>
+            <span class="badge" [ngClass]="m.availability ? 'bg-success' : 'bg-danger'">
+              {{ m.availability ? 'Sí' : 'No' }}
+            </span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-muted small">Creado</div>
+          <div>{{ m.created_at | date:'medium' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-3">
+    <button class="btn btn-secondary" (click)="back()">Volver</button>
+  </div>
+</div>
+
+<div *ngIf="!menu && loading">Cargando...</div>
