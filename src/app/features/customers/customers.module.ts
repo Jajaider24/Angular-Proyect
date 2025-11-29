@@ -5,9 +5,12 @@ import { SharedModule } from "src/app/shared/shared.module";
 import { CustomersListComponent } from "./customers-list.component";
 import { CustomersRoutingModule } from "./customers-routing.module";
 import { CustomersComponent } from "./customers.component";
+import { ReactiveFormsModule } from "@angular/forms";
+import { CustomersFormComponent } from "./customers-form.component";
+import { CustomersDetailComponent } from "./customers-detail.component";
 
 @NgModule({
-  declarations: [CustomersComponent, CustomersListComponent],
-  imports: [CommonModule, FormsModule, CustomersRoutingModule, SharedModule],
+  declarations: [CustomersComponent, CustomersListComponent, CustomersFormComponent, CustomersDetailComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, CustomersRoutingModule, SharedModule],
 })
 export class CustomersModule {}

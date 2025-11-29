@@ -1,0 +1,31 @@
+<div class="customer-detail" *ngIf="customer as c">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h4 class="mb-0">{{ c.name }}</h4>
+    <span class="badge bg-secondary">ID: {{ c.id }}</span>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="text-muted small">Correo</div>
+          <div>{{ c.email || '—' }}</div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-muted small">Teléfono</div>
+          <div>{{ c.phone || '—' }}</div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-muted small">Creado</div>
+          <div>{{ c.created_at | date:'medium' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-3">
+    <button class="btn btn-secondary" (click)="back()">Volver</button>
+  </div>
+</div>
+
+<div *ngIf="!customer && loading">Cargando...</div>
