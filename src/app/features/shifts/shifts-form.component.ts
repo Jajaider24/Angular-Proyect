@@ -1,13 +1,18 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder, FormGroup, Validators, AbstractControl } from "@angular/forms";
 import { Subject, forkJoin, takeUntil } from "rxjs";
 import Swal from "sweetalert2";
 
-import { Shift, Driver, Motorcycle } from "src/app/core/models";
-import { ShiftsService } from "src/app/core/services/shifts.service";
+import { Driver, Motorcycle, Shift } from "src/app/core/models";
 import { DriversService } from "src/app/core/services/drivers.service";
 import { MotorcyclesService } from "src/app/core/services/motorcycles.service";
+import { ShiftsService } from "src/app/core/services/shifts.service";
 
 @Component({
   selector: "app-shifts-form",
@@ -47,7 +52,8 @@ export class ShiftsFormComponent implements OnInit, OnDestroy {
     if (idParam) {
       this.shiftId = Number(idParam);
     }
-    this.editMode = !!idParam && this.route.snapshot.routeConfig?.path?.includes("edit");
+    this.editMode =
+      !!idParam && this.route.snapshot.routeConfig?.path?.includes("edit");
     this.buildForm();
     this.loadData();
   }
@@ -66,7 +72,12 @@ export class ShiftsFormComponent implements OnInit, OnDestroy {
         endTime: [null],
         status: ["scheduled", [Validators.required]],
       },
-      { validators: [this.timeOrderValidator.bind(this), this.overlapValidator.bind(this)] }
+      {
+        validators: [
+          this.timeOrderValidator.bind(this),
+          this.overlapValidator.bind(this),
+        ],
+      }
     );
   }
 
@@ -89,24 +100,26 @@ export class ShiftsFormComponent implements OnInit, OnDestroy {
               driverId: current.driverId,
               motorcycleId: current.motorcycleId,
               startTime: this.isoToLocalInput(current.startTime),
-              endTime: current.endTime ? this.isoToLocalInput(current.endTime) : null,
+              endTime: current.endTime
+                ? this.isoToLocalInput(current.endTime)
+                : null,
               status: current.status || "scheduled",
             });
           }
 
-          // Filtrar disponibles por estado (simplemente 'available')
-          this.availableDrivers = this.drivers.filter((d) => d.status === 'available');
-          this.availableMotorcycles = this.motorcycles.filter((m) => m.status === 'available');
+          // Mostrar todas las opciones creadas por el usuario
+          this.availableDrivers = this.drivers;
+          this.availableMotorcycles = this.motorcycles;
 
-          // Incluir en las opciones el seleccionado aunque no esté disponible (para edición)
+          // Incluir el seleccionado si existe
           this.driverOptions = this.computeOptionsWithSelected(
-            this.availableDrivers,
-            this.form.get('driverId')?.value,
+            this.drivers,
+            this.form.get("driverId")?.value,
             this.drivers
           );
           this.motorcycleOptions = this.computeOptionsWithSelected(
-            this.availableMotorcycles,
-            this.form.get('motorcycleId')?.value,
+            this.motorcycles,
+            this.form.get("motorcycleId")?.value,
             this.motorcycles
           );
 
@@ -123,7 +136,11 @@ export class ShiftsFormComponent implements OnInit, OnDestroy {
       });
   }
 
-  private computeOptionsWithSelected<T extends { id: number }>(list: T[], selectedId: number | null, fullList: T[]): T[] {
+  private computeOptionsWithSelected<T extends { id: number }>(
+    list: T[],
+    selectedId: number | null,
+    fullList: T[]
+  ): T[] {
     if (selectedId === null || selectedId === undefined) return list;
     const already = list.some((e) => e.id === selectedId);
     if (already) return list;
@@ -135,7 +152,9 @@ export class ShiftsFormComponent implements OnInit, OnDestroy {
     // Convierte ISO a formato yyyy-MM-ddTHH:mm para input datetime-local
     const d = new Date(iso);
     const pad = (n: number) => String(n).padStart(2, "0");
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(
+      d.getDate()
+    )}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
 
   localInputToIso(value: string): string {
@@ -161,7 +180,8 @@ export class ShiftsFormComponent implements OnInit, OnDestroy {
     const newEnd = end ? new Date(end).getTime() : newStart; // si no hay end todavía
     const overlaps = this.existingShifts.some((s) => {
       if (s.id === this.shiftId) return false; // ignorar el mismo turno en edición
-      if (s.driverId !== driverId && s.motorcycleId !== motorcycleId) return false;
+      if (s.driverId !== driverId && s.motorcycleId !== motorcycleId)
+        return false;
       const sStart = new Date(s.startTime).getTime();
       const sEnd = s.endTime ? new Date(s.endTime).getTime() : sStart;
       // solape si rangos se cruzan

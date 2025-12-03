@@ -33,61 +33,63 @@
   <div *ngIf="!loading" class="card">
     <div class="card-body p-2">
       <div *ngIf="filteredAddresses.length > 0; else emptyState">
-        <table class="table table-sm table-hover mb-0">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Calle</th>
-              <th>Ciudad</th>
-              <th>Estado</th>
-              <th>Código Postal</th>
-              <th>Order ID</th>
-              <th class="text-end">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let address of filteredAddresses">
-              <td>{{ address.id }}</td>
-              <td>
-                {{ address.street }}
-                <i
-                  *ngIf="locationCache?.has(address.id)"
-                  class="ni ni-pin-3 text-primary ms-1"
-                  title="Coordenadas almacenadas"
-                  style="font-size: 0.9rem"
-                ></i>
-              </td>
-              <td>{{ address.city }}</td>
-              <td>{{ address.state || "-" }}</td>
-              <td>{{ address.postalCode || "-" }}</td>
-              <td>
-                <span class="badge badge-info"
-                  >ORDER #{{ address.orderId }}</span
-                >
-              </td>
-              <td class="text-end">
-                <button
-                  class="btn btn-sm btn-outline-secondary me-1"
-                  (click)="viewDetail(address.id)"
-                >
-                  Ver
-                </button>
-                <button
-                  class="btn btn-sm btn-outline-primary me-1"
-                  (click)="editAddress(address.id)"
-                >
-                  Editar
-                </button>
-                <button
-                  class="btn btn-sm btn-outline-danger"
-                  (click)="deleteAddress(address.id)"
-                >
-                  Eliminar
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-responsive table-wrap">
+          <table class="table table-sm table-hover mb-0 table-sticky">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Calle</th>
+                <th>Ciudad</th>
+                <th>Estado</th>
+                <th>Código Postal</th>
+                <th>Order ID</th>
+                <th class="text-end">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let address of filteredAddresses">
+                <td>{{ address.id }}</td>
+                <td>
+                  {{ address.street }}
+                  <i
+                    *ngIf="locationCache?.has(address.id)"
+                    class="ni ni-pin-3 text-primary ms-1"
+                    title="Coordenadas almacenadas"
+                    style="font-size: 0.9rem"
+                  ></i>
+                </td>
+                <td>{{ address.city }}</td>
+                <td>{{ address.state || "-" }}</td>
+                <td>{{ address.postalCode || "-" }}</td>
+                <td>
+                  <span class="badge badge-info"
+                    >ORDER #{{ address.orderId }}</span
+                  >
+                </td>
+                <td class="text-end">
+                  <button
+                    class="btn btn-sm btn-outline-secondary me-1"
+                    (click)="viewDetail(address.id)"
+                  >
+                    Ver
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-primary me-1"
+                    (click)="editAddress(address.id)"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    (click)="deleteAddress(address.id)"
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <ng-template #emptyState>
         <div class="text-center py-4 text-muted">

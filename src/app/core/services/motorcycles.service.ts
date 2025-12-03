@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { Motorcycle } from "../models";
 import { BaseApiService } from "./base-api.service";
 
@@ -8,12 +9,26 @@ export class MotorcyclesService {
   private path = "motorcycles";
   constructor(private api: BaseApiService) {}
 
+  private adapt(m: any): Motorcycle {
+    return {
+      id: m.id,
+      licensePlate: m.license_plate ?? m.licensePlate,
+      brand: m.brand,
+      year: m.year,
+      status: m.status,
+      currentLat: m.current_lat ?? m.currentLat,
+      currentLng: m.current_lng ?? m.currentLng,
+    } as Motorcycle;
+  }
+
   list(params?: any): Observable<Motorcycle[]> {
-    return this.api.list<Motorcycle[]>(this.path, params);
+    return this.api
+      .list<any[]>(this.path, params)
+      .pipe(map((arr) => (arr || []).map((m) => this.adapt(m))));
   }
 
   get(id: number): Observable<Motorcycle> {
-    return this.api.get<Motorcycle>(this.path, id);
+    return this.api.get<any>(this.path, id).pipe(map((m) => this.adapt(m)));
   }
 
   create(payload: Partial<Motorcycle>): Observable<Motorcycle> {

@@ -17,9 +17,7 @@
               {{ d.name }} ({{ d.status || "sin_estado" }})
             </option>
           </select>
-          <div class="small text-muted" *ngIf="availableDrivers.length === 0">
-            No hay conductores disponibles.
-          </div>
+          <!-- Se muestran todas las opciones existentes; si no hay datos, simplemente no habrá opciones -->
           <div
             class="text-danger small"
             *ngIf="hasError('driverId', 'required')"
@@ -38,12 +36,7 @@
               {{ m.licensePlate }} ({{ m.status || "sin_estado" }})
             </option>
           </select>
-          <div
-            class="small text-muted"
-            *ngIf="availableMotorcycles.length === 0"
-          >
-            No hay motocicletas disponibles.
-          </div>
+          <!-- Se muestran todas las opciones existentes; si no hay datos, simplemente no habrá opciones -->
           <div
             class="text-danger small"
             *ngIf="hasError('motorcycleId', 'required')"
