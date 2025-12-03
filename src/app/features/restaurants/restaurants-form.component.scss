@@ -1,3 +1,7 @@
-.restaurants-form {
-  max-width: 720px;
+/* Estilos específicos del feature (si se requieren). El layout lo provee .form-container */
+
+@media (max-width: 768px) {
+  .restaurants-form {
+    padding: 0.75rem;
+  }
 }

@@ -1,5 +1,11 @@
-<div class="restaurants-form">
-  <h4>{{ isEdit ? "Editar Restaurante" : "Nuevo Restaurante" }}</h4>
+<div class="restaurants-form form-container">
+  <!-- Encabezado del formulario con icono, título y breadcrumb de retorno -->
+  <app-form-header
+    [title]="isEdit ? 'Editar Restaurante' : 'Nuevo Restaurante'"
+    icon="ni ni-shop"
+    [backLink]="['/restaurants']"
+    backText="Volver a Restaurantes"
+  ></app-form-header>
 
   <form [formGroup]="form" (ngSubmit)="save()">
     <div class="mb-3">
@@ -22,17 +28,30 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Correo electrónico <span class="text-danger">*</span></label>
+      <label class="form-label"
+        >Correo electrónico <span class="text-danger">*</span></label
+      >
       <input
         class="form-control"
         formControlName="email"
         placeholder="correo@dominio.com"
-        [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched"
+        [class.is-invalid]="
+          form.get('email')?.invalid && form.get('email')?.touched
+        "
       />
-      <div class="invalid-feedback" *ngIf="form.get('email')?.touched && form.get('email')?.errors">
-        <span *ngIf="form.get('email')?.errors?.['required']">El correo es obligatorio.</span>
-        <span *ngIf="form.get('email')?.errors?.['email']">Formato de correo inválido.</span>
-        <span *ngIf="form.get('email')?.errors?.['maxlength']">Máximo 100 caracteres.</span>
+      <div
+        class="invalid-feedback"
+        *ngIf="form.get('email')?.touched && form.get('email')?.errors"
+      >
+        <span *ngIf="form.get('email')?.errors?.['required']"
+          >El correo es obligatorio.</span
+        >
+        <span *ngIf="form.get('email')?.errors?.['email']"
+          >Formato de correo inválido.</span
+        >
+        <span *ngIf="form.get('email')?.errors?.['maxlength']"
+          >Máximo 100 caracteres.</span
+        >
       </div>
     </div>
 

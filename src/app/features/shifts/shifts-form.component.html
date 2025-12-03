@@ -1,13 +1,10 @@
-<div class="container mt-3">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-      <h4 class="mb-0">{{ editMode ? 'Editar Turno' : 'Crear Turno' }}</h4>
-      <p class="text-muted mb-0">{{ editMode ? 'Modificar asignación' : 'Nueva asignación de conductor y moto' }}</p>
-    </div>
-    <div>
-      <button class="btn btn-sm btn-outline-secondary" (click)="cancel()">Volver</button>
-    </div>
-  </div>
+<div class="form-container">
+  <app-form-header
+    [title]="editMode ? 'Editar Turno' : 'Crear Turno'"
+    icon="ni ni-time-alarm"
+    [backLink]="['/shifts']"
+    backText="Volver a Turnos"
+  ></app-form-header>
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="card">
     <div class="card-body">
@@ -16,32 +13,74 @@
           <label class="form-label">Conductor</label>
           <select class="form-select form-select-sm" formControlName="driverId">
             <option [ngValue]="null">-- Seleccionar --</option>
-            <option *ngFor="let d of driverOptions" [ngValue]="d.id">{{ d.name }} ({{ d.status || 'sin_estado' }})</option>
+            <option *ngFor="let d of driverOptions" [ngValue]="d.id">
+              {{ d.name }} ({{ d.status || "sin_estado" }})
+            </option>
           </select>
-          <div class="small text-muted" *ngIf="availableDrivers.length === 0">No hay conductores disponibles.</div>
-          <div class="text-danger small" *ngIf="hasError('driverId','required')">Requerido</div>
+          <div class="small text-muted" *ngIf="availableDrivers.length === 0">
+            No hay conductores disponibles.
+          </div>
+          <div
+            class="text-danger small"
+            *ngIf="hasError('driverId', 'required')"
+          >
+            Requerido
+          </div>
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">Moto</label>
-            <select class="form-select form-select-sm" formControlName="motorcycleId">
-              <option [ngValue]="null">-- Seleccionar --</option>
-              <option *ngFor="let m of motorcycleOptions" [ngValue]="m.id">{{ m.licensePlate }} ({{ m.status || 'sin_estado' }})</option>
-            </select>
-            <div class="small text-muted" *ngIf="availableMotorcycles.length === 0">No hay motocicletas disponibles.</div>
-            <div class="text-danger small" *ngIf="hasError('motorcycleId','required')">Requerido</div>
+          <select
+            class="form-select form-select-sm"
+            formControlName="motorcycleId"
+          >
+            <option [ngValue]="null">-- Seleccionar --</option>
+            <option *ngFor="let m of motorcycleOptions" [ngValue]="m.id">
+              {{ m.licensePlate }} ({{ m.status || "sin_estado" }})
+            </option>
+          </select>
+          <div
+            class="small text-muted"
+            *ngIf="availableMotorcycles.length === 0"
+          >
+            No hay motocicletas disponibles.
+          </div>
+          <div
+            class="text-danger small"
+            *ngIf="hasError('motorcycleId', 'required')"
+          >
+            Requerido
+          </div>
         </div>
       </div>
 
       <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">Inicio</label>
-          <input type="datetime-local" class="form-control form-control-sm" formControlName="startTime" />
-          <div class="text-danger small" *ngIf="hasError('startTime','required')">Requerido</div>
+          <input
+            type="datetime-local"
+            class="form-control form-control-sm"
+            formControlName="startTime"
+          />
+          <div
+            class="text-danger small"
+            *ngIf="hasError('startTime', 'required')"
+          >
+            Requerido
+          </div>
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">Fin (opcional)</label>
-          <input type="datetime-local" class="form-control form-control-sm" formControlName="endTime" />
-          <div class="text-danger small" *ngIf="form.errors?.timeOrder && form.get('endTime')?.touched">Fin debe ser mayor que inicio</div>
+          <input
+            type="datetime-local"
+            class="form-control form-control-sm"
+            formControlName="endTime"
+          />
+          <div
+            class="text-danger small"
+            *ngIf="form.errors?.timeOrder && form.get('endTime')?.touched"
+          >
+            Fin debe ser mayor que inicio
+          </div>
         </div>
       </div>
 
@@ -51,11 +90,16 @@
           <select class="form-select form-select-sm" formControlName="status">
             <option *ngFor="let st of statuses" [ngValue]="st">{{ st }}</option>
           </select>
-          <div class="text-danger small" *ngIf="hasError('status','required')">Requerido</div>
+          <div class="text-danger small" *ngIf="hasError('status', 'required')">
+            Requerido
+          </div>
         </div>
         <div class="col-md-6 mb-3 d-flex align-items-end">
           <div class="w-100">
-            <div class="alert alert-warning p-2 mb-0" *ngIf="form.errors?.overlap">
+            <div
+              class="alert alert-warning p-2 mb-0"
+              *ngIf="form.errors?.overlap"
+            >
               Existe solape de turno con este conductor o moto.
             </div>
           </div>
@@ -63,7 +107,13 @@
       </div>
 
       <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-sm btn-primary" [disabled]="form.invalid">{{ editMode ? 'Guardar Cambios' : 'Crear Turno' }}</button>
+        <button
+          type="submit"
+          class="btn btn-sm btn-primary"
+          [disabled]="form.invalid"
+        >
+          {{ editMode ? "Guardar Cambios" : "Crear Turno" }}
+        </button>
       </div>
     </div>
   </form>

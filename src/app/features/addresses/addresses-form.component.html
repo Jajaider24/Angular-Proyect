@@ -2,223 +2,220 @@
   Formulario para crear/editar direcciones de entrega
   Incluye validaciones en tiempo real con mensajes de error descriptivos
 -->
-<div class="row">
-  <div class="col-lg-8 offset-lg-2">
-    <div class="card shadow">
-      <!-- Header del formulario -->
-      <div class="card-header bg-white border-0">
-        <div class="row align-items-center">
-          <div class="col-8">
-            <h3 class="mb-0">
-              {{ isEdit ? "Editar Dirección" : "Nueva Dirección" }}
-            </h3>
+<div class="form-container">
+  <app-form-header
+    [title]="isEdit ? 'Editar Dirección' : 'Nueva Dirección'"
+    icon="ni ni-pin-3"
+    [backLink]="['/addresses']"
+    backText="Volver a Direcciones"
+  ></app-form-header>
+  <div class="card shadow">
+    <!-- Cuerpo del formulario -->
+    <div class="card-body">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <!-- Order ID -->
+        <div class="form-group">
+          <label class="form-control-label" for="order_id">
+            Orden Asociada <span class="text-danger">*</span>
+          </label>
+          <select
+            class="form-control"
+            [class.is-invalid]="hasError('order_id')"
+            id="order_id"
+            formControlName="order_id"
+          >
+            <option [ngValue]="null">Seleccione una orden...</option>
+            <option *ngFor="let order of availableOrders" [value]="order.id">
+              Orden #{{ order.id }} -
+              {{ order.customer?.name || "Sin cliente" }}
+            </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="hasError('order_id')">
+            {{ getErrorMessage("order_id") }}
           </div>
-          <div class="col-4 text-right">
-            <button
-              class="btn btn-sm btn-secondary"
-              (click)="onCancel()"
-              type="button"
-            >
-              <i class="ni ni-bold-left"></i> Volver
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Cuerpo del formulario -->
-      <div class="card-body">
-        <form [formGroup]="form" (ngSubmit)="onSubmit()">
-          <!-- Order ID -->
-          <div class="form-group">
-            <label class="form-control-label" for="order_id">
-              Orden Asociada <span class="text-danger">*</span>
-            </label>
-            <select
-              class="form-control"
-              [class.is-invalid]="hasError('order_id')"
-              id="order_id"
-              formControlName="order_id"
-            >
-              <option [ngValue]="null">Seleccione una orden...</option>
-              <option *ngFor="let order of availableOrders" [value]="order.id">
-                Orden #{{ order.id }} -
-                {{ order.customer?.name || "Sin cliente" }}
-              </option>
-            </select>
-            <div class="invalid-feedback" *ngIf="hasError('order_id')">
-              {{ getErrorMessage("order_id") }}
-            </div>
-            <small class="form-text text-muted">
-              Selecciona la orden a la que pertenece esta dirección de entrega
-            </small>
-          </div>
-
-          <!-- Calle -->
-          <div class="form-group">
-            <label class="form-control-label" for="street">
-              Calle <span class="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              [class.is-invalid]="hasError('street')"
-              id="street"
-              formControlName="street"
-              placeholder="Ej: Calle 123 #45-67"
-            />
-            <div class="invalid-feedback" *ngIf="hasError('street')">
-              {{ getErrorMessage("street") }}
-            </div>
-          </div>
-
-          <!-- Fila con Ciudad y Estado -->
-          <div class="row">
-            <div class="col-md-6">
-              <!-- Ciudad -->
-              <div class="form-group">
-                <label class="form-control-label" for="city">
-                  Ciudad <span class="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  class="form-control"
-                  [class.is-invalid]="hasError('city')"
-                  id="city"
-                  formControlName="city"
-                  placeholder="Ej: Bogotá"
-                />
-                <div class="invalid-feedback" *ngIf="hasError('city')">
-                  {{ getErrorMessage("city") }}
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <!-- Estado -->
-              <div class="form-group">
-                <label class="form-control-label" for="state">
-                  Estado/Provincia <span class="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  class="form-control"
-                  [class.is-invalid]="hasError('state')"
-                  id="state"
-                  formControlName="state"
-                  placeholder="Ej: Cundinamarca"
-                />
-                <div class="invalid-feedback" *ngIf="hasError('state')">
-                  {{ getErrorMessage("state") }}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Código Postal -->
-          <div class="form-group">
-            <label class="form-control-label" for="postal_code">
-              Código Postal <span class="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              [class.is-invalid]="hasError('postal_code')"
-              id="postal_code"
-              formControlName="postal_code"
-              placeholder="Ej: 110111"
-            />
-            <div class="invalid-feedback" *ngIf="hasError('postal_code')">
-              {{ getErrorMessage("postal_code") }}
-            </div>
-            <small class="form-text text-muted">
-              Formato alfanumérico: letras, números, espacios o guiones
-            </small>
-          </div>
-
-          <!-- Información Adicional -->
-          <div class="form-group">
-            <label class="form-control-label" for="additional_info">
-              Información Adicional
-            </label>
-            <textarea
-              class="form-control"
-              [class.is-invalid]="hasError('additional_info')"
-              id="additional_info"
-              formControlName="additional_info"
-              rows="3"
-              placeholder="Ej: Apartamento 301, Torre B, Portería con vigilancia..."
-            ></textarea>
-            <div class="invalid-feedback" *ngIf="hasError('additional_info')">
-              {{ getErrorMessage("additional_info") }}
-            </div>
-            <small class="form-text text-muted">
-              Incluye detalles como apartamento, torre, referencias de
-              ubicación, etc.
-            </small>
-          </div>
-
-          <!-- Mapa interactivo para coordenadas -->
-          <div class="form-group">
-            <label class="form-control-label">
-              Coordenadas (opcional)
-            </label>
-            <div class="mb-2 text-muted">
-              <small>
-                Haz clic en el mapa para fijar la ubicación. Puedes arrastrar el marcador.
-              </small>
-            </div>
-            <div id="addressFormMap" style="height: 320px; border-radius: 8px; overflow: hidden;" class="mb-2"></div>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="input-group input-group-sm">
-                  <span class="input-group-text">Lat</span>
-                  <input type="text" class="form-control" formControlName="lat" readonly />
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="input-group input-group-sm">
-                  <span class="input-group-text">Lng</span>
-                  <input type="text" class="form-control" formControlName="lng" readonly />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Botones de acción -->
-          <hr class="my-4" />
-          <div class="text-right">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              (click)="onCancel()"
-              [disabled]="loading"
-            >
-              Cancelar
-            </button>
-            <button type="submit" class="btn btn-primary" [disabled]="loading">
-              <span *ngIf="!loading">
-                <i class="ni ni-check-bold"></i>
-                {{ isEdit ? "Actualizar" : "Crear" }} Dirección
-              </span>
-              <span *ngIf="loading">
-                <span
-                  class="spinner-border spinner-border-sm mr-2"
-                  role="status"
-                ></span>
-                Guardando...
-              </span>
-            </button>
-          </div>
-        </form>
-
-        <!-- Información de campos requeridos -->
-        <div class="mt-4 p-3 bg-light rounded">
-          <small class="text-muted">
-            <i class="ni ni-info-circle text-info"></i>
-            Los campos marcados con <span class="text-danger">*</span> son
-            obligatorios
+          <small class="form-text text-muted">
+            Selecciona la orden a la que pertenece esta dirección de entrega
           </small>
         </div>
+
+        <!-- Calle -->
+        <div class="form-group">
+          <label class="form-control-label" for="street">
+            Calle <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            [class.is-invalid]="hasError('street')"
+            id="street"
+            formControlName="street"
+            placeholder="Ej: Calle 123 #45-67"
+          />
+          <div class="invalid-feedback" *ngIf="hasError('street')">
+            {{ getErrorMessage("street") }}
+          </div>
+        </div>
+
+        <!-- Fila con Ciudad y Estado -->
+        <div class="row">
+          <div class="col-md-6">
+            <!-- Ciudad -->
+            <div class="form-group">
+              <label class="form-control-label" for="city">
+                Ciudad <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                [class.is-invalid]="hasError('city')"
+                id="city"
+                formControlName="city"
+                placeholder="Ej: Bogotá"
+              />
+              <div class="invalid-feedback" *ngIf="hasError('city')">
+                {{ getErrorMessage("city") }}
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <!-- Estado -->
+            <div class="form-group">
+              <label class="form-control-label" for="state">
+                Estado/Provincia <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                [class.is-invalid]="hasError('state')"
+                id="state"
+                formControlName="state"
+                placeholder="Ej: Cundinamarca"
+              />
+              <div class="invalid-feedback" *ngIf="hasError('state')">
+                {{ getErrorMessage("state") }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Código Postal -->
+        <div class="form-group">
+          <label class="form-control-label" for="postal_code">
+            Código Postal <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            [class.is-invalid]="hasError('postal_code')"
+            id="postal_code"
+            formControlName="postal_code"
+            placeholder="Ej: 110111"
+          />
+          <div class="invalid-feedback" *ngIf="hasError('postal_code')">
+            {{ getErrorMessage("postal_code") }}
+          </div>
+          <small class="form-text text-muted">
+            Formato alfanumérico: letras, números, espacios o guiones
+          </small>
+        </div>
+
+        <!-- Información Adicional -->
+        <div class="form-group">
+          <label class="form-control-label" for="additional_info">
+            Información Adicional
+          </label>
+          <textarea
+            class="form-control"
+            [class.is-invalid]="hasError('additional_info')"
+            id="additional_info"
+            formControlName="additional_info"
+            rows="3"
+            placeholder="Ej: Apartamento 301, Torre B, Portería con vigilancia..."
+          ></textarea>
+          <div class="invalid-feedback" *ngIf="hasError('additional_info')">
+            {{ getErrorMessage("additional_info") }}
+          </div>
+          <small class="form-text text-muted">
+            Incluye detalles como apartamento, torre, referencias de ubicación,
+            etc.
+          </small>
+        </div>
+
+        <!-- Mapa interactivo para coordenadas -->
+        <div class="form-group">
+          <label class="form-control-label"> Coordenadas (opcional) </label>
+          <div class="mb-2 text-muted">
+            <small>
+              Haz clic en el mapa para fijar la ubicación. Puedes arrastrar el
+              marcador.
+            </small>
+          </div>
+          <div
+            id="addressFormMap"
+            style="height: 320px; border-radius: 8px; overflow: hidden"
+            class="mb-2"
+          ></div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text">Lat</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="lat"
+                  readonly
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text">Lng</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="lng"
+                  readonly
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <hr class="my-4" />
+        <div class="text-right">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="onCancel()"
+            [disabled]="loading"
+          >
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="loading">
+            <span *ngIf="!loading">
+              <i class="ni ni-check-bold"></i>
+              {{ isEdit ? "Actualizar" : "Crear" }} Dirección
+            </span>
+            <span *ngIf="loading">
+              <span
+                class="spinner-border spinner-border-sm mr-2"
+                role="status"
+              ></span>
+              Guardando...
+            </span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Información de campos requeridos -->
+      <div class="mt-4 p-3 bg-light rounded">
+        <small class="text-muted">
+          <i class="ni ni-info-circle text-info"></i>
+          Los campos marcados con <span class="text-danger">*</span> son
+          obligatorios
+        </small>
       </div>
     </div>
   </div>
