@@ -30,7 +30,7 @@ import Swal from "sweetalert2";
 
       <div *ngIf="!loading && !error" class="card">
         <div class="card-body p-2">
-          <table class="table table-sm table-hover mb-0">
+          <table class="table table-sm table-hover mb-0 table-list">
             <thead>
               <tr>
                 <th>ID</th>

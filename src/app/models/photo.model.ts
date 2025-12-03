@@ -1,9 +1,8 @@
 export interface Photo {
   id?: number;
-  filename?: string;
-  url?: string;
+  image_url?: string; // ruta relativa en backend
   caption?: string;
   issue_id?: number | null;
   order_id?: number | null;
-  created_at?: string;
+  taken_at?: string; // ISO date string
 }

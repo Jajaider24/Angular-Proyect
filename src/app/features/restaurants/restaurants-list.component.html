@@ -16,7 +16,10 @@
   <div *ngIf="loading" class="text-center">Cargando...</div>
   <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-  <table *ngIf="!loading && !error" class="table table-striped table-sm">
+  <table
+    *ngIf="!loading && !error"
+    class="table table-striped table-sm table-list"
+  >
     <thead>
       <tr>
         <th>ID</th>

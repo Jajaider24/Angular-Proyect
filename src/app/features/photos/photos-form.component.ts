@@ -14,7 +14,7 @@ export class PhotosFormComponent {
   form = this.fb.group({
     caption: ["", [Validators.maxLength(200)]],
     issue_id: [null],
-    order_id: [null],
+    taken_at: [new Date().toISOString()],
   });
   file?: File;
 
@@ -36,7 +36,12 @@ export class PhotosFormComponent {
       return;
     }
     this.loading = true;
-    this.photosService.upload(this.form.value as any, this.file!).subscribe({
+    const payload = {
+      issue_id: this.form.value.issue_id ?? undefined,
+      caption: this.form.value.caption ?? undefined,
+      taken_at: this.form.value.taken_at ?? undefined,
+    };
+    this.photosService.upload(payload, this.file!).subscribe({
       next: () => {
         this.loading = false;
         this.router.navigate(["/photos"]);

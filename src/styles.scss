@@ -13,6 +13,25 @@ img.leaflet-marker-icon {
   max-width: none !important;
 }
 /* Minimal global styles to satisfy angular.json reference. */
+/* Consistent table list styling across features */
+.table-list {
+  thead th {
+    font-weight: 600;
+    color: #334155; /* slate-700 */
+    background: #f8fafc; /* slate-50 */
+    border-bottom: 1px solid rgba(22, 27, 34, 0.06);
+  }
+  tbody td {
+    vertical-align: middle;
+  }
+}
+
+/* Empty state helper */
+.empty-state {
+  text-align: center;
+  color: #6b7280; /* gray-500 */
+  padding: 1.25rem 0;
+}
 @import "./assets/scss/argon.scss";
 
 html,

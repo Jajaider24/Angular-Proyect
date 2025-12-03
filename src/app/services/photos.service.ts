@@ -17,9 +17,11 @@ export class PhotosService {
     });
   }
   create(data: Partial<Photo>): Observable<Photo> {
+    // Expecting keys: issue_id, image_url, caption, taken_at (ISO)
     return this.http.post<Photo>(`${environment.url_backend}/photos`, data);
   }
   update(id: number, data: Partial<Photo>): Observable<Photo> {
+    // Update fields aligned with backend: image_url, caption, taken_at, issue_id
     return this.http.put<Photo>(
       `${environment.url_backend}/photos/${id}`,
       data
@@ -29,13 +31,20 @@ export class PhotosService {
     return this.http.delete(`${environment.url_backend}/photos/${id}`);
   }
 
-  upload(data: any, file: File): Observable<Photo> {
+  upload(
+    data: { issue_id?: number; caption?: string; taken_at?: string },
+    file: File
+  ): Observable<Photo> {
     const form = new FormData();
-    Object.keys(data || {}).forEach((k) => {
-      if (data[k] !== undefined && data[k] !== null) {
-        form.append(k, String(data[k]));
-      }
-    });
+    if (data?.issue_id !== undefined && data?.issue_id !== null) {
+      form.append("issue_id", String(data.issue_id));
+    }
+    if (data?.caption) {
+      form.append("caption", data.caption);
+    }
+    if (data?.taken_at) {
+      form.append("taken_at", data.taken_at); // ISO string
+    }
     form.append("file", file);
     return this.http.post<Photo>(
       `${environment.url_backend}/photos/upload`,
