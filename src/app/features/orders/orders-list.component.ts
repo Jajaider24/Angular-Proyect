@@ -205,7 +205,9 @@ export class OrdersListComponent implements OnInit {
 
     this.motos.get(o.motorcycleId).subscribe({
       next: (moto: any) => {
-        const plate = moto?.license_plate || moto?.plate || null;
+        // El adaptador de MotorcyclesService expone `licensePlate`
+        const plate =
+          moto?.licensePlate || moto?.license_plate || moto?.plate || null;
         if (!plate) {
           Swal.fire(
             "Sin placa",
@@ -214,8 +216,9 @@ export class OrdersListComponent implements OnInit {
           );
           return;
         }
+        // Usamos el mismo base URL que el resto del app (`environment.apiUrl`)
         this.http
-          .post(`${environment.url_backend}/motorcycles/track/${plate}`, {})
+          .post(`${environment.apiUrl}/motorcycles/track/${plate}`, {})
           .subscribe({
             next: () =>
               this.router.navigate(["/orders/map"], {

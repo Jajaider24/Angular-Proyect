@@ -38,7 +38,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       //Estar pendiente de la variable global reactiva (Subscription --> simulacion de conectado a una api)
       this.user = data; //Pendiente de que haya un cambio
     });
-
+    
     this.webSocketService.setNameEvent("ABC123"); // Suscribirse al evento WebSocket y escuchar mensajes
     this.webSocketService.callback.subscribe((message) => {
       // Manejar el mensaje recibido y mostrar en consola

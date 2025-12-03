@@ -1,9 +1,16 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import * as L from "leaflet";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { TrackingService, Position } from "./tracking.service";
-import * as L from "leaflet";
+import { WebSocketService } from "src/app/services/web-socket-service.service";
+import { Position, TrackingService } from "./tracking.service";
 
 @Component({
   selector: "app-orders-map",
@@ -35,13 +42,22 @@ export class OrdersMapComponent implements OnInit, OnDestroy {
     popupAnchor: [0, -28],
   });
 
-  constructor(private route: ActivatedRoute, private tracking: TrackingService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private tracking: TrackingService,
+    // Servicio WebSocket adicional (escucha eventos crudos por placa)
+    private webSocketService: WebSocketService
+  ) {}
 
   ngOnInit(): void {
     // Inicializa Leaflet
-    this.map = L.map(this.mapEl.nativeElement).setView(this.defaultCenter, this.defaultZoom);
+    this.map = L.map(this.mapEl.nativeElement).setView(
+      this.defaultCenter,
+      this.defaultZoom
+    );
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.map);
 
     // Conectamos el socket únicamente en esta vista
@@ -75,7 +91,7 @@ export class OrdersMapComponent implements OnInit, OnDestroy {
         const latlng: L.LatLngExpression = [pos.lat, pos.lng];
 
         // Actualizar polilínea: append punto y limitar tamaño
-        const current = (this.polylines[normalized].getLatLngs() as L.LatLng[]);
+        const current = this.polylines[normalized].getLatLngs() as L.LatLng[];
         current.push(L.latLng(pos.lat, pos.lng));
         if (current.length > 600) current.shift();
         this.polylines[normalized].setLatLngs(current);
@@ -85,7 +101,10 @@ export class OrdersMapComponent implements OnInit, OnDestroy {
         if (existing) {
           existing.setLatLng(latlng);
         } else {
-          const marker = L.marker(latlng, { title: normalized, icon: this.courierIcon });
+          const marker = L.marker(latlng, {
+            title: normalized,
+            icon: this.courierIcon,
+          });
           marker.addTo(this.map);
           this.markers[normalized] = marker;
         }
@@ -95,6 +114,38 @@ export class OrdersMapComponent implements OnInit, OnDestroy {
           this.map.setView(latlng as L.LatLngExpression, this.defaultZoom);
         }
       });
+
+    // Escuchar también el evento WebSocket crudo de la placa
+    // Esto permite compatibilidad con emisores que publican objetos variados.
+    this.webSocketService.setNameEvent(normalized);
+    const sub = this.webSocketService.callback.subscribe((message) => {
+      // Pedagógico: mostramos cualquier payload que llegue para la placa
+      console.log(`[WS] Mensaje crudo (${normalized}):`, message);
+      // Si el payload contiene lat/lng, lo aplicamos igual que arriba
+      const maybeLat = message && (message.lat ?? message.latitude);
+      const maybeLng = message && (message.lng ?? message.longitude);
+      if (typeof maybeLat === "number" && typeof maybeLng === "number") {
+        const latlng: L.LatLngExpression = [maybeLat, maybeLng];
+        const current = this.polylines[normalized].getLatLngs() as L.LatLng[];
+        current.push(L.latLng(maybeLat, maybeLng));
+        if (current.length > 600) current.shift();
+        this.polylines[normalized].setLatLngs(current);
+        const existing = this.markers[normalized];
+        if (existing) existing.setLatLng(latlng);
+        else {
+          const marker = L.marker(latlng, {
+            title: normalized,
+            icon: this.courierIcon,
+          });
+          marker.addTo(this.map);
+          this.markers[normalized] = marker;
+        }
+      }
+    });
+    // Aseguramos el lifecycle: al destruir, cancelar esta suscripción
+    this.destroy$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => sub.unsubscribe());
   }
 
   // Inicia o detiene tracking en backend (opcional desde la vista)
