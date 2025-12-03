@@ -1,0 +1,22 @@
+<div class="form-container" *ngIf="issue as i">
+  <app-form-header
+    [title]="'Detalle de Incidencia #' + i.id"
+    icon="ni ni-alert-circle-exc"
+    [backLink]="['/issues']"
+    backText="Volver a Incidencias"
+  ></app-form-header>
+
+  <div class="card">
+    <div class="card-body">
+      <p><strong>Título:</strong> {{ i.title }}</p>
+      <p><strong>Estado:</strong> {{ i.status }}</p>
+      <p>
+        <strong>Descripción:</strong><br />
+        {{ i.description }}
+      </p>
+      <p><strong>Pedido:</strong> {{ i.order_id || "—" }}</p>
+      <p><strong>Conductor:</strong> {{ i.driver_id || "—" }}</p>
+      <p><strong>Motocicleta:</strong> {{ i.motorcycle_id || "—" }}</p>
+    </div>
+  </div>
+</div>

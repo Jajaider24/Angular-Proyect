@@ -76,15 +76,15 @@ export const AdminLayoutRoutes: Routes = [
       import("../../features/shifts/shifts.module").then((m) => m.ShiftsModule),
   },
   // // Incidencias/problemas de las motos
-  // {
-  //   path: "issues",
-  //   loadChildren: () =>
-  //     import("../../features/issues/issues.module").then((m) => m.IssuesModule),
-  // },
+  {
+    path: "issues",
+    loadChildren: () =>
+      import("../../features/issues/issues.module").then((m) => m.IssuesModule),
+  },
   // // Fotos de evidencia de incidencias
-  // {
-  //   path: "photos",
-  //   loadChildren: () =>
-  //     import("../../features/photos/photos.module").then((m) => m.PhotosModule),
-  // },
+  {
+    path: "photos",
+    loadChildren: () =>
+      import("../../features/photos/photos.module").then((m) => m.PhotosModule),
+  },
 ];

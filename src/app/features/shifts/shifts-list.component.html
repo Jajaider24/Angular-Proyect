@@ -1,14 +1,18 @@
-<!-- Lista de turnos con mismo layout que las demás pestañas -->
-<div class="container mt-3">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-      <h4 class="mb-0">Turnos</h4>
-      <p class="text-muted mb-0">Listado de turnos y estado</p>
-    </div>
-    <div>
-      <button class="btn btn-primary btn-sm" (click)="createNew()">Crear turno</button>
-    </div>
-  </div>
+<!-- Lista de turnos con encabezado compartido -->
+<div class="form-container mt-3">
+  <app-list-header
+    [title]="'Turnos'"
+    [subtitle]="'Listado de turnos y estado'"
+    [lucide]="'CalendarDays'"
+    [breadcrumb]="[
+      { label: 'Dashboard', link: ['/dashboard'] },
+      { label: 'Turnos' }
+    ]"
+    [actionText]="'Crear turno'"
+    [actionLink]="['/shifts/create']"
+    [actionLucide]="'Plus'"
+    [actionBtnClass]="'btn btn-primary btn-sm'"
+  ></app-list-header>
 
   <div class="mb-3">
     <div class="input-group input-group-sm">
@@ -43,24 +47,45 @@
           <tbody>
             <tr *ngFor="let s of filteredShifts">
               <td>{{ s.id }}</td>
-              <td>{{ driverMap[s.driverId] || ('ID ' + s.driverId) }}</td>
-              <td>{{ motorcycleMap[s.motorcycleId] || ('ID ' + s.motorcycleId) }}</td>
+              <td>{{ driverMap[s.driverId] || "ID " + s.driverId }}</td>
+              <td>
+                {{ motorcycleMap[s.motorcycleId] || "ID " + s.motorcycleId }}
+              </td>
               <td>{{ formatDate(s.startTime) }}</td>
               <td>{{ formatDate(s.endTime) }}</td>
               <td>
-                <span class="badge" [ngClass]="getStatusBadgeClass(s.status)">{{ s.status || '-' }}</span>
+                <span class="badge" [ngClass]="getStatusBadgeClass(s.status)">{{
+                  s.status || "-"
+                }}</span>
               </td>
               <td class="text-end">
-                <button class="btn btn-sm btn-outline-secondary me-1" (click)="viewDetail(s.id)">Ver</button>
-                <button class="btn btn-sm btn-outline-primary me-1" (click)="editShift(s.id)">Editar</button>
-                <button class="btn btn-sm btn-outline-danger" (click)="deleteShift(s.id)">Eliminar</button>
+                <button
+                  class="btn btn-sm btn-outline-secondary me-1"
+                  (click)="viewDetail(s.id)"
+                >
+                  Ver
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-primary me-1"
+                  (click)="editShift(s.id)"
+                >
+                  Editar
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="deleteShift(s.id)"
+                >
+                  Eliminar
+                </button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
       <ng-template #emptyShifts>
-        <div class="text-center py-4 text-muted">No hay turnos para mostrar.</div>
+        <div class="text-center py-4 text-muted">
+          No hay turnos para mostrar.
+        </div>
       </ng-template>
     </div>
   </div>

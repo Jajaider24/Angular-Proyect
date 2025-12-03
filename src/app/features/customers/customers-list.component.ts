@@ -7,18 +7,20 @@ import Swal from "sweetalert2";
 @Component({
   selector: "app-customers-list",
   template: `
-    <div class="container mt-3">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-          <h4 class="mb-0">Clientes</h4>
-          <p class="text-muted mb-0">Listado de clientes</p>
-        </div>
-        <div>
-          <button class="btn btn-primary btn-sm" (click)="create()">
-            Crear cliente
-          </button>
-        </div>
-      </div>
+    <div class="form-container">
+      <app-list-header
+        [title]="'Clientes'"
+        [subtitle]="'Listado de clientes'"
+        [lucide]="'Users'"
+        [breadcrumb]="[
+          { label: 'Dashboard', link: ['/dashboard'] },
+          { label: 'Clientes' }
+        ]"
+        [actionText]="'Crear cliente'"
+        [actionLink]="['/customers/create']"
+        [actionLucide]="'Plus'"
+        [actionBtnClass]="'btn btn-primary btn-sm'"
+      ></app-list-header>
 
       <div *ngIf="loading" class="text-center py-3">Cargando clientes...</div>
       <div *ngIf="error" class="alert alert-danger">{{ error }}</div>

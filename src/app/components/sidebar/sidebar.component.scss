@@ -232,6 +232,26 @@
   color: var(--accent-muted);
 }
 
+/* Active background tint per accent for stronger affordance */
+.nav-link.active[data-color="primary"] {
+  background: rgba(94, 114, 228, 0.08);
+}
+.nav-link.active[data-color="info"] {
+  background: rgba(17, 205, 239, 0.1);
+}
+.nav-link.active[data-color="success"] {
+  background: rgba(45, 206, 137, 0.1);
+}
+.nav-link.active[data-color="warning"] {
+  background: rgba(251, 99, 64, 0.1);
+}
+.nav-link.active[data-color="danger"] {
+  background: rgba(245, 54, 92, 0.1);
+}
+.nav-link.active[data-color="muted"] {
+  background: rgba(136, 152, 170, 0.1);
+}
+
 /* Ensure icon keeps its color but spacing is neat */
 .nav-link .ni {
   font-size: 1.05rem;
@@ -248,7 +268,8 @@
   margin-right: 0.75rem;
   vertical-align: middle;
   flex: 0 0 auto;
-  transition: transform 220ms cubic-bezier(0.2,0.9,0.2,1), filter 220ms ease, opacity 180ms ease;
+  transition: transform 220ms cubic-bezier(0.2, 0.9, 0.2, 1), filter 220ms ease,
+    opacity 180ms ease;
   will-change: transform;
 }
 
@@ -264,13 +285,13 @@
 /* Hover: slight lift and glow */
 .navbar-nav .nav-item .nav-link:hover .menu-icon {
   transform: translateY(-2px) scale(1.08);
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.12));
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.12));
 }
 
 /* Active: stronger scale and subtle rotation for playfulness */
 .nav-link.active .menu-icon {
   transform: scale(1.15) rotate(-4deg);
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15));
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15));
 }
 
 /* Color mapping per data-color so icons match the accent */

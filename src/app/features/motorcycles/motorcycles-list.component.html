@@ -1,13 +1,17 @@
-<div class="container mt-3">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-      <h4 class="mb-0">Motocicletas</h4>
-      <p class="text-muted mb-0">Listado de motocicletas</p>
-    </div>
-    <div>
-      <button class="btn btn-primary btn-sm" (click)="createNew()">Crear motocicleta</button>
-    </div>
-  </div>
+<div class="form-container">
+  <app-list-header
+    [title]="'Motocicletas'"
+    [subtitle]="'Listado de motocicletas'"
+    [lucide]="'Bike'"
+    [breadcrumb]="[
+      { label: 'Dashboard', link: ['/dashboard'] },
+      { label: 'Motocicletas' }
+    ]"
+    [actionText]="'Crear motocicleta'"
+    [actionLink]="['/motorcycles/create']"
+    [actionLucide]="'Plus'"
+    [actionBtnClass]="'btn btn-primary btn-sm'"
+  ></app-list-header>
 
   <div class="mb-3">
     <div class="input-group input-group-sm">
@@ -41,23 +45,44 @@
           <tbody>
             <tr *ngFor="let m of filteredMotorcycles">
               <td>{{ m.id }}</td>
-              <td class="text-uppercase">{{ m.license_plate || m.licensePlate }}</td>
+              <td class="text-uppercase">
+                {{ m.license_plate || m.licensePlate }}
+              </td>
               <td>{{ m.brand }}</td>
               <td>{{ m.year }}</td>
               <td>
-                <span class="badge" [ngClass]="getStatusBadgeClass(m.status)">{{ getStatusLabel(m.status) }}</span>
+                <span class="badge" [ngClass]="getStatusBadgeClass(m.status)">{{
+                  getStatusLabel(m.status)
+                }}</span>
               </td>
               <td class="text-end">
-                <button class="btn btn-sm btn-outline-secondary me-1" (click)="viewDetail(m.id)">Ver</button>
-                <button class="btn btn-sm btn-outline-primary me-1" (click)="editMotorcycle(m.id)">Editar</button>
-                <button class="btn btn-sm btn-outline-danger" (click)="deleteMotorcycle(m.id)">Eliminar</button>
+                <button
+                  class="btn btn-sm btn-outline-secondary me-1"
+                  (click)="viewDetail(m.id)"
+                >
+                  Ver
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-primary me-1"
+                  (click)="editMotorcycle(m.id)"
+                >
+                  Editar
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="deleteMotorcycle(m.id)"
+                >
+                  Eliminar
+                </button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
       <ng-template #emptyState>
-        <div class="text-center py-4 text-muted">No hay motocicletas para mostrar.</div>
+        <div class="text-center py-4 text-muted">
+          No hay motocicletas para mostrar.
+        </div>
       </ng-template>
     </div>
   </div>

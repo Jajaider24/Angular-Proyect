@@ -1,17 +1,18 @@
-<!-- Lista de direcciones con el mismo layout de Clientes -->
-<div class="container mt-3">
-  <!-- Encabezado y botón crear -->
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-      <h4 class="mb-0">Direcciones</h4>
-      <p class="text-muted mb-0">Listado de direcciones de entrega</p>
-    </div>
-    <div>
-      <button class="btn btn-primary btn-sm" (click)="createNew()">
-        Crear dirección
-      </button>
-    </div>
-  </div>
+<!-- Lista de direcciones con encabezado compartido -->
+<div class="form-container">
+  <app-list-header
+    [title]="'Direcciones'"
+    [subtitle]="'Listado de direcciones de entrega'"
+    [lucide]="'MapPin'"
+    [breadcrumb]="[
+      { label: 'Dashboard', link: ['/dashboard'] },
+      { label: 'Direcciones' }
+    ]"
+    [actionText]="'Crear dirección'"
+    [actionLink]="['/addresses/create']"
+    [actionLucide]="'Plus'"
+    [actionBtnClass]="'btn btn-primary btn-sm'"
+  ></app-list-header>
 
   <!-- Buscador (opcional, mantenido) -->
   <div class="mb-3">
@@ -53,23 +54,34 @@
                   *ngIf="locationCache?.has(address.id)"
                   class="ni ni-pin-3 text-primary ms-1"
                   title="Coordenadas almacenadas"
-                  style="font-size:0.9rem"
+                  style="font-size: 0.9rem"
                 ></i>
               </td>
               <td>{{ address.city }}</td>
-              <td>{{ address.state || '-' }}</td>
-              <td>{{ address.postalCode || '-' }}</td>
+              <td>{{ address.state || "-" }}</td>
+              <td>{{ address.postalCode || "-" }}</td>
               <td>
-                <span class="badge badge-info">ORDER #{{ address.orderId }}</span>
+                <span class="badge badge-info"
+                  >ORDER #{{ address.orderId }}</span
+                >
               </td>
               <td class="text-end">
-                <button class="btn btn-sm btn-outline-secondary me-1" (click)="viewDetail(address.id)">
+                <button
+                  class="btn btn-sm btn-outline-secondary me-1"
+                  (click)="viewDetail(address.id)"
+                >
                   Ver
                 </button>
-                <button class="btn btn-sm btn-outline-primary me-1" (click)="editAddress(address.id)">
+                <button
+                  class="btn btn-sm btn-outline-primary me-1"
+                  (click)="editAddress(address.id)"
+                >
                   Editar
                 </button>
-                <button class="btn btn-sm btn-outline-danger" (click)="deleteAddress(address.id)">
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="deleteAddress(address.id)"
+                >
                   Eliminar
                 </button>
               </td>

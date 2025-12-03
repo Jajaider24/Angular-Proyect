@@ -1,15 +1,17 @@
-<div class="restaurants-list">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-      <h4 class="mb-0">Restaurantes</h4>
-      <p class="text-muted mb-0">Listado de restaurantes</p>
-    </div>
-    <div>
-      <button class="btn btn-primary btn-sm" (click)="create()">
-        Crear restaurante
-      </button>
-    </div>
-  </div>
+<div class="form-container restaurants-list">
+  <app-list-header
+    [title]="'Restaurantes'"
+    [subtitle]="'Listado de restaurantes'"
+    [lucide]="'ShoppingBag'"
+    [breadcrumb]="[
+      { label: 'Dashboard', link: ['/dashboard'] },
+      { label: 'Restaurantes' }
+    ]"
+    [actionText]="'Crear restaurante'"
+    [actionLink]="['/restaurants/create']"
+    [actionLucide]="'Plus'"
+    [actionBtnClass]="'btn btn-primary btn-sm'"
+  ></app-list-header>
 
   <div *ngIf="loading" class="text-center">Cargando...</div>
   <div *ngIf="error" class="alert alert-danger">{{ error }}</div>

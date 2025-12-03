@@ -1,0 +1,73 @@
+<div class="form-container">
+  <app-form-header
+    [title]="isEdit ? 'Editar Incidencia' : 'Nueva Incidencia'"
+    icon="ni ni-alert-circle-exc"
+    [backLink]="['/issues']"
+    backText="Volver a Incidencias"
+  ></app-form-header>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="card">
+    <div class="card-body">
+      <div class="mb-3">
+        <label class="form-label"
+          >Título <span class="text-danger">*</span></label
+        >
+        <input class="form-control" formControlName="title" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label"
+          >Descripción <span class="text-danger">*</span></label
+        >
+        <textarea
+          class="form-control"
+          rows="4"
+          formControlName="description"
+        ></textarea>
+      </div>
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Estado</label>
+          <select class="form-select" formControlName="status">
+            <option value="open">Abierta</option>
+            <option value="in_progress">En progreso</option>
+            <option value="closed">Cerrada</option>
+          </select>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Pedido (opcional)</label>
+          <input
+            class="form-control"
+            type="number"
+            formControlName="order_id"
+          />
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Conductor (opcional)</label>
+          <input
+            class="form-control"
+            type="number"
+            formControlName="driver_id"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Motocicleta (opcional)</label>
+          <input
+            class="form-control"
+            type="number"
+            formControlName="motorcycle_id"
+          />
+        </div>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-secondary me-2" type="button" (click)="cancel()">
+          Cancelar
+        </button>
+        <button class="btn btn-primary" type="submit" [disabled]="loading">
+          {{ isEdit ? "Guardar" : "Crear" }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

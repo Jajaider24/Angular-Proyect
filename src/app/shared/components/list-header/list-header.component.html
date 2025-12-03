@@ -1,0 +1,38 @@
+<div class="list-header">
+  <div class="lh-row">
+    <div class="lh-left">
+      <!-- Icono Lucide preferente -->
+      <i-lucide
+        *ngIf="lucide"
+        class="lh-icon"
+        [name]="lucide"
+        [size]="24"
+      ></i-lucide>
+      <!-- Fallback: icono clásico -->
+      <i *ngIf="!lucide && icon" class="lh-icon" [ngClass]="icon"></i>
+      <div class="lh-texts">
+        <div class="lh-title">{{ title }}</div>
+        <div *ngIf="subtitle" class="lh-subtitle">{{ subtitle }}</div>
+      </div>
+    </div>
+    <div class="lh-right" *ngIf="actionLink">
+      <a [routerLink]="actionLink" [ngClass]="actionBtnClass">
+        <i-lucide [name]="actionLucide" [size]="18" class="me-1"></i-lucide>
+        <span>{{ actionText }}</span>
+      </a>
+    </div>
+  </div>
+
+  <nav *ngIf="breadcrumb?.length" class="lh-breadcrumb" aria-label="breadcrumb">
+    <ol>
+      <li *ngFor="let bc of breadcrumb; let last = last" [class.active]="last">
+        <ng-container *ngIf="bc.link && !last; else plain">
+          <a [routerLink]="bc.link">{{ bc.label }}</a>
+        </ng-container>
+        <ng-template #plain>
+          <span>{{ bc.label }}</span>
+        </ng-template>
+      </li>
+    </ol>
+  </nav>
+</div>

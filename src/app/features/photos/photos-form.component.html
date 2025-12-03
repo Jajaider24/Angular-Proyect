@@ -1,0 +1,58 @@
+<div class="form-container">
+  <app-form-header
+    [title]="'Subir Foto'"
+    icon="ni ni-camera-compact"
+    [backLink]="['/photos']"
+    backText="Volver a Fotos"
+  ></app-form-header>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="card">
+    <div class="card-body">
+      <div class="mb-3">
+        <label class="form-label"
+          >Archivo <span class="text-danger">*</span></label
+        >
+        <input
+          type="file"
+          class="form-control"
+          (change)="onFileChange($event)"
+          accept="image/*"
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Descripción</label>
+        <input class="form-control" formControlName="caption" />
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Incidencia (opcional)</label>
+          <input
+            class="form-control"
+            type="number"
+            formControlName="issue_id"
+          />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Pedido (opcional)</label>
+          <input
+            class="form-control"
+            type="number"
+            formControlName="order_id"
+          />
+        </div>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-secondary me-2" type="button" (click)="cancel()">
+          Cancelar
+        </button>
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="loading || !file"
+        >
+          Subir
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

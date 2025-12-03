@@ -6,6 +6,7 @@ import player from "lottie-web";
 import { LottieModule } from "ngx-lottie";
 import { ChatbotComponent } from "./components/chatbot/chatbot.component";
 import { FormHeaderComponent } from "./components/form-header/form-header.component";
+import { ListHeaderComponent } from "./components/list-header/list-header.component";
 import { CrudDetailComponent } from "./crud/crud-detail.component";
 import { CrudFormComponent } from "./crud/crud-form.component";
 import { CrudListComponent } from "./crud/crud-list.component";
@@ -24,6 +25,7 @@ export function playerFactory() {
     ChatbotComponent,
     ReplacePipe,
     FormHeaderComponent,
+    ListHeaderComponent,
   ],
   imports: [
     CommonModule,
@@ -40,6 +42,7 @@ export function playerFactory() {
     CommonModule,
     FormsModule,
     FormHeaderComponent,
+    ListHeaderComponent,
   ],
 })
 export class SharedModule {}

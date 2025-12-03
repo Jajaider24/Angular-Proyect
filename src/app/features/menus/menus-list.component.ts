@@ -7,20 +7,20 @@ import Swal from "sweetalert2";
 @Component({
   selector: "app-menus-list",
   template: `
-    <div class="container mt-3">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-          <h4 class="mb-0">Menús</h4>
-          <p class="text-muted mb-0">
-            Listado de menús que relacionan restaurantes y productos
-          </p>
-        </div>
-        <div>
-          <button class="btn btn-primary btn-sm" (click)="create()">
-            Crear menú
-          </button>
-        </div>
-      </div>
+    <div class="form-container">
+      <app-list-header
+        [title]="'Menús'"
+        [subtitle]="'Relaciona restaurantes y productos'"
+        [lucide]="'BookOpen'"
+        [breadcrumb]="[
+          { label: 'Dashboard', link: ['/dashboard'] },
+          { label: 'Menús' }
+        ]"
+        [actionText]="'Crear menú'"
+        [actionLink]="['/menus/create']"
+        [actionLucide]="'Plus'"
+        [actionBtnClass]="'btn btn-primary btn-sm'"
+      ></app-list-header>
 
       <div *ngIf="loading" class="text-center py-3">Cargando menús...</div>
       <div *ngIf="error" class="alert alert-danger">{{ error }}</div>

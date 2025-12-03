@@ -1,14 +1,18 @@
-<!-- Lista de conductores con mismo layout que Clientes -->
-<div class="container mt-3">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-      <h4 class="mb-0">Conductores</h4>
-      <p class="text-muted mb-0">Listado de conductores</p>
-    </div>
-    <div>
-      <button class="btn btn-primary btn-sm" (click)="createNew()">Crear conductor</button>
-    </div>
-  </div>
+<!-- Lista de conductores con encabezado compartido -->
+<div class="form-container">
+  <app-list-header
+    [title]="'Conductores'"
+    [subtitle]="'Listado de conductores'"
+    [lucide]="'UserCircle'"
+    [breadcrumb]="[
+      { label: 'Dashboard', link: ['/dashboard'] },
+      { label: 'Conductores' }
+    ]"
+    [actionText]="'Crear conductor'"
+    [actionLink]="['/drivers/create']"
+    [actionLucide]="'Plus'"
+    [actionBtnClass]="'btn btn-primary btn-sm'"
+  ></app-list-header>
 
   <div class="mb-3">
     <div class="input-group input-group-sm">
@@ -44,23 +48,44 @@
             <tr *ngFor="let d of filteredDrivers">
               <td>{{ d.id }}</td>
               <td>{{ d.name }}</td>
-              <td class="text-uppercase">{{ d.license_number || d.licenseNumber }}</td>
+              <td class="text-uppercase">
+                {{ d.license_number || d.licenseNumber }}
+              </td>
               <td>{{ d.phone }}</td>
-              <td>{{ d.email || '-' }}</td>
+              <td>{{ d.email || "-" }}</td>
               <td>
-                <span class="badge" [ngClass]="getStatusBadgeClass(d.status)">{{ getStatusLabel(d.status) }}</span>
+                <span class="badge" [ngClass]="getStatusBadgeClass(d.status)">{{
+                  getStatusLabel(d.status)
+                }}</span>
               </td>
               <td class="text-end">
-                <button class="btn btn-sm btn-outline-secondary me-1" (click)="viewDetail(d.id)">Ver</button>
-                <button class="btn btn-sm btn-outline-primary me-1" (click)="editDriver(d.id)">Editar</button>
-                <button class="btn btn-sm btn-outline-danger" (click)="deleteDriver(d.id)">Eliminar</button>
+                <button
+                  class="btn btn-sm btn-outline-secondary me-1"
+                  (click)="viewDetail(d.id)"
+                >
+                  Ver
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-primary me-1"
+                  (click)="editDriver(d.id)"
+                >
+                  Editar
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="deleteDriver(d.id)"
+                >
+                  Eliminar
+                </button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
       <ng-template #emptyDrivers>
-        <div class="text-center py-4 text-muted">No hay conductores para mostrar.</div>
+        <div class="text-center py-4 text-muted">
+          No hay conductores para mostrar.
+        </div>
       </ng-template>
     </div>
   </div>
