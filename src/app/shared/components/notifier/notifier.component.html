@@ -1,0 +1,19 @@
+<div class="notifier-container" aria-live="assertive" aria-atomic="true">
+  <div
+    *ngFor="let n of items"
+    class="notifier-item"
+    [class.info]="n.level === 'info'"
+    [class.success]="n.level === 'success'"
+    [class.warning]="n.level === 'warning'"
+    [class.error]="n.level === 'error'"
+  >
+    <div class="notifier-icon">
+      <i [class]="n.icon || 'ni ni-bell-55'"></i>
+    </div>
+    <div class="notifier-content">
+      <div class="title">{{ n.title }}</div>
+      <div class="message">{{ n.message }}</div>
+    </div>
+    <button class="close" (click)="remove(n)" aria-label="Cerrar">×</button>
+  </div>
+</div>

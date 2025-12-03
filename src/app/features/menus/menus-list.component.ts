@@ -27,45 +27,49 @@ import Swal from "sweetalert2";
 
       <div *ngIf="!loading && !error" class="card">
         <div class="card-body p-2">
-          <table class="table table-sm table-hover mb-0 table-list">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Restaurante</th>
-                <th>Producto</th>
-                <th>Precio</th>
-                <th class="text-end">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let m of menus">
-                <td>{{ m.id }}</td>
-                <td>{{ m?.restaurant?.name || m?.restaurant_id }}</td>
-                <td>{{ m?.product?.name || m?.product_id }}</td>
-                <td>{{ m?.price | currency }}</td>
-                <td class="text-end">
-                  <button
-                    class="btn btn-sm btn-outline-secondary me-1"
-                    (click)="view(m.id)"
-                  >
-                    Ver
-                  </button>
-                  <button
-                    class="btn btn-sm btn-outline-primary me-1"
-                    (click)="edit(m.id)"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    class="btn btn-sm btn-outline-danger"
-                    (click)="delete(m.id)"
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-responsive table-wrap">
+            <table
+              class="table table-sm table-hover mb-0 table-list table-sticky"
+            >
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Restaurante</th>
+                  <th>Producto</th>
+                  <th>Precio</th>
+                  <th class="text-end">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let m of menus">
+                  <td>{{ m.id }}</td>
+                  <td>{{ m?.restaurant?.name || m?.restaurant_id }}</td>
+                  <td>{{ m?.product?.name || m?.product_id }}</td>
+                  <td>{{ m?.price | currency }}</td>
+                  <td class="text-end">
+                    <button
+                      class="btn btn-sm btn-outline-secondary me-1"
+                      (click)="view(m.id)"
+                    >
+                      Ver
+                    </button>
+                    <button
+                      class="btn btn-sm btn-outline-primary me-1"
+                      (click)="edit(m.id)"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      class="btn btn-sm btn-outline-danger"
+                      (click)="delete(m.id)"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 

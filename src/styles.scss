@@ -172,3 +172,23 @@ body[data-accent="primary"] table .btn-outline-primary {
     padding: 0.75rem;
   }
 }
+
+/* Responsive tables: prevenir desbordes horizontales y mantener encabezados visibles */
+.table-wrap {
+  overflow-x: auto;
+}
+.table-wrap table {
+  min-width: 720px; /* asegura columnas legibles en pantallas pequeñas */
+}
+.table-sticky thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f8fafc;
+}
+
+/* Accesibilidad: estado de foco para botón de cerrar en notificador */
+.notifier-container .close:focus {
+  outline: 2px solid #4c6fff;
+  outline-offset: 2px;
+}

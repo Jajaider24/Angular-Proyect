@@ -30,60 +30,64 @@ import Swal from "sweetalert2";
 
       <div *ngIf="!loading && !error" class="card">
         <div class="card-body p-2">
-          <table class="table table-sm table-hover mb-0 table-list">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Cliente ID</th>
-                <th>Total</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-                <th class="text-end">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let o of orders">
-                <td>{{ o.id }}</td>
-                <td>{{ o.customerId }}</td>
-                <td>{{ o.totalPrice | currency }}</td>
-                <td>{{ o.status }}</td>
-                <td>
-                  {{ o.createdAt ? (o.createdAt | date : "short") : "-" }}
-                </td>
-                <td class="text-end">
-                  <button
-                    class="btn btn-sm btn-outline-secondary me-1"
-                    (click)="view(o.id)"
-                  >
-                    Ver
-                  </button>
-                  <button
-                    class="btn btn-sm btn-outline-primary me-1"
-                    (click)="edit(o.id)"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    class="btn btn-sm btn-outline-success me-1"
-                    (click)="track(o)"
-                    [title]="
-                      o.motorcycleId
-                        ? 'Rastrear entrega'
-                        : 'Pedido sin moto asignada'
-                    "
-                  >
-                    Rastrear
-                  </button>
-                  <button
-                    class="btn btn-sm btn-outline-danger"
-                    (click)="delete(o.id)"
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-responsive table-wrap">
+            <table
+              class="table table-sm table-hover mb-0 table-list table-sticky"
+            >
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Cliente ID</th>
+                  <th>Total</th>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                  <th class="text-end">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let o of orders">
+                  <td>{{ o.id }}</td>
+                  <td>{{ o.customerId }}</td>
+                  <td>{{ o.totalPrice | currency }}</td>
+                  <td>{{ o.status }}</td>
+                  <td>
+                    {{ o.createdAt ? (o.createdAt | date : "short") : "-" }}
+                  </td>
+                  <td class="text-end">
+                    <button
+                      class="btn btn-sm btn-outline-secondary me-1"
+                      (click)="view(o.id)"
+                    >
+                      Ver
+                    </button>
+                    <button
+                      class="btn btn-sm btn-outline-primary me-1"
+                      (click)="edit(o.id)"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      class="btn btn-sm btn-outline-success me-1"
+                      (click)="track(o)"
+                      [title]="
+                        o.motorcycleId
+                          ? 'Rastrear entrega'
+                          : 'Pedido sin moto asignada'
+                      "
+                    >
+                      Rastrear
+                    </button>
+                    <button
+                      class="btn btn-sm btn-outline-danger"
+                      (click)="delete(o.id)"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 

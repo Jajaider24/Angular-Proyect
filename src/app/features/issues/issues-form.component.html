@@ -35,29 +35,34 @@
         </div>
         <div class="col-md-4 mb-3">
           <label class="form-label">Pedido (opcional)</label>
-          <input
-            class="form-control"
-            type="number"
-            formControlName="order_id"
-          />
+          <select class="form-select" formControlName="order_id">
+            <option [ngValue]="null">-- Seleccionar --</option>
+            <option *ngFor="let o of orderOptions" [ngValue]="o.id">
+              #{{ o.id }} - {{ o.status }} - {{ o.total_price | currency }}
+            </option>
+          </select>
         </div>
         <div class="col-md-4 mb-3">
           <label class="form-label">Conductor (opcional)</label>
-          <input
-            class="form-control"
-            type="number"
-            formControlName="driver_id"
-          />
+          <select class="form-select" formControlName="driver_id">
+            <option [ngValue]="null">-- Seleccionar --</option>
+            <option *ngFor="let d of driverOptions" [ngValue]="d.id">
+              {{ d.name }} ({{ d.status || "sin_estado" }})
+            </option>
+          </select>
         </div>
       </div>
       <div class="row">
         <div class="col-md-4 mb-3">
           <label class="form-label">Motocicleta (opcional)</label>
-          <input
-            class="form-control"
-            type="number"
-            formControlName="motorcycle_id"
-          />
+          <select class="form-select" formControlName="motorcycle_id">
+            <option [ngValue]="null">-- Seleccionar --</option>
+            <option *ngFor="let m of motorcycleOptions" [ngValue]="m.id">
+              {{ m.licensePlate || m.license_plate }} ({{
+                m.status || "sin_estado"
+              }})
+            </option>
+          </select>
         </div>
       </div>
       <div class="d-flex justify-content-end">

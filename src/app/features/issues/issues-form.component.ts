@@ -1,6 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
+import { forkJoin } from "rxjs";
+import { DriversService } from "../../core/services/drivers.service";
+import { MotorcyclesService } from "../../core/services/motorcycles.service";
+import { OrdersService } from "../../core/services/orders.service";
 import { IssuesService } from "../../services/issues.service";
 
 @Component({
@@ -12,6 +16,11 @@ import { IssuesService } from "../../services/issues.service";
 export class IssuesFormComponent implements OnInit {
   isEdit = false;
   loading = false;
+
+  // Opciones para selects
+  orderOptions: any[] = [];
+  driverOptions: any[] = [];
+  motorcycleOptions: any[] = [];
 
   form = this.fb.group({
     title: ["", [Validators.required, Validators.maxLength(120)]],
@@ -26,7 +35,10 @@ export class IssuesFormComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private issuesService: IssuesService
+    private issuesService: IssuesService,
+    private ordersService: OrdersService,
+    private driversService: DriversService,
+    private motorcyclesService: MotorcyclesService
   ) {}
 
   ngOnInit(): void {
@@ -44,6 +56,23 @@ export class IssuesFormComponent implements OnInit {
         },
       });
     }
+
+    // Cargar opciones para selects (paginación simple: primeros 100)
+    forkJoin({
+      orders: this.ordersService.list({ page: 1, limit: 100 }),
+      drivers: this.driversService.list(),
+      motorcycles: this.motorcyclesService.list(),
+    }).subscribe({
+      next: (result: any) => {
+        const orders = (result?.orders as any[]) || [];
+        const drivers = (result?.drivers as any[]) || [];
+        const motorcycles = (result?.motorcycles as any[]) || [];
+        this.orderOptions = orders;
+        this.driverOptions = drivers;
+        this.motorcycleOptions = motorcycles;
+      },
+      error: () => {},
+    });
   }
 
   submit(): void {
