@@ -3,41 +3,81 @@ import { Socket } from "ngx-socket-io";
 import { environment } from "src/environments/environment";
 import { SecurityService } from "./security.service";
 
+/**
+ * WebSocketService
+ * ================
+ * Servicio para manejar conexiones WebSocket con el backend Flask-SocketIO.
+ *
+ * IMPORTANTE: Este servicio extiende Socket de ngx-socket-io y crea su propia
+ * conexion con configuracion especifica que incluye:
+ * - transports: ['websocket'] -> Evita problemas de CORS usando WebSocket directo
+ * - user_id en query -> Identifica al usuario en el backend
+ */
 @Injectable({
   providedIn: "root",
 })
 export class WebSocketService extends Socket {
-  callback: EventEmitter<any> = new EventEmitter(); // llegada de algo desde el servidor (información) => {hacer algo}
-  nameEvent: string; // nombre del evento del cual va a estar pendiente o escuchando.
+  // EventEmitter que emite los mensajes recibidos del servidor
+  callback: EventEmitter<any> = new EventEmitter();
+
+  // Nombre del evento actual que se esta escuchando
+  nameEvent: string;
+
   constructor(private securityService: SecurityService) {
-    const userId = securityService.activeUserSession?.email || ""; // Asegúrate de que no sea nulo // Esto lo usamos para identificarnoss con el backend
+    // Obtener el email del usuario para identificacion en el backend
+    const userId = securityService.activeUserSession?.email || "";
+
+    // =========================================================================
+    // CONFIGURACION CRITICA DEL SOCKET
+    // =========================================================================
+    // transports: ['websocket'] -> Fuerza conexion WebSocket directa
+    // Esto EVITA el problema de CORS porque WebSocket no usa HTTP polling
+    // =========================================================================
     super({
       url: environment.url_webSocket,
       options: {
         query: {
           user_id: userId,
         },
+<<<<<<< HEAD
         // Forzar transports para evitar problemas de compatibilidad
         transports: ['websocket', 'polling'],
         // Habilitar reconexión automática
         reconnection: true,
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
+=======
+        // SOLUCION CORS: Usar WebSocket directo en lugar de polling HTTP
+        transports: ["websocket"],
+        upgrade: false,
+>>>>>>> cace43ba7a9df1bf5de4ecef8560d8b5a0fb1035
       },
     });
     this.nameEvent = "";
-    //this.listen()
   }
+
+  /**
+   * Configura el evento a escuchar y comienza a escuchar.
+   * NOTA: Cada llamada a este metodo reemplaza el evento anterior.
+   *
+   * @param nameEvent - Nombre del evento WebSocket (ej: placa de moto)
+   */
   setNameEvent(nameEvent: string) {
-    this.nameEvent = nameEvent; // Este es el canal por el cual vamos a escuchar o estar pendientes del backend
+    this.nameEvent = nameEvent;
     this.listen();
   }
+
+  /**
+   * Registra un listener para el evento actual.
+   * Cuando el servidor emite un mensaje en este canal, se emite por callback.
+   */
   listen = () => {
-    this.ioSocket.on(this.nameEvent, (res: any) => this.callback.emit(res)); // Aqui le pedimos al socket que este pendie nte de todas las respuestas que vengan por el canal nameEvent y mandelas al que este pendiente del callback.
+    this.ioSocket.on(this.nameEvent, (res: any) => {
+      console.log(
+        `[WebSocketService] Mensaje recibido en canal "${this.nameEvent}":`,
+        res
+      );
+      this.callback.emit(res);
+    });
   };
-  // Para llamar este método es necesario inyectar el servicio
-  // y enviar el payload
-  // emitEvent=(payload={})=>{
-  //   this.ioSocket.emit(this.nameEvent,payload)
-  // }
 }

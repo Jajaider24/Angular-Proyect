@@ -71,12 +71,19 @@ export class OrdersMapComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private tracking: TrackingService
   ) {
-    // Crear icono personalizado de la moto
+    // =========================================================================
+    // Crear icono personalizado de la moto - GRANDE y VISIBLE
+    // =========================================================================
+    // iconSize: Tamaño del ícono en píxeles [ancho, alto]
+    // iconAnchor: Punto del ícono que corresponde a la posición del marcador
+    // popupAnchor: Punto desde donde se abre el popup relativo al iconAnchor
+    // =========================================================================
     this.courierIcon = L.icon({
       iconUrl: "assets/img/delivery.svg",
-      iconSize: [48, 48],
-      iconAnchor: [24, 48],
-      popupAnchor: [0, -48],
+      iconSize: [70, 70], // Tamaño grande para mejor visibilidad
+      iconAnchor: [35, 70], // Ancla en el centro-abajo del ícono
+      popupAnchor: [0, -70], // Popup aparece arriba del ícono
+      className: "delivery-marker-icon", // Clase CSS para animaciones
     });
   }
 
@@ -150,15 +157,30 @@ export class OrdersMapComponent implements OnInit, OnDestroy {
     // Actualizar o crear marcador
     if (this.markers[plate]) {
       this.markers[plate].setLatLng(latlng);
+      // Actualizar contenido del popup con coordenadas actualizadas
+      this.markers[plate].setPopupContent(
+        this.createPopupContent(plate, position)
+      );
       console.log(`[MAP] Marcador actualizado para ${plate}:`, latlng);
     } else {
-      // Crear marcador con icono personalizado
+      // Crear marcador con icono personalizado y popup interactivo
       const marker = L.marker(latlng, {
-        title: plate,
+        title: `🏍️ Moto: ${plate}`,
         icon: this.courierIcon,
+        zIndexOffset: 1000, // Asegurar que esté por encima de otros elementos
       });
-      marker.bindPopup(`<b>🏍️ Moto:</b> ${plate}`);
+
+      // Popup con información detallada y estilo mejorado
+      marker.bindPopup(this.createPopupContent(plate, position), {
+        className: "delivery-popup",
+        maxWidth: 250,
+        closeButton: true,
+      });
+
+      // Abrir popup automáticamente al crear el marcador
       marker.addTo(this.map);
+      marker.openPopup();
+
       this.markers[plate] = marker;
       console.log(`[MAP] ✅ Marcador CREADO para ${plate}:`, latlng);
     }
@@ -167,6 +189,40 @@ export class OrdersMapComponent implements OnInit, OnDestroy {
     if (currentPath.length === 1 || this.followingPlate === plate) {
       this.map.setView(latlng, this.defaultZoom);
     }
+  }
+
+  /**
+   * Crea el contenido HTML del popup del marcador.
+   * Muestra información detallada de la moto y coordenadas actuales.
+   *
+   * @param plate - Placa de la motocicleta
+   * @param position - Coordenadas actuales { lat, lng }
+   * @returns HTML string para el popup
+   */
+  private createPopupContent(plate: string, position: Position): string {
+    const now = new Date().toLocaleTimeString("es-CO");
+    return `
+      <div style="text-align: center; min-width: 180px;">
+        <div style="font-size: 24px; margin-bottom: 5px;">🏍️</div>
+        <div style="font-weight: bold; font-size: 16px; color: #2dce89; margin-bottom: 8px;">
+          ${plate}
+        </div>
+        <div style="font-size: 12px; color: #666; margin-bottom: 4px;">
+          <strong>📍 Lat:</strong> ${position.lat.toFixed(6)}
+        </div>
+        <div style="font-size: 12px; color: #666; margin-bottom: 4px;">
+          <strong>📍 Lng:</strong> ${position.lng.toFixed(6)}
+        </div>
+        <div style="font-size: 11px; color: #999; margin-top: 8px; border-top: 1px solid #eee; padding-top: 6px;">
+          ⏱️ Actualizado: ${now}
+        </div>
+        <div style="margin-top: 8px;">
+          <span style="background: #2dce89; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px;">
+            🔴 EN VIVO
+          </span>
+        </div>
+      </div>
+    `;
   }
 
   /**
