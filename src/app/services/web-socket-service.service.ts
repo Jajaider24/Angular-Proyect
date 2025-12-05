@@ -39,18 +39,13 @@ export class WebSocketService extends Socket {
         query: {
           user_id: userId,
         },
-<<<<<<< HEAD
-        // Forzar transports para evitar problemas de compatibilidad
-        transports: ['websocket', 'polling'],
+        // SOLUCION CORS: Usar WebSocket directo para evitar problemas de polling
+        transports: ["websocket"],
+        upgrade: false,
         // Habilitar reconexión automática
         reconnection: true,
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
-=======
-        // SOLUCION CORS: Usar WebSocket directo en lugar de polling HTTP
-        transports: ["websocket"],
-        upgrade: false,
->>>>>>> cace43ba7a9df1bf5de4ecef8560d8b5a0fb1035
       },
     });
     this.nameEvent = "";
