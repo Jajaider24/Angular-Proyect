@@ -1,7 +1,29 @@
-.badge-info { background-color: #11cdef; }
-.badge-warning { background-color: #fb6340; }
-.badge-success { background-color: #2dce89; }
-.badge-danger { background-color: #f5365c; }
-.badge-secondary { background-color: #8898aa; }
+/* Estilos de badges */
+.badge-info { background-color: #11cdef; color: #fff; }
+.badge-warning { background-color: #fb6340; color: #fff; }
+.badge-success { background-color: #2dce89; color: #fff; }
+.badge-danger { background-color: #f5365c; color: #fff; }
+.badge-secondary { background-color: #8898aa; color: #fff; }
 
 .card { border-radius: .5rem; }
+
+/* Estilos de tabla consistentes con otras listas */
+.table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.table-wrap {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.table-sticky thead {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}

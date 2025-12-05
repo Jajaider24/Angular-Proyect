@@ -391,19 +391,206 @@
   opacity: 0.6;
 }
 
-/* Responsive: ajustes para pantallas pequeñas */
-@media (max-width: 480px) {
-  .chat-box {
-    width: 280px;
-    height: 380px;
+/* Responsive: ajustes para pantallas pequeñas y tablets */
+
+/* Tablets y pantallas medianas (hasta 1024px) */
+@media (max-width: 1024px) {
+  .chat-container {
+    bottom: 10px;
+    right: 10px;
   }
 
-  .avatar {
+  .chat-box {
+    width: min(360px, calc(100vw - 20px));
+    height: min(500px, calc(100vh - 100px));
+  }
+
+  .avatar-container {
     width: 100px;
     height: 100px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .avatar-container ng-lottie,
+  .avatar-container ::ng-deep ng-lottie > div {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  #chat-title {
+    padding: 10px;
+    font-size: 15px;
+  }
+
+  #chat-message {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .quick-question-btn {
+    padding: 5px 10px;
+    font-size: 10px;
+  }
+
+  .chat-history-box {
+    padding: 10px;
+  }
+
+  .message-bubble {
+    font-size: 12px;
+    max-width: 80%;
+  }
+
+  .input-area {
+    padding: 8px;
+    gap: 8px;
   }
 
   #chat-input {
-    width: 190px;
+    padding: 8px;
+    font-size: 13px;
+  }
+
+  #send-message {
+    padding: 8px 12px;
+    font-size: 16px;
+  }
+}
+
+/* Móviles y pantallas muy pequeñas (hasta 600px altura o 480px ancho) */
+@media (max-width: 480px), (max-height: 600px) {
+  .chat-container {
+    bottom: 8px;
+    right: 8px;
+  }
+
+  .open-button {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+  }
+
+  .chat-box {
+    width: min(320px, calc(100vw - 16px));
+    height: min(420px, calc(100vh - 80px));
+    border-radius: 12px;
+  }
+
+  .avatar-container {
+    width: 80px;
+    height: 80px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  .avatar-container ng-lottie,
+  .avatar-container ::ng-deep ng-lottie > div {
+    width: 65px !important;
+    height: 65px !important;
+  }
+
+  #chat-title {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .close-button,
+  .voice-button,
+  .refresh-button {
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+  }
+
+  .voice-button {
+    right: 38px;
+  }
+
+  .refresh-button {
+    top: 42px;
+  }
+
+  #chat-message {
+    padding: 6px;
+    font-size: 11px;
+  }
+
+  .quick-questions {
+    gap: 4px;
+    margin-top: 6px;
+  }
+
+  .quick-question-btn {
+    padding: 4px 8px;
+    font-size: 9px;
+    border-radius: 12px;
+  }
+
+  .chat-history-box {
+    padding: 8px;
+    margin-top: 5px;
+  }
+
+  .message-bubble {
+    font-size: 11px;
+    padding: 6px 10px;
+    max-width: 85%;
+  }
+
+  .message-bubble strong {
+    font-size: 10px;
+  }
+
+  .message-time {
+    font-size: 9px;
+  }
+
+  .input-area {
+    padding: 6px;
+    gap: 6px;
+  }
+
+  #chat-input {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  #send-message {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+}
+
+/* Pantallas muy pequeñas en altura (menos de 500px) */
+@media (max-height: 500px) {
+  .chat-box {
+    height: calc(100vh - 60px);
+    max-height: 380px;
+  }
+
+  .avatar-container {
+    width: 60px;
+    height: 60px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .avatar-container ng-lottie,
+  .avatar-container ::ng-deep ng-lottie > div {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  #chat-message {
+    padding: 4px;
+  }
+
+  .quick-questions {
+    display: none; /* Ocultar en pantallas muy pequeñas */
+  }
+
+  .chat-history-box {
+    padding: 6px;
   }
 }

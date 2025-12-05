@@ -6,7 +6,7 @@ import {
   Validators,
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subject, forkJoin, takeUntil } from "rxjs";
+import { Subject, forkJoin, of, takeUntil } from "rxjs";
 import Swal from "sweetalert2";
 
 import { Driver, Motorcycle, Shift } from "src/app/core/models";
@@ -84,11 +84,12 @@ export class ShiftsFormComponent implements OnInit, OnDestroy {
   loadData(): void {
     this.loading = true;
     forkJoin({
-      // Solicitar con límite razonable para catálogos
-      drivers: this.driversService.list({ page: 1, limit: 100 }),
-      motorcycles: this.motorcyclesService.list({ page: 1, limit: 100 }),
-      shifts: this.shiftsService.list({ page: 1, limit: 100 }),
-      current: this.shiftId ? this.shiftsService.get(this.shiftId) : undefined,
+      // Solicitar sin parámetros de paginación para obtener todos los registros
+      drivers: this.driversService.list(),
+      motorcycles: this.motorcyclesService.list(),
+      shifts: this.shiftsService.list(),
+      // of(undefined) para que forkJoin no falle cuando no hay shiftId
+      current: this.shiftId ? this.shiftsService.get(this.shiftId) : of(undefined),
     })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -124,47 +125,12 @@ export class ShiftsFormComponent implements OnInit, OnDestroy {
             this.motorcycles
           );
 
-          // Si por cualquier razón vienen vacíos con paginación, reintentar sin parámetros (como en editar/lista)
-          const retryDrivers = this.driverOptions.length === 0;
-          const retryMotos = this.motorcycleOptions.length === 0;
-          if (retryDrivers) {
-            this.driversService
-              .list()
-              .pipe(takeUntil(this.destroy$))
-              .subscribe({
-                next: (ds) => {
-                  this.drivers = (ds || []).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-                  this.availableDrivers = this.drivers;
-                  this.driverOptions = this.computeOptionsWithSelected(
-                    this.drivers,
-                    this.form.get("driverId")?.value,
-                    this.drivers
-                  );
-                },
-                error: () => {
-                  // mantener vacío
-                },
-              });
-          }
-          if (retryMotos) {
-            this.motorcyclesService
-              .list()
-              .pipe(takeUntil(this.destroy$))
-              .subscribe({
-                next: (ms) => {
-                  this.motorcycles = (ms || []).sort((a, b) => (a.licensePlate || '').localeCompare(b.licensePlate || ''));
-                  this.availableMotorcycles = this.motorcycles;
-                  this.motorcycleOptions = this.computeOptionsWithSelected(
-                    this.motorcycles,
-                    this.form.get("motorcycleId")?.value,
-                    this.motorcycles
-                  );
-                },
-                error: () => {
-                  // mantener vacío
-                },
-              });
-          }
+          // Log para depuración
+          console.log('[ShiftsForm] Datos cargados:', {
+            drivers: this.driverOptions.length,
+            motorcycles: this.motorcycleOptions.length,
+            shifts: this.existingShifts.length,
+          });
 
           // Revalidar tras tener existingShifts cargados
           this.form.updateValueAndValidity();
@@ -245,16 +211,34 @@ export class ShiftsFormComponent implements OnInit, OnDestroy {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      Swal.fire({
+        icon: 'warning',
+        title: 'Formulario incompleto',
+        text: 'Por favor, selecciona conductor, moto y fecha de inicio.',
+      });
       return;
     }
     const raw = this.form.value;
+    
+    // Validar que se hayan seleccionado valores válidos
+    if (!raw.driverId || !raw.motorcycleId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Selección requerida',
+        text: 'Debes seleccionar un conductor y una moto válidos.',
+      });
+      return;
+    }
+
     const payload: Partial<Shift> = {
-      driverId: raw.driverId,
-      motorcycleId: raw.motorcycleId,
+      driverId: Number(raw.driverId),
+      motorcycleId: Number(raw.motorcycleId),
       startTime: this.localInputToIso(raw.startTime),
       endTime: raw.endTime ? this.localInputToIso(raw.endTime) : undefined,
       status: raw.status,
     };
+    
+    console.log('[ShiftsForm] Enviando payload:', payload);
 
     if (this.shiftId && this.editMode) {
       this.shiftsService

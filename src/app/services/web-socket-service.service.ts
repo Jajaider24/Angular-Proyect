@@ -17,6 +17,12 @@ export class WebSocketService extends Socket {
         query: {
           user_id: userId,
         },
+        // Forzar transports para evitar problemas de compatibilidad
+        transports: ['websocket', 'polling'],
+        // Habilitar reconexión automática
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
       },
     });
     this.nameEvent = "";

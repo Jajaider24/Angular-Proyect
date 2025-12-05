@@ -313,3 +313,121 @@
 .nav-link[data-color="muted"] .menu-icon {
   color: var(--accent-muted);
 }
+
+/* ============================================
+   ESTILOS RESPONSIVE DEL SIDEBAR
+   ============================================ */
+
+/* Sidebar base */
+#sidenav-main {
+  width: 250px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: transform 0.3s ease, width 0.3s ease;
+}
+
+/* Tablets: sidebar más estrecho */
+@media (max-width: 1199px) and (min-width: 992px) {
+  #sidenav-main {
+    width: 220px;
+  }
+  
+  .menu-text .nav-title {
+    font-size: 0.9rem;
+  }
+  
+  .menu-text .nav-subtitle {
+    font-size: 0.7rem;
+  }
+  
+  .nav-link .menu-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 0.5rem;
+  }
+}
+
+/* Móviles: sidebar como overlay */
+@media (max-width: 991px) {
+  #sidenav-main {
+    width: 280px;
+    transform: translateX(-100%);
+    box-shadow: none;
+  }
+  
+  #sidenav-main.show,
+  #sidenav-main.navbar-collapse.show {
+    transform: translateX(0);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Overlay oscuro cuando sidebar está abierto */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  
+  .sidebar-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* Móviles pequeños: sidebar ocupa menos */
+@media (max-width: 480px) {
+  #sidenav-main {
+    width: 260px;
+  }
+  
+  .navbar-brand-img {
+    width: 30px !important;
+    height: 30px !important;
+  }
+  
+  .menu-text .nav-title {
+    font-size: 0.88rem;
+  }
+  
+  .menu-text .nav-subtitle {
+    font-size: 0.68rem;
+  }
+  
+  .nav-link .menu-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 0.5rem;
+  }
+  
+  .navbar-nav .nav-item .nav-link {
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* Pantallas muy pequeñas en altura */
+@media (max-height: 600px) {
+  .navbar-nav .nav-item .nav-link {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+  }
+  
+  .menu-text .nav-subtitle {
+    display: none;
+  }
+  
+  .avatar-container {
+    display: none;
+  }
+}
