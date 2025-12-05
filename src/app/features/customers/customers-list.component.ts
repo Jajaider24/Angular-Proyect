@@ -27,45 +27,54 @@ import Swal from "sweetalert2";
 
       <div *ngIf="!loading && !error" class="card">
         <div class="card-body p-2">
-          <table class="table table-sm table-hover mb-0 table-list">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Teléfono</th>
-                <th class="text-end">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let c of customers">
-                <td>{{ c.id }}</td>
-                <td>{{ c.name }}</td>
-                <td>{{ c.email || "-" }}</td>
-                <td>{{ c.phone || "-" }}</td>
-                <td class="text-end">
-                  <button
-                    class="btn btn-sm btn-outline-secondary me-1"
-                    (click)="view(c.id)"
-                  >
-                    Ver
-                  </button>
-                  <button
-                    class="btn btn-sm btn-outline-primary me-1"
-                    (click)="edit(c.id)"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    class="btn btn-sm btn-outline-danger"
-                    (click)="delete(c.id)"
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div *ngIf="customers.length > 0; else emptyState">
+            <div class="table-responsive table-wrap">
+              <table class="table table-sm table-hover mb-0 table-sticky">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th class="text-end">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let c of customers">
+                    <td>{{ c.id }}</td>
+                    <td>{{ c.name }}</td>
+                    <td>{{ c.email || "-" }}</td>
+                    <td>{{ c.phone || "-" }}</td>
+                    <td class="text-end">
+                      <button
+                        class="btn btn-sm btn-outline-secondary me-1"
+                        (click)="view(c.id)"
+                      >
+                        Ver
+                      </button>
+                      <button
+                        class="btn btn-sm btn-outline-primary me-1"
+                        (click)="edit(c.id)"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        class="btn btn-sm btn-outline-danger"
+                        (click)="delete(c.id)"
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <ng-template #emptyState>
+            <div class="text-center py-4 text-muted">
+              No hay clientes para mostrar.
+            </div>
+          </ng-template>
         </div>
       </div>
 
