@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
 import { Driver } from "../models";
 import { BaseApiService } from "./base-api.service";
 
@@ -23,8 +23,18 @@ export class DriversService {
 
   list(params?: any): Observable<Driver[]> {
     return this.api
-      .list<any[]>(this.path, params)
-      .pipe(map((arr) => (arr || []).map((d) => this.adapt(d))));
+      .list<any>(this.path, params)
+      .pipe(
+        tap((resp) => {
+          console.debug("DriversService.list raw resp:", resp);
+        }),
+        map((resp) => {
+          const arr = Array.isArray(resp)
+            ? resp
+            : (resp?.items || resp?.data || resp?.results || resp?.drivers || []);
+          return (arr || []).map((d: any) => this.adapt(d));
+        })
+      );
   }
 
   get(id: number): Observable<Driver> {

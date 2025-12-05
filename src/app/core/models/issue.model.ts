@@ -1,10 +1,9 @@
 export interface Issue {
   id: number;
-  title: string;
-  description: string;
-  status: string; // 'open' | 'in_progress' | 'closed'
-  orderId?: number | null;
-  driverId?: number | null;
-  motorcycleId?: number | null;
-  dateReported?: string; // ISO date
+  motorcycleId: number; // FK requerido
+  description: string; // requerido
+  issueType: string; // 'accident' | 'breakdown' | 'maintenance' | 'other'
+  dateReported: string; // ISO date requerido
+  status: string; // 'open' | 'in_progress' | 'resolved'
+  createdAt?: string; // ISO date
 }

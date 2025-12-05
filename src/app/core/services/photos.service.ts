@@ -73,12 +73,23 @@ export class PhotosService {
   }
 
   /**
-   * TODO: Método para subir archivos directamente.
-   * upload(file: File, issueId: number): Observable<Photo> {
-   *   const formData = new FormData();
-   *   formData.append('file', file);
-   *   formData.append('issue_id', issueId.toString());
-   *   return this.api.upload<Photo>(`${this.path}/upload`, formData);
-   * }
+   * Subida de archivo (form-data) según backend.
+   * Envía 'file' + metadatos opcionales: issue_id, caption, taken_at.
+   * Endpoint esperado: POST /photos/upload
    */
+  upload(meta: { issue_id?: number; caption?: string; taken_at?: string }, file: File): Observable<Photo> {
+    const formData = new FormData();
+    formData.append("file", file);
+    if (meta.issue_id !== undefined && meta.issue_id !== null) {
+      formData.append("issue_id", String(meta.issue_id));
+    }
+    if (meta.caption) {
+      formData.append("caption", meta.caption);
+    }
+    if (meta.taken_at) {
+      formData.append("taken_at", meta.taken_at);
+    }
+    // Usamos create con ruta específica de upload
+    return this.api.create<Photo>(`${this.path}/upload`, formData);
+  }
 }

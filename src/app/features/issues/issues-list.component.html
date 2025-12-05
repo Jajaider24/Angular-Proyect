@@ -2,50 +2,60 @@
   <app-list-header
     [title]="'Incidencias'"
     [subtitle]="'Registrar fallas y accidentes'"
-    [lucide]="'AlertCircle'"
+    [lucide]="'AlertTriangle'"
     [breadcrumb]="[
       { label: 'Dashboard', link: ['/dashboard'] },
       { label: 'Incidencias' }
     ]"
-    [actionText]="'Crear incidencia'"
+    [actionText]="'Nueva incidencia'"
     [actionLink]="['/issues/new']"
     [actionLucide]="'Plus'"
   ></app-list-header>
 
-  <div class="card">
-    <div class="card-body p-0">
-      <table class="table table-hover mb-0 table-list">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Título</th>
-            <th>Estado</th>
-            <th>Fecha</th>
-            <th class="text-end">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let i of issues">
-            <td>{{ i.id }}</td>
-            <td>{{ i.title }}</td>
-            <td>{{ i.status }}</td>
-            <td>{{ i.created_at | date : "short" }}</td>
-            <td class="text-end">
-              <a
-                class="btn btn-sm btn-outline-info me-2"
-                [routerLink]="['/issues', i.id]"
-                >Ver</a
-              >
-              <a
-                class="btn btn-sm btn-outline-primary me-2"
-                [routerLink]="['/issues', i.id, 'edit']"
-                >Editar</a
-              >
-              <!-- Eliminar se implementa luego con confirmación -->
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div class="d-flex justify-content-end mb-2">
+    <button class="btn btn-outline-secondary btn-sm" (click)="refresh()">Refrescar</button>
+  </div>
+
+  <div *ngIf="loading" class="text-center py-4">
+    <div class="spinner-border" role="status"></div>
+  </div>
+
+  <div *ngIf="!loading && items.length === 0" class="text-muted py-4">
+    No hay incidencias registradas.
+  </div>
+
+  <div *ngIf="!loading && items.length > 0" class="table-responsive">
+    <table class="table table-sm align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Descripción</th>
+          <th>Tipo</th>
+          <th>Motocicleta</th>
+          <th>Reportado</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let i of items">
+          <td>{{ i.id }}</td>
+          <td>{{ i.description }}</td>
+          <td>{{ i.issueType }}</td>
+          <td>{{ i.motorcycleId }}</td>
+          <td>{{ i.dateReported | date: 'short' }}</td>
+          <td>
+            <span class="badge bg-secondary" *ngIf="i.status === 'open'">Abierta</span>
+            <span class="badge bg-info" *ngIf="i.status === 'in_progress'">En progreso</span>
+            <span class="badge bg-success" *ngIf="i.status === 'resolved'">Resuelta</span>
+          </td>
+          <td class="text-end">
+            <button class="btn btn-sm btn-outline-info me-1" (click)="view(i.id)">Ver</button>
+            <button class="btn btn-sm btn-outline-primary me-1" (click)="edit(i.id)">Editar</button>
+            <button class="btn btn-sm btn-outline-danger" (click)="remove(i.id)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>

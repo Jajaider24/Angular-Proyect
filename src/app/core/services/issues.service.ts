@@ -12,13 +12,12 @@ export class IssuesService {
   private adapt(i: any): Issue {
     return {
       id: i.id,
-      title: i.title,
+      motorcycleId: i.motorcycle_id ?? i.motorcycleId,
       description: i.description,
-      status: i.status,
-      orderId: i.order_id ?? i.orderId ?? null,
-      driverId: i.driver_id ?? i.driverId ?? null,
-      motorcycleId: i.motorcycle_id ?? i.motorcycleId ?? null,
+      issueType: i.issue_type ?? i.issueType ?? "other",
       dateReported: i.date_reported ?? i.dateReported,
+      status: i.status,
+      createdAt: i.created_at ?? i.createdAt,
     } as Issue;
   }
 
@@ -34,13 +33,11 @@ export class IssuesService {
 
   private toBackend(payload: Partial<Issue>): any {
     return {
-      title: payload.title,
+      motorcycle_id: payload.motorcycleId,
       description: payload.description,
-      status: payload.status,
-      order_id: payload.orderId ?? null,
-      driver_id: payload.driverId ?? null,
-      motorcycle_id: payload.motorcycleId ?? null,
+      issue_type: payload.issueType || "other",
       date_reported: payload.dateReported,
+      status: payload.status,
     };
   }
 

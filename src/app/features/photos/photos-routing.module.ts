@@ -8,6 +8,7 @@ const routes: Routes = [
   { path: "", component: PhotosListComponent },
   { path: "new", component: PhotosFormComponent },
   { path: ":id", component: PhotosDetailComponent },
+  { path: ":id/edit", component: PhotosFormComponent },
 ];
 
 @NgModule({

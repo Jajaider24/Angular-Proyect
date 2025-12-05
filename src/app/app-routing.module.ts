@@ -29,6 +29,8 @@ const routes: Routes = [
       },
     ],
   },
+  // Incidents deprecated; route consolidated under Issues
+  { path: "issues", loadChildren: () => import("./features/issues/issues.module").then(m => m.IssuesModule) },
   {
     path: "",
     component: AuthLayoutComponent,

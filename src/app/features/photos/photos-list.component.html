@@ -12,24 +12,37 @@
     [actionLucide]="'Upload'"
   ></app-list-header>
 
+  <div class="d-flex justify-content-end mb-2">
+    <button class="btn btn-outline-secondary btn-sm" (click)="refresh()">Refrescar</button>
+  </div>
+
   <div class="row g-3">
+    <div *ngIf="!loading && photos.length === 0" class="text-muted py-4">
+      No hay fotos para mostrar.
+    </div>
     <div class="col-sm-6 col-md-4 col-lg-3" *ngFor="let p of photos">
-      <a
-        class="card h-100 text-decoration-none"
-        [routerLink]="['/photos', p.id]"
-      >
+      <div class="card h-100">
         <!-- Prefer streaming by id; fallback to uploads path from image_url -->
         <img
           class="card-img-top"
           [src]="
-            p.id ? '/photos/' + p.id : p.image_url ? '/' + p.image_url : ''
+            p.id
+              ? backendUrl + '/photos/' + p.id
+              : p.image_url
+              ? backendUrl + '/' + p.image_url
+              : ''
           "
           alt="Foto"
         />
         <div class="card-body">
           <p class="card-text">{{ p.caption || "Foto #" + p.id }}</p>
         </div>
-      </a>
+        <div class="card-footer d-flex gap-2">
+          <a class="btn btn-sm btn-outline-info" [routerLink]="['/photos', p.id]">Ver</a>
+          <button class="btn btn-sm btn-outline-primary" (click)="edit(p.id)">Editar</button>
+          <button class="btn btn-sm btn-outline-danger" (click)="delete(p.id)">Eliminar</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

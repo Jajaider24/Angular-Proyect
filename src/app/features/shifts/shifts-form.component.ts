@@ -84,17 +84,18 @@ export class ShiftsFormComponent implements OnInit, OnDestroy {
   loadData(): void {
     this.loading = true;
     forkJoin({
-      drivers: this.driversService.list(),
-      motorcycles: this.motorcyclesService.list(),
-      shifts: this.shiftsService.list(),
+      // Solicitar con límite razonable para catálogos
+      drivers: this.driversService.list({ page: 1, limit: 100 }),
+      motorcycles: this.motorcyclesService.list({ page: 1, limit: 100 }),
+      shifts: this.shiftsService.list({ page: 1, limit: 100 }),
       current: this.shiftId ? this.shiftsService.get(this.shiftId) : undefined,
     })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ drivers, motorcycles, shifts, current }) => {
-          this.drivers = drivers;
-          this.motorcycles = motorcycles;
-          this.existingShifts = shifts;
+          this.drivers = (drivers || []).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+          this.motorcycles = (motorcycles || []).sort((a, b) => (a.licensePlate || '').localeCompare(b.licensePlate || ''));
+          this.existingShifts = shifts || [];
           if (current) {
             this.form.patchValue({
               driverId: current.driverId,
@@ -123,6 +124,48 @@ export class ShiftsFormComponent implements OnInit, OnDestroy {
             this.motorcycles
           );
 
+          // Si por cualquier razón vienen vacíos con paginación, reintentar sin parámetros (como en editar/lista)
+          const retryDrivers = this.driverOptions.length === 0;
+          const retryMotos = this.motorcycleOptions.length === 0;
+          if (retryDrivers) {
+            this.driversService
+              .list()
+              .pipe(takeUntil(this.destroy$))
+              .subscribe({
+                next: (ds) => {
+                  this.drivers = (ds || []).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+                  this.availableDrivers = this.drivers;
+                  this.driverOptions = this.computeOptionsWithSelected(
+                    this.drivers,
+                    this.form.get("driverId")?.value,
+                    this.drivers
+                  );
+                },
+                error: () => {
+                  // mantener vacío
+                },
+              });
+          }
+          if (retryMotos) {
+            this.motorcyclesService
+              .list()
+              .pipe(takeUntil(this.destroy$))
+              .subscribe({
+                next: (ms) => {
+                  this.motorcycles = (ms || []).sort((a, b) => (a.licensePlate || '').localeCompare(b.licensePlate || ''));
+                  this.availableMotorcycles = this.motorcycles;
+                  this.motorcycleOptions = this.computeOptionsWithSelected(
+                    this.motorcycles,
+                    this.form.get("motorcycleId")?.value,
+                    this.motorcycles
+                  );
+                },
+                error: () => {
+                  // mantener vacío
+                },
+              });
+          }
+
           // Revalidar tras tener existingShifts cargados
           this.form.updateValueAndValidity();
 
@@ -131,6 +174,10 @@ export class ShiftsFormComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error("Error cargando datos turno:", err);
+          // Asegurar listas vacías para que el template muestre 'Requerido'
+          this.drivers = [];
+          this.motorcycles = [];
+          this.existingShifts = [];
           this.loading = false;
         },
       });

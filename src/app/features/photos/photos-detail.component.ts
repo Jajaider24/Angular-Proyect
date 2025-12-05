@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Photo } from "../../models/photo.model";
-import { PhotosService } from "../../services/photos.service";
+import { Photo } from "src/app/core/models";
+import { PhotosService } from "src/app/core/services/photos.service";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-photos-detail",
@@ -27,7 +28,7 @@ import { PhotosService } from "../../services/photos.service";
       <div *ngIf="!loading" class="card">
         <div class="card-body">
           <div class="text-center mb-3">
-            <img [src]="'/photos/' + id" class="img-fluid" alt="Foto" />
+            <img [src]="imgSrc" class="img-fluid" alt="Foto" />
           </div>
           <div class="row g-3">
             <div class="col-md-6">
@@ -36,12 +37,12 @@ import { PhotosService } from "../../services/photos.service";
                 <div class="list-group-item" *ngIf="photo?.caption">
                   <strong>Caption:</strong> {{ photo?.caption }}
                 </div>
-                <div class="list-group-item" *ngIf="photo?.taken_at">
+                <div class="list-group-item" *ngIf="takenAtValue">
                   <strong>Tomada:</strong>
-                  {{ photo?.taken_at | date : "short" }}
+                  {{ takenAtValue | date : "short" }}
                 </div>
-                <div class="list-group-item" *ngIf="photo?.issue_id">
-                  <strong>Issue ID:</strong> {{ photo?.issue_id }}
+                <div class="list-group-item" *ngIf="issueIdValue">
+                  <strong>Issue ID:</strong> {{ issueIdValue }}
                 </div>
               </div>
             </div>
@@ -77,11 +78,22 @@ export class PhotosDetailComponent implements OnInit {
   id!: number;
   photo?: Photo;
   loading = false;
+  backendUrl = environment.url_backend;
+  imgSrc = "";
+  get issueIdValue(): number | null {
+    const anyPhoto: any = this.photo as any;
+    return (anyPhoto && anyPhoto.issue_id != null ? anyPhoto.issue_id : this.photo?.issueId) ?? null;
+  }
+  get takenAtValue(): string | null {
+    const anyPhoto: any = this.photo as any;
+    return (anyPhoto && anyPhoto.taken_at ? anyPhoto.taken_at : this.photo?.takenAt) ?? null;
+  }
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private photos: PhotosService
+    private photos: PhotosService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -96,10 +108,13 @@ export class PhotosDetailComponent implements OnInit {
     this.photos.list().subscribe({
       next: (items) => {
         this.photo = (items || []).find((p) => p.id === this.id);
+        this.imgSrc = this.backendUrl + "/photos/" + this.id;
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: () => {
         this.loading = false;
+        this.cdr.markForCheck();
       },
     });
   }
