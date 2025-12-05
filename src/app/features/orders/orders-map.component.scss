@@ -1,45 +1,107 @@
- .map-container {
-   position: relative;
-   height: 70vh;
-   border-radius: 0.5rem;
-   overflow: hidden;
-   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
- }
- 
- .leaflet-map {
-   height: 100%;
-   width: 100%;
- }
- 
- .map-legend {
-   position: absolute;
-   bottom: 12px;
-   left: 12px;
-   background: rgba(255, 255, 255, 0.9);
-   border-radius: 6px;
-   padding: 6px 10px;
-   font-size: 12px;
-   color: #525f7f;
-   display: flex;
-   align-items: center;
-   gap: 8px;
- }
- 
- .legend-line {
-   display: inline-block;
-   width: 24px;
-   height: 3px;
-   background: #2dce89;
-   border-radius: 2px;
- }
+.map-container {
+  position: relative;
+  height: 70vh;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.leaflet-map {
+  height: 100%;
+  width: 100%;
+}
+
+.map-legend {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #525f7f;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-line {
+  display: inline-block;
+  width: 24px;
+  height: 3px;
+  background: #2dce89;
+  border-radius: 2px;
+}
+
+// =============================================================================
+// ESTILOS PARA EL MARCADOR DE DELIVERY
+// =============================================================================
+// Animación de rebote suave para el ícono de la moto
+// Esto hace que el marcador sea más llamativo y visible
+// =============================================================================
+:host ::ng-deep {
+  .delivery-marker-icon {
+    // Animación de rebote suave
+    animation: bounce 2s ease-in-out infinite;
+    // Filtro de sombra para destacar sobre el mapa
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    // Transición suave al mover
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.15);
+      filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.4));
+    }
+  }
+
+  // Animación de rebote
+  @keyframes bounce {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  // Estilos del popup mejorado
+  .delivery-popup {
+    .leaflet-popup-content-wrapper {
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      border: 2px solid #2dce89;
+    }
+
+    .leaflet-popup-content {
+      margin: 12px 16px;
+    }
+
+    .leaflet-popup-tip {
+      background: white;
+      border: 2px solid #2dce89;
+      border-top: none;
+      border-right: none;
+    }
+  }
+
+  // Polilínea con efecto de brillo
+  .leaflet-interactive {
+    stroke: #2dce89;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
 .container-fluid {
   .gap-2 > * + * {
-    margin-left: .5rem;
+    margin-left: 0.5rem;
   }
 }
 
 google-map {
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075);
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }

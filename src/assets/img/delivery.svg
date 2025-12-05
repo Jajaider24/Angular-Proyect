@@ -1,20 +1,82 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <!-- Fondo circular -->
-  <circle cx="32" cy="32" r="30" fill="#2dce89" stroke="#1a9d6a" stroke-width="2"/>
-  <!-- Cuerpo de la moto -->
-  <ellipse cx="32" cy="38" rx="18" ry="8" fill="#333"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+  <!-- Definiciones de efectos -->
+  <defs>
+    <!-- Sombra para profundidad -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity="0.4"/>
+    </filter>
+    <!-- Gradiente para el fondo -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2dce89"/>
+      <stop offset="100%" style="stop-color:#1a9d6a"/>
+    </linearGradient>
+    <!-- Gradiente para la caja -->
+    <linearGradient id="boxGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5365c"/>
+      <stop offset="100%" style="stop-color:#c9302c"/>
+    </linearGradient>
+    <!-- Animación de pulso -->
+    <style>
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+      }
+      .pulse-ring {
+        animation: pulse 1.5s ease-in-out infinite;
+        transform-origin: center;
+      }
+    </style>
+  </defs>
+  
+  <!-- Anillo de pulso exterior (indicador de movimiento) -->
+  <circle class="pulse-ring" cx="40" cy="40" r="38" fill="none" stroke="#2dce89" stroke-width="3" opacity="0.5"/>
+  
+  <!-- Fondo circular principal -->
+  <circle cx="40" cy="40" r="34" fill="url(#bgGradient)" filter="url(#shadow)"/>
+  
+  <!-- Borde interior decorativo -->
+  <circle cx="40" cy="40" r="30" fill="none" stroke="white" stroke-width="2" opacity="0.3"/>
+  
+  <!-- Cuerpo de la moto (más detallado) -->
+  <ellipse cx="40" cy="48" rx="20" ry="7" fill="#2d3748"/>
+  
   <!-- Rueda trasera -->
-  <circle cx="18" cy="44" r="8" fill="#555" stroke="#333" stroke-width="2"/>
-  <circle cx="18" cy="44" r="4" fill="#888"/>
+  <circle cx="24" cy="54" r="9" fill="#4a5568"/>
+  <circle cx="24" cy="54" r="6" fill="#2d3748"/>
+  <circle cx="24" cy="54" r="3" fill="#718096"/>
+  
   <!-- Rueda delantera -->
-  <circle cx="46" cy="44" r="8" fill="#555" stroke="#333" stroke-width="2"/>
-  <circle cx="46" cy="44" r="4" fill="#888"/>
+  <circle cx="56" cy="54" r="9" fill="#4a5568"/>
+  <circle cx="56" cy="54" r="6" fill="#2d3748"/>
+  <circle cx="56" cy="54" r="3" fill="#718096"/>
+  
+  <!-- Asiento -->
+  <ellipse cx="35" cy="42" rx="8" ry="4" fill="#1a202c"/>
+  
+  <!-- Tanque de gasolina -->
+  <ellipse cx="45" cy="40" rx="6" ry="5" fill="#e53e3e"/>
+  
   <!-- Manubrio -->
-  <rect x="42" y="28" width="4" height="12" rx="2" fill="#333"/>
-  <!-- Caja de delivery -->
-  <rect x="20" y="22" width="16" height="14" rx="2" fill="#f5365c" stroke="#c9302c" stroke-width="1"/>
-  <text x="28" y="32" font-size="8" fill="white" text-anchor="middle" font-weight="bold">🍕</text>
-  <!-- Conductor (casco) -->
-  <circle cx="38" cy="24" r="6" fill="#ffd93d" stroke="#333" stroke-width="1"/>
-  <path d="M32 22 Q38 18 44 22" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="52" y="32" width="5" height="14" rx="2" fill="#2d3748"/>
+  <circle cx="54" cy="31" r="3" fill="#4a5568"/>
+  
+  <!-- Caja de delivery (más grande y visible) -->
+  <rect x="22" y="22" width="22" height="18" rx="3" fill="url(#boxGradient)" filter="url(#shadow)"/>
+  <rect x="24" y="24" width="18" height="14" rx="2" fill="none" stroke="white" stroke-width="1" opacity="0.4"/>
+  
+  <!-- Icono de comida en la caja -->
+  <text x="33" y="35" font-size="12" text-anchor="middle" font-family="Arial">🍔</text>
+  
+  <!-- Conductor (casco mejorado) -->
+  <ellipse cx="48" cy="28" r="8" ry="7" fill="#ffd93d"/>
+  <path d="M40 26 Q48 20 56 26" fill="#2d3748" stroke="#2d3748" stroke-width="2"/>
+  <ellipse cx="48" cy="30" rx="4" ry="2" fill="#2d3748" opacity="0.3"/>
+  
+  <!-- Visor del casco -->
+  <rect x="44" y="26" width="8" height="4" rx="1" fill="#63b3ed" opacity="0.8"/>
+  
+  <!-- Indicador de velocidad (líneas de movimiento) -->
+  <line x1="10" y1="45" x2="16" y2="45" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  <line x1="8" y1="50" x2="14" y2="50" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+  <line x1="10" y1="55" x2="16" y2="55" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
 </svg>
