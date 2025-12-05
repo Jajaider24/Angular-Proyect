@@ -18,7 +18,22 @@ export class SidebarService {
       .subscribe((e: any) => {
         const path = (e.urlAfterRedirects || e.url || "").toString();
         this._activePath$.next(path);
+        
+        // En móvil, cerrar el sidebar automáticamente al navegar
+        this.closeOnMobileNavigation();
       });
+  }
+
+  /**
+   * Cierra el sidebar automáticamente en móvil al navegar.
+   */
+  private closeOnMobileNavigation(): void {
+    if (typeof window !== 'undefined' && window.innerWidth < 992) {
+      // Solo cerrar si está abierto (!collapsed = abierto)
+      if (!this._collapsed$.value) {
+        this._collapsed$.next(true);
+      }
+    }
   }
 
   get collapsed$() {
@@ -56,6 +71,10 @@ export class SidebarService {
 
   private readInitial(): boolean {
     try {
+      // En móvil, siempre iniciar colapsado (cerrado)
+      if (typeof window !== 'undefined' && window.innerWidth < 992) {
+        return true; // true = colapsado = cerrado
+      }
       const v = localStorage.getItem(this.collapsedKey);
       if (v === null) return false;
       return JSON.parse(v);

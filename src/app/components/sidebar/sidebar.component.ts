@@ -154,6 +154,25 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.sidebarService.toggle();
   }
 
+  /**
+   * Cierra el sidebar (solo se usa en móvil)
+   */
+  closeSidebar(): void {
+    if (!this.isCollapsed) {
+      this.sidebarService.set(true);
+    }
+  }
+
+  /**
+   * Cierra el sidebar al navegar en móvil
+   */
+  closeSidebarOnMobile(): void {
+    // Cerrar solo si estamos en móvil (viewport < 992px)
+    if (window.innerWidth < 992 && !this.isCollapsed) {
+      this.sidebarService.set(true);
+    }
+  }
+
   ngOnDestroy() {
     this.subs.forEach((s) => s.unsubscribe());
   }

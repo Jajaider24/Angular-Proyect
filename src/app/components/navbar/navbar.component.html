@@ -5,6 +5,18 @@
     [attr.data-accent]="currentAccentKey"
   >
     <div class="container-fluid">
+      <!-- ================================================================= -->
+      <!-- BOTÓN HAMBURGUESA PARA MÓVIL - Siempre visible en pantallas pequeñas -->
+      <!-- ================================================================= -->
+      <button
+        class="btn btn-link text-white d-md-none mobile-menu-toggle"
+        (click)="toggleSidebar()"
+        title="Abrir menú"
+        type="button"
+      >
+        <i class="fa fa-bars fa-lg"></i>
+      </button>
+
       <!-- Sidebar toggle (desktop) + Brand -->
       <button
         class="btn btn-link text-white d-none d-md-inline me-2"
@@ -14,13 +26,16 @@
       >
         <i class="fa fa-bars"></i>
       </button>
+
+      <!-- Título de la página actual - visible en móvil también -->
       <a
-        class="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block"
+        class="h4 mb-0 text-white text-uppercase d-inline-block text-truncate mobile-title"
         routerLinkActive="active"
         [routerLink]="['/dashboard']"
         >{{ getTitle() }}</a
       >
-      <!-- Form -->
+
+      <!-- Form - oculto en móvil -->
       <form
         class="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto"
       >

@@ -1,6 +1,14 @@
+<!-- Overlay oscuro para cerrar sidebar en móvil -->
+<div 
+  class="sidebar-overlay" 
+  [class.show]="!isCollapsed"
+  (click)="closeSidebar()">
+</div>
+
 <nav
   class="navbar navbar-vertical navbar-expand-md navbar-light"
   id="sidenav-main"
+  [class.mobile-open]="!isCollapsed"
 >
   <div class="container-fluid">
     <!-- Toggler -->
@@ -17,6 +25,7 @@
       class="navbar-brand pt-0"
       routerLinkActive="active"
       [routerLink]="['/dashboard']"
+      (click)="closeSidebarOnMobile()"
     >
       <img
         src="./assets/img/brand/logoproyect.png"
@@ -146,6 +155,7 @@
             [class.has-icon]="menuItem.lucide || menuItem.icon"
             [class.active]="isActive(menuItem.path)"
             [attr.data-color]="menuItem.colorKey"
+            (click)="closeSidebarOnMobile()"
             appRipple
           >
             <!-- Icono Lucide reemplazando el punto de color -->

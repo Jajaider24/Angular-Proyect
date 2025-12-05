@@ -36,12 +36,21 @@
 
 /* Accent color tokens for sidebar (map to Argon/Bootstrap colors) */
 :host {
+  /* Colores primarios */
   --accent-primary: #5e72e4;
   --accent-info: #11cdef;
   --accent-success: #2dce89;
   --accent-warning: #fb6340;
   --accent-danger: #f5365c;
   --accent-muted: #8898aa;
+  
+  /* Colores adicionales para entidades secundarias */
+  --accent-purple: #8965e0;    /* Direcciones */
+  --accent-orange: #ff8d00;    /* Motocicletas */
+  --accent-cyan: #2bffc6;      /* Conductores */
+  --accent-indigo: #5603ad;    /* Turnos */
+  --accent-red: #f5365c;       /* Incidencias (mismo que danger) */
+  --accent-pink: #f3a4b5;      /* Fotos */
 }
 
 /* Sidebar background and subtle border to visually separate it from content */
@@ -131,6 +140,83 @@
   border-left: 4px solid var(--accent-muted);
 }
 
+/* ============================================
+   ESTILOS PARA COLORES ADICIONALES
+   (purple, orange, cyan, indigo, red, pink)
+   ============================================ */
+
+/* PURPLE - Direcciones */
+.nav-link[data-color="purple"] .menu-dot {
+  background: var(--accent-purple);
+}
+.nav-link.active[data-color="purple"] {
+  border-left: 4px solid var(--accent-purple);
+}
+.nav-link[data-color="purple"]:hover .menu-dot {
+  box-shadow: 0 8px 20px rgba(137, 101, 224, 0.22);
+  transform: scale(1.12);
+}
+
+/* ORANGE - Motocicletas */
+.nav-link[data-color="orange"] .menu-dot {
+  background: var(--accent-orange);
+}
+.nav-link.active[data-color="orange"] {
+  border-left: 4px solid var(--accent-orange);
+}
+.nav-link[data-color="orange"]:hover .menu-dot {
+  box-shadow: 0 8px 20px rgba(255, 141, 0, 0.22);
+  transform: scale(1.12);
+}
+
+/* CYAN - Conductores */
+.nav-link[data-color="cyan"] .menu-dot {
+  background: var(--accent-cyan);
+}
+.nav-link.active[data-color="cyan"] {
+  border-left: 4px solid var(--accent-cyan);
+}
+.nav-link[data-color="cyan"]:hover .menu-dot {
+  box-shadow: 0 8px 20px rgba(43, 255, 198, 0.22);
+  transform: scale(1.12);
+}
+
+/* INDIGO - Turnos */
+.nav-link[data-color="indigo"] .menu-dot {
+  background: var(--accent-indigo);
+}
+.nav-link.active[data-color="indigo"] {
+  border-left: 4px solid var(--accent-indigo);
+}
+.nav-link[data-color="indigo"]:hover .menu-dot {
+  box-shadow: 0 8px 20px rgba(86, 3, 173, 0.22);
+  transform: scale(1.12);
+}
+
+/* RED - Incidencias */
+.nav-link[data-color="red"] .menu-dot {
+  background: var(--accent-red);
+}
+.nav-link.active[data-color="red"] {
+  border-left: 4px solid var(--accent-red);
+}
+.nav-link[data-color="red"]:hover .menu-dot {
+  box-shadow: 0 8px 20px rgba(245, 54, 92, 0.22);
+  transform: scale(1.12);
+}
+
+/* PINK - Fotos */
+.nav-link[data-color="pink"] .menu-dot {
+  background: var(--accent-pink);
+}
+.nav-link.active[data-color="pink"] {
+  border-left: 4px solid var(--accent-pink);
+}
+.nav-link[data-color="pink"]:hover .menu-dot {
+  box-shadow: 0 8px 20px rgba(243, 164, 181, 0.22);
+  transform: scale(1.12);
+}
+
 /* styles for the reports quick link (now a normal nav-item pinned to bottom) */
 .sidebar-reports .nav-link {
   background: transparent; /* match other nav items */
@@ -205,6 +291,26 @@
   background: var(--accent-muted);
 }
 
+/* Ripple colors para colores adicionales */
+.nav-link[data-color="purple"]::after {
+  background: var(--accent-purple);
+}
+.nav-link[data-color="orange"]::after {
+  background: var(--accent-orange);
+}
+.nav-link[data-color="cyan"]::after {
+  background: var(--accent-cyan);
+}
+.nav-link[data-color="indigo"]::after {
+  background: var(--accent-indigo);
+}
+.nav-link[data-color="red"]::after {
+  background: var(--accent-red);
+}
+.nav-link[data-color="pink"]::after {
+  background: var(--accent-pink);
+}
+
 /* activar la animación al hacer click */
 .navbar-nav .nav-item .nav-link:active::after {
   transform: translate(-50%, -50%) scale(8);
@@ -232,6 +338,26 @@
   color: var(--accent-muted);
 }
 
+/* Title colors para colores adicionales cuando están activos */
+.nav-link.active[data-color="purple"] .nav-title {
+  color: var(--accent-purple);
+}
+.nav-link.active[data-color="orange"] .nav-title {
+  color: var(--accent-orange);
+}
+.nav-link.active[data-color="cyan"] .nav-title {
+  color: var(--accent-cyan);
+}
+.nav-link.active[data-color="indigo"] .nav-title {
+  color: var(--accent-indigo);
+}
+.nav-link.active[data-color="red"] .nav-title {
+  color: var(--accent-red);
+}
+.nav-link.active[data-color="pink"] .nav-title {
+  color: var(--accent-pink);
+}
+
 /* Active background tint per accent for stronger affordance */
 .nav-link.active[data-color="primary"] {
   background: rgba(94, 114, 228, 0.08);
@@ -250,6 +376,26 @@
 }
 .nav-link.active[data-color="muted"] {
   background: rgba(136, 152, 170, 0.1);
+}
+
+/* Background tints para colores adicionales cuando están activos */
+.nav-link.active[data-color="purple"] {
+  background: rgba(137, 101, 224, 0.1);
+}
+.nav-link.active[data-color="orange"] {
+  background: rgba(255, 141, 0, 0.1);
+}
+.nav-link.active[data-color="cyan"] {
+  background: rgba(43, 255, 198, 0.1);
+}
+.nav-link.active[data-color="indigo"] {
+  background: rgba(86, 3, 173, 0.1);
+}
+.nav-link.active[data-color="red"] {
+  background: rgba(245, 54, 92, 0.1);
+}
+.nav-link.active[data-color="pink"] {
+  background: rgba(243, 164, 181, 0.12);
 }
 
 /* Ensure icon keeps its color but spacing is neat */
@@ -314,6 +460,26 @@
   color: var(--accent-muted);
 }
 
+/* Icon colors para colores adicionales */
+.nav-link[data-color="purple"] .menu-icon {
+  color: var(--accent-purple);
+}
+.nav-link[data-color="orange"] .menu-icon {
+  color: var(--accent-orange);
+}
+.nav-link[data-color="cyan"] .menu-icon {
+  color: var(--accent-cyan);
+}
+.nav-link[data-color="indigo"] .menu-icon {
+  color: var(--accent-indigo);
+}
+.nav-link[data-color="red"] .menu-icon {
+  color: var(--accent-red);
+}
+.nav-link[data-color="pink"] .menu-icon {
+  color: var(--accent-pink);
+}
+
 /* ============================================
    ESTILOS RESPONSIVE DEL SIDEBAR
    ============================================ */
@@ -325,10 +491,15 @@
   top: 0;
   left: 0;
   bottom: 0;
-  z-index: 100;
+  z-index: 1050;
   overflow-y: auto;
   overflow-x: hidden;
-  transition: transform 0.3s ease, width 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Overlay oscuro cuando sidebar está abierto en móvil */
+.sidebar-overlay {
+  display: none;
 }
 
 /* Tablets: sidebar más estrecho */
@@ -358,26 +529,29 @@
     width: 280px;
     transform: translateX(-100%);
     box-shadow: none;
+    z-index: 1050;
   }
   
-  #sidenav-main.show,
-  #sidenav-main.navbar-collapse.show {
+  /* Sidebar visible cuando tiene la clase mobile-open */
+  #sidenav-main.mobile-open {
     transform: translateX(0);
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 4px 0 25px rgba(0, 0, 0, 0.2);
   }
   
   /* Overlay oscuro cuando sidebar está abierto */
   .sidebar-overlay {
+    display: block;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 99;
+    z-index: 1040;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
+    cursor: pointer;
   }
   
   .sidebar-overlay.show {

@@ -289,3 +289,47 @@ nav#navbar-main[data-accent="pink"] .btn-link:hover {
     height: 28px !important;
   }
 }
+
+/* ============================================
+   BOTÓN HAMBURGUESA MÓVIL
+   ============================================ */
+
+/* Estilos para el botón hamburguesa en móvil */
+.mobile-menu-toggle {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  transition: all 0.3s ease;
+  margin-right: 0.5rem;
+  
+  &:hover, &:focus {
+    background: rgba(255, 255, 255, 0.2);
+    outline: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+  
+  i {
+    font-size: 1.25rem;
+  }
+}
+
+/* Título en móvil */
+.mobile-title {
+  max-width: 180px;
+  font-size: 1rem !important;
+  
+  @media (max-width: 480px) {
+    max-width: 120px;
+    font-size: 0.9rem !important;
+  }
+  
+  @media (max-width: 360px) {
+    max-width: 90px;
+    font-size: 0.8rem !important;
+  }
+}
