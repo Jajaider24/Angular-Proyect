@@ -9,11 +9,38 @@ export class OrdersService {
   private path = "orders";
   constructor(private api: BaseApiService) {}
 
-  // Adaptador: normaliza snake_case de backend a camelCase del frontend
+  /**
+   * Adaptador: normaliza snake_case de backend a camelCase del frontend
+   * =========================================================================
+   * El backend Flask devuelve objetos con snake_case y relaciones anidadas.
+   * Este adaptador transforma los datos para que coincidan con el modelo Order
+   * del frontend, incluyendo las relaciones como customer y menu.
+   * =========================================================================
+   */
   private adapt(o: any): Order {
     return {
       id: o.id,
       customerId: o.customer_id,
+      // =====================================================================
+      // IMPORTANTE: Incluir el objeto customer completo del backend
+      // Esto permite mostrar el nombre del cliente en los selectores
+      // =====================================================================
+      customer: o.customer
+        ? {
+            id: o.customer.id,
+            name: o.customer.name,
+            email: o.customer.email,
+            phone: o.customer.phone,
+          }
+        : undefined,
+      // Incluir información del menú si está disponible
+      menu: o.menu
+        ? {
+            id: o.menu.id,
+            name: o.menu.name,
+            price: o.menu.price,
+          }
+        : undefined,
       items: Array.isArray(o.items) ? o.items : [],
       totalPrice: o.total_price,
       status: o.status,
@@ -49,12 +76,16 @@ export class OrdersService {
 
   create(payload: Partial<Order>): Observable<Order> {
     const body = this.toBackend(payload);
-    return this.api.create<any>(this.path, body).pipe(map((o) => this.adapt(o)));
+    return this.api
+      .create<any>(this.path, body)
+      .pipe(map((o) => this.adapt(o)));
   }
 
   update(id: number, payload: Partial<Order>): Observable<Order> {
     const body = this.toBackend(payload);
-    return this.api.update<any>(this.path, id, body).pipe(map((o) => this.adapt(o)));
+    return this.api
+      .update<any>(this.path, id, body)
+      .pipe(map((o) => this.adapt(o)));
   }
 
   delete(id: number): Observable<any> {

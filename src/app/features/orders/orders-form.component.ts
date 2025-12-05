@@ -2,11 +2,12 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { take } from "rxjs/operators";
-import Swal from "sweetalert2";
-import { OrdersService } from "src/app/core/services/orders.service";
 import { CustomersService } from "src/app/core/services/customers.service";
 import { MenusService } from "src/app/core/services/menus.service";
 import { MotorcyclesService } from "src/app/core/services/motorcycles.service";
+import { OrdersService } from "src/app/core/services/orders.service";
+import { NotificationService } from "src/app/services/notification.service";
+import Swal from "sweetalert2";
 
 @Component({
   selector: "app-orders-form",
@@ -32,7 +33,8 @@ export class OrdersFormComponent implements OnInit {
     private orders: OrdersService,
     private customersSvc: CustomersService,
     private menusSvc: MenusService,
-    private motosSvc: MotorcyclesService
+    private motosSvc: MotorcyclesService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -71,9 +73,18 @@ export class OrdersFormComponent implements OnInit {
   }
 
   loadOptions() {
-    this.customersSvc.list().pipe(take(1)).subscribe({ next: (arr: any) => (this.customers = arr || []) });
-    this.menusSvc.list().pipe(take(1)).subscribe({ next: (arr: any) => (this.menus = arr || []) });
-    this.motosSvc.list().pipe(take(1)).subscribe({ next: (arr: any) => (this.motorcycles = arr || []) });
+    this.customersSvc
+      .list()
+      .pipe(take(1))
+      .subscribe({ next: (arr: any) => (this.customers = arr || []) });
+    this.menusSvc
+      .list()
+      .pipe(take(1))
+      .subscribe({ next: (arr: any) => (this.menus = arr || []) });
+    this.motosSvc
+      .list()
+      .pipe(take(1))
+      .subscribe({ next: (arr: any) => (this.motorcycles = arr || []) });
   }
 
   submit() {
@@ -93,16 +104,41 @@ export class OrdersFormComponent implements OnInit {
       status: value.status,
     };
 
-    const req = this.isEdit && this.id
-      ? this.orders.update(this.id, payload)
-      : this.orders.create(payload);
+    const req =
+      this.isEdit && this.id
+        ? this.orders.update(this.id, payload)
+        : this.orders.create(payload);
 
     req.pipe(take(1)).subscribe({
-      next: () => {
-        Swal.fire("Ok", `Pedido ${this.isEdit ? "actualizado" : "creado"} correctamente.`, "success");
+      next: (response: any) => {
+        // Si es creación (no edición), reproducir sonido y notificación
+        if (!this.isEdit) {
+          // Obtener el nombre del cliente para la notificación
+          const customer = this.customers.find(
+            (c) => c.id === value.customerId
+          );
+          const customerName =
+            customer?.name ||
+            customer?.firstName ||
+            `Cliente #${value.customerId}`;
+
+          // Reproducir sonido y mostrar notificación con datos del pedido
+          this.notificationService.notifyNewOrder({
+            id: response?.id || "Nuevo",
+            customerName: customerName,
+            totalPrice: value.totalPrice,
+          });
+        }
+
+        Swal.fire(
+          "Ok",
+          `Pedido ${this.isEdit ? "actualizado" : "creado"} correctamente.`,
+          "success"
+        );
         this.router.navigate(["/orders"]);
       },
-      error: () => Swal.fire("Error", "No fue posible guardar el pedido.", "error"),
+      error: () =>
+        Swal.fire("Error", "No fue posible guardar el pedido.", "error"),
     });
   }
 

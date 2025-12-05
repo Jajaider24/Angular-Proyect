@@ -6,78 +6,32 @@ import { SecurityService } from "./security.service";
 @Injectable({
   providedIn: "root",
 })
-export class WebSocketService {
-  callback: EventEmitter<any> = new EventEmitter();
-  nameEvent = "";
-
-  constructor(
-    private socket: Socket,
-    private securityService: SecurityService
-  ) {
-    // Do not extend Socket (avoids needing super/appRef). Instead, if there's
-    // user info available, attach it to the underlying socket options where possible.
-    const userId = this.securityService.activeUserSession?.email || "";
-    try {
-      const io = (this.socket as any).ioSocket;
-      // Try common places to attach auth/query before connect
-      if (io) {
-        if (io.auth !== undefined) {
-          io.auth = { user_id: userId };
-        } else if (io.io && io.io.opts) {
-          io.io.opts.query = { ...io.io.opts.query, user_id: userId };
-        } else if ((io as any).opts) {
-          (io as any).opts.query = {
-            ...((io as any).opts.query || {}),
-            user_id: userId,
-          };
-        }
-      }
-    } catch (e) {
-      // non-fatal; best-effort
-      // console.warn('WebSocketService: unable to attach user_id to socket opts', e);
-    }
+export class WebSocketService extends Socket {
+  callback: EventEmitter<any> = new EventEmitter(); // llegada de algo desde el servidor (información) => {hacer algo}
+  nameEvent: string; // nombre del evento del cual va a estar pendiente o escuchando.
+  constructor(private securityService: SecurityService) {
+    const userId = securityService.activeUserSession?.email || ""; // Asegúrate de que no sea nulo // Esto lo usamos para identificarnoss con el backend
+    super({
+      url: environment.url_webSocket,
+      options: {
+        query: {
+          user_id: userId,
+        },
+      },
+    });
+    this.nameEvent = "";
+    //this.listen()
   }
-
   setNameEvent(nameEvent: string) {
-    this.nameEvent = nameEvent;
+    this.nameEvent = nameEvent; // Este es el canal por el cual vamos a escuchar o estar pendientes del backend
     this.listen();
   }
-
-  listen() {
-    const io = (this.socket as any).ioSocket;
-    if (!io) return;
-    io.on(this.nameEvent, (res: any) => this.callback.emit(res));
-  }
-
-  emitEvent(payload: any) {
-    // Prefer the Socket wrapper emit, which will forward to underlying socket
-    this.socket.emit(this.nameEvent, payload);
-  }
-
-  connect() {
-    // Antes de conectar, intentamos adjuntar el user_id (si existe)
-    try {
-      const userId = this.securityService.activeUserSession?.email || '';
-      const ioWrapper = (this.socket as any).ioSocket;
-      if (ioWrapper) {
-        // socket.io-client v3+ usa `auth`, v2 usaba `query` — intentamos ambos
-        if (ioWrapper.auth !== undefined) {
-          ioWrapper.auth = { user_id: userId };
-        } else if (ioWrapper.io && ioWrapper.io.opts) {
-          ioWrapper.io.opts.query = { ...ioWrapper.io.opts.query, user_id: userId };
-        } else if ((ioWrapper as any).opts) {
-          (ioWrapper as any).opts.query = { ...((ioWrapper as any).opts.query || {}), user_id: userId };
-        }
-      }
-    } catch (e) {
-      // best-effort, no bloquear la conexión si falla
-      // console.warn('WebSocketService: unable to attach user_id before connect', e);
-    }
-
-    this.socket.connect();
-  }
-
-  disconnect() {
-    this.socket.disconnect();
-  }
+  listen = () => {
+    this.ioSocket.on(this.nameEvent, (res: any) => this.callback.emit(res)); // Aqui le pedimos al socket que este pendie nte de todas las respuestas que vengan por el canal nameEvent y mandelas al que este pendiente del callback.
+  };
+  // Para llamar este método es necesario inyectar el servicio
+  // y enviar el payload
+  // emitEvent=(payload={})=>{
+  //   this.ioSocket.emit(this.nameEvent,payload)
+  // }
 }

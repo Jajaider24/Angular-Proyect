@@ -7,6 +7,7 @@ import { Component, ElementRef, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { User } from "src/app/models/User";
+import { NotificationService } from "src/app/services/notification.service";
 import { SecurityService } from "src/app/services/security.service";
 import { WebSocketService } from "src/app/services/web-socket-service.service";
 import { ROUTES } from "../sidebar/sidebar.component";
@@ -31,18 +32,36 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private router: Router,
     private securityService: SecurityService,
     private webSocketService: WebSocketService,
-    private sidebarService: SidebarService
+    private sidebarService: SidebarService,
+    private notificationService: NotificationService
   ) {
     this.location = location;
     this.subscription = this.securityService.getUser().subscribe((data) => {
       //Estar pendiente de la variable global reactiva (Subscription --> simulacion de conectado a una api)
       this.user = data; //Pendiente de que haya un cambio
     });
-    
-    this.webSocketService.setNameEvent("ABC123"); // Suscribirse al evento WebSocket y escuchar mensajes
+
+    // Suscribirse al evento WebSocket para recibir notificaciones de nuevos pedidos
+    // El evento "new_order" es emitido por el backend cuando se crea un nuevo pedido
+    this.webSocketService.setNameEvent("new_order");
     this.webSocketService.callback.subscribe((message) => {
-      // Manejar el mensaje recibido y mostrar en consola
-      console.log("Mensaje recibido en el navbar: ", message); // Mostrar el mensaje recibido en la consola y hacer algo con él
+      // Manejar el mensaje recibido: reproducir sonido y mostrar notificación
+      console.log("🔔 Nuevo pedido recibido: ", message);
+
+      // Reproducir sonido de notificación y mostrar alerta visual
+      this.notificationService.notifyNewOrder(message);
+    });
+  }
+
+  /**
+   * Método para probar el sonido de notificación manualmente.
+   * Útil para verificar que el audio funciona correctamente.
+   */
+  testNotificationSound(): void {
+    console.log("🔔 Probando sonido de notificación...");
+    this.notificationService.notifyNewOrder({
+      id: 999,
+      customerName: "Prueba de sonido",
     });
   }
 

@@ -2,10 +2,10 @@ export const environment = {
   production: false,
   url_backend: "http://127.0.0.1:5000",
   url_security: "http://127.0.0.1:5000",
-  url_web_socket: "http://127.0.0.1:5000",
+  url_websocket: "http://127.0.0.1:5000",
   // Aliases usados por nuevos servicios (evita romper código existente)
   apiUrl: "http://127.0.0.1:5000",
-  socketUrl: "http://127.0.0.1:5000",
+  url_webSocket: "http://127.0.0.1:5000",
   // Habilita el modo dev que permite crear sesión local aunque el usuario
   // no exista en la base de datos. Úsalo solo en desarrollo. Para obligar
   // el login real en local, cambie a `false`.

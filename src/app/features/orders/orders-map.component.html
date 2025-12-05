@@ -8,29 +8,53 @@
         class="form-control form-control-sm"
         placeholder="Placa (ej. ABC123)"
         style="width: 180px"
-        (keyup.enter)="addPlate(plateBox.value)"
+        (keyup.enter)="followPlate(plateBox.value)"
       />
-      <button class="btn btn-sm btn-primary" (click)="addPlate(plateBox.value)">
-        Seguir
+      <button
+        class="btn btn-sm"
+        [ngClass]="followingPlate ? 'btn-info' : 'btn-primary'"
+        (click)="followPlate(plateBox.value)"
+        [title]="
+          followingPlate
+            ? 'Siguiendo: ' + followingPlate
+            : 'Seguir moto en el mapa'
+        "
+      >
+        <i class="fas fa-crosshairs"></i>
+        {{ followingPlate ? "Siguiendo" : "Seguir" }}
+      </button>
+      <button
+        *ngIf="followingPlate"
+        class="btn btn-sm btn-outline-secondary"
+        (click)="unfollowPlate()"
+        title="Dejar de seguir"
+      >
+        <i class="fas fa-times"></i>
       </button>
       <button class="btn btn-sm btn-success" (click)="start(plateBox.value)">
         Iniciar tracking
       </button>
-      <button class="btn btn-sm btn-outline-danger" (click)="stop(plateBox.value)">
+      <button
+        class="btn btn-sm btn-outline-danger"
+        (click)="stop(plateBox.value)"
+      >
         Detener tracking
       </button>
     </div>
   </div>
 
-    <div class="map-container">
-      <div #map class="leaflet-map"></div>
-      <div class="map-legend">
-        <span class="legend-line"></span>
-        Recorrido en tiempo real
-      </div>
+  <div class="map-container">
+    <div #map class="leaflet-map"></div>
+    <div class="map-legend">
+      <span class="legend-line"></span>
+      Recorrido en tiempo real
+      <span *ngIf="followingPlate" class="ms-3 badge bg-info">
+        📍 Siguiendo: {{ followingPlate }}
+      </span>
     </div>
+  </div>
 
   <div class="mt-2 small text-muted">
-    Placas activas: {{ plates.join(', ') || 'ninguna' }}
+    Placas activas: {{ plates.join(", ") || "ninguna" }}
   </div>
 </div>
