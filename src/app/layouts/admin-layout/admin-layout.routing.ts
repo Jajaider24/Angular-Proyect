@@ -87,4 +87,12 @@ export const AdminLayoutRoutes: Routes = [
     loadChildren: () =>
       import("../../features/photos/photos.module").then((m) => m.PhotosModule),
   },
+  // Regiones de Colombia asociadas a restaurantes
+  {
+    path: "regions",
+    loadChildren: () =>
+      import("../../features/regions/regions.module").then(
+        (m) => m.RegionsModule
+      ),
+  },
 ];

@@ -1,0 +1,64 @@
+<div class="card">
+  <div class="card-header">
+    <h5 class="mb-0">Gestión de Regiones</h5>
+    <small class="text-muted">Crea una región asociada a un restaurante</small>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="restaurantId">Restaurante</label>
+          <select id="restaurantId" class="form-control" formControlName="restaurantId">
+            <option [ngValue]="null">Seleccione un restaurante</option>
+            <option *ngFor="let r of restaurants" [ngValue]="r.id">{{ r.name }}</option>
+          </select>
+          <div class="invalid-feedback d-block" *ngIf="form.get('restaurantId')?.touched && form.get('restaurantId')?.invalid">
+            Debe seleccionar un restaurante.
+          </div>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="regionId">Región</label>
+          <select id="regionId" class="form-control" formControlName="regionId">
+            <option [ngValue]="null">Seleccione una región</option>
+            <option *ngFor="let rg of regions" [ngValue]="rg.id">{{ rg.name }}</option>
+          </select>
+          <div class="invalid-feedback d-block" *ngIf="form.get('regionId')?.touched && form.get('regionId')?.invalid">
+            Debe seleccionar una región.
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
+        Crear Región
+      </button>
+    </form>
+  </div>
+</div>
+
+    <div class="card mt-3" *ngIf="createdRegions.length">
+      <div class="card-header">
+        <h6 class="mb-0">Regiones creadas</h6>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped mb-0">
+            <thead>
+              <tr>
+                <th># Región</th>
+                <th>Nombre Región</th>
+                <th>Restaurante</th>
+                <th>ID Restaurante</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of createdRegions">
+                <td>{{ item.regionId }}</td>
+                <td>{{ item.regionName }}</td>
+                <td>{{ item.restaurantName }}</td>
+                <td>{{ item.restaurantId }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
